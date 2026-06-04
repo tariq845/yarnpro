@@ -1,0 +1,50 @@
+@page
+@model YIS.Pages.Categories.CreateMainCategoryModel
+@{
+    ViewData["Title"] = "Create Main Category";
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+        <!-- Placeholder for future buttons if needed -->
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+        <!-- Placeholder for future buttons if needed -->
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="MainCategory.MCategoryId" />
+
+            <h5 class="card-title mb-4">@(Model.Id.HasValue ? "Edit Main Category" : "Create Main Category")</h5>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <label asp-for="MainCategory.MCategoryName" class="form-label">Main Category Name <span class="text-danger">*</span></label>
+                    <input asp-for="MainCategory.MCategoryName" class="form-control" placeholder="Enter main category name" required data-val="true" data-val-required="Main Category Name is required" />
+                    <span asp-validation-for="MainCategory.MCategoryName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Categories/MainCategories" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

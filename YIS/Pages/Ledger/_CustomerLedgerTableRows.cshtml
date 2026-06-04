@@ -1,0 +1,24 @@
+@model YIS.Pages.Ledger.CustomerLedgerModel
+
+@if (Model.LedgerRows.Count == 0)
+{
+    <tr>
+        <td colspan="8" class="text-center">No transactions found for the selected criteria.</td>
+    </tr>
+}
+else
+{
+    @foreach (var row in Model.LedgerRows)
+    {
+        <tr>
+            <td>@(row.Date.HasValue ? row.Date.Value.ToString("dd/MM/yyyy") : "")</td>
+            <td>@row.TransNo</td>
+            <td>@row.Type</td>
+            <td>@row.PartyNameString</td>
+            <td>@row.Remarks</td>
+            <td class="text-end">@row.Debit.ToString("N2")</td>
+            <td class="text-end">@row.Credit.ToString("N2")</td>
+            <td class="text-end fw-bold">@row.Balance.ToString("N2")</td>
+        </tr>
+    }
+}

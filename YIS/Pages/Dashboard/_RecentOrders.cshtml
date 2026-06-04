@@ -1,0 +1,75 @@
+@model List<YIS.Models.Entry>
+
+@foreach (var entry in Model)
+{
+    var typeClass = entry.EntryType?.ToLower() switch {
+        "sal" => "type-sal",
+        "pur" => "type-pur",
+        "jv" => "type-jv",
+        "rv" => "type-rv",
+        "pv" => "type-pv",
+        _ => "bg-light text-dark"
+    };
+
+    var typeIcon = entry.EntryType?.ToLower() switch {
+        "sal" => "bi-cart-check",
+        "pur" => "bi-bag-plus",
+        "jv" => "bi-journal-text",
+        "rv" => "bi-cash-coin",
+        "pv" => "bi-credit-card",
+        _ => "bi-file-earmark"
+    };
+
+    <tr>
+        <td>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 32px; height: 32px; border-radius: 8px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; color: #4b5563;">
+                    <i class="bi bi-hash"></i>
+                </div>
+                <strong>@(entry.EntryType?.ToUpper() ?? "Entry")-@(entry.EntryNumber?.ToString() ?? "0")</strong>
+            </div>
+        </td>
+        <td style="color: #6b7280; font-weight: 500;">
+            @(entry.EntryDate?.ToString("MMM dd, yyyy") ?? "N/A")
+        </td>
+        <td>
+            <div style="font-weight: 800; color: #111827;"> @((entry.Amount ?? 0).ToString("N0"))</div>
+        </td>
+        <td>
+            <span class="type-badge @typeClass">
+                <i class="bi @typeIcon"></i> @entry.EntryType
+            </span>
+        </td>
+        <td>
+            <div style="display: flex; align-items: center; gap: 6px; color: #059669; font-weight: 700; font-size: 13px;">
+                <i class="bi bi-shield-check"></i> Verified
+            </div>
+        </td>
+        <td>
+            @{
+                var viewUrl = entry.EntryType?.ToUpper() switch {
+                    "SAL" => $"/Sales/Entry?id={entry.EntryId}",
+                    "PUR" => $"/Purchase/Entry?id={entry.EntryId}",
+                    "JV" => $"/Vouchers/JournalVoucher?id={entry.EntryId}",
+                    "RV" => $"/Vouchers/ReceiptVoucher?id={entry.EntryId}",
+                    "PV" => $"/Vouchers/PaymentVoucher?id={entry.EntryId}",
+                    _ => "#"
+                };
+            }
+            <a href="@viewUrl" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px; border-radius: 6px !important;">
+                <i class="bi bi-eye"></i>
+            </a>
+        </td>
+    </tr>
+}
+@if (!Model.Any())
+{
+    <tr>
+        <td colspan="6" class="text-center py-5">
+            <div style="opacity: 0.5;">
+                <i class="bi bi-inbox" style="font-size: 48px;"></i>
+                <div style="margin-top: 12px; font-weight: 600;">No transactions recorded today</div>
+            </div>
+        </td>
+    </tr>
+}

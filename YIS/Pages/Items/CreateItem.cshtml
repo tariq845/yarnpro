@@ -1,0 +1,149 @@
+@page
+@model YIS.Pages.Items.CreateItemModel
+@{
+    ViewData["Title"] = (Model.Item?.ItemId > 0 ? "Edit Item" : "Create Item");
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            
+            <h5 class="card-title mb-4">@(Model.Item?.ItemId > 0 ? "Edit Item" : "Create Item")</h5>
+
+            <!-- Hidden ID for edit mode -->
+            @if(Model.Item?.ItemId > 0)
+            {
+                <input type="hidden" asp-for="Item.ItemId" />
+            }
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Item.ItemName" class="form-label">Item Name <span class="text-danger">*</span></label>
+                    <input asp-for="Item.ItemName" class="form-control" placeholder="Enter item name" required data-val="true" data-val-required="Item Name is required" />
+                    <span asp-validation-for="Item.ItemName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Item.ItemStCode" class="form-label">Sales Tax Code</label>
+                    <input asp-for="Item.ItemStCode" class="form-control" placeholder="Enter ST Code" type="number" step="any" />
+                    <span asp-validation-for="Item.ItemStCode" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Item.ItemHsCode" class="form-label">HS Code</label>
+                    <input asp-for="Item.ItemHsCode" class="form-control" placeholder="Enter HS Code" />
+                    <span asp-validation-for="Item.ItemHsCode" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Item.Uom" class="form-label">UOM</label>
+                    <select asp-for="Item.Uom" class="form-select">
+                        <option value="">-- Select UOM --</option>
+                        @if (!string.IsNullOrEmpty(Model.Item?.Uom))
+                        {
+                            <option value="@Model.Item.Uom" selected>@Model.Item.Uom</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Item.Uom" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Item.ItemDeactiveOn" class="form-label">Deactive On (Date)</label>
+                    <input asp-for="Item.ItemDeactiveOn" class="form-control" type="date" />
+                    <div class="form-text">Leave blank if the item is active.</div>
+                    <span asp-validation-for="Item.ItemDeactiveOn" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Items/Index" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hsCodeInput = document.getElementById('Item_ItemHsCode');
+            const uomSelect = document.getElementById('Item_Uom');
+
+            if (hsCodeInput && uomSelect) {
+                hsCodeInput.addEventListener('blur', function() {
+                    const hsCode = this.value;
+                    if (hsCode) {
+                        fetchUoms(hsCode);
+                    }
+                });
+
+                // Auto-fetch if there is already a value (e.g. edit mode)
+                const initialHsCode = hsCodeInput.value;
+                if (initialHsCode) {
+                    fetchUoms(initialHsCode);
+                }
+            }
+
+            function fetchUoms(hsCode) {
+                uomSelect.innerHTML = '<option value="">Loading...</option>';
+                
+                fetch(`?handler=UomByHsCode&hsCode=${encodeURIComponent(hsCode)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        uomSelect.innerHTML = '<option value="">-- Select UOM --</option>';
+                        if (data.success && data.uoms && data.uoms.length > 0) {
+                            data.uoms.forEach(uom => {
+                                const option = document.createElement('option');
+                                option.value = uom;
+                                option.text = uom;
+                                uomSelect.appendChild(option);
+                            });
+                             // If there was a previously selected value, try to re-select it
+                            const currentValue = '@(Model.Item?.Uom ?? "")';
+                            if(currentValue) {
+                                for(let i=0; i<uomSelect.options.length; i++) {
+                                    if(uomSelect.options[i].value === currentValue) {
+                                        uomSelect.selectedIndex = i;
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                             const option = document.createElement('option');
+                             option.text = "No UOMs found";
+                             uomSelect.appendChild(option);
+                             if (data.message) {
+                                 console.warn("FBR API Message:", data.message);
+                             }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching UOMs:', error);
+                        uomSelect.innerHTML = '<option value="">Error fetching UOMs</option>';
+                    });
+            }
+        });
+    </script>
+}

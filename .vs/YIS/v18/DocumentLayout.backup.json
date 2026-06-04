@@ -1,0 +1,388 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\models\\entry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\models\\entry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\purchase\\indexsoda.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\purchase\\indexsoda.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\suppliers\\createsupplier.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\suppliers\\createsupplier.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\sales\\_salestablerows.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\sales\\_salestablerows.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\items\\createitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\items\\createitem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\customers\\createcustomer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\customers\\createcustomer.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\subcategories.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\subcategories.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\maincategories.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\maincategories.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\createsubcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\createsubcategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\createmaincategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\createmaincategory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\createcategorytype.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\createcategorytype.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\createcategorymaster.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\createcategorymaster.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\categorytypes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\categorytypes.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\categories\\categoriesmaster.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\categories\\categoriesmaster.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\accounts\\createaccount.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\accounts\\createaccount.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\shared\\_sidebar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\shared\\_sidebar.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\items\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\items\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\suppliers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\suppliers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\customers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\customers\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\pages\\accounts\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\pages\\accounts\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|c:\\users\\h\\desktop\\new copy\\another copy\\yis\\yis\\libman.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8CD0A27B-FD2D-49F7-AE81-7A6140BA7771}|YIS\\YIS.csproj|solutionrelative:yis\\libman.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "IndexSoda.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Purchase\\IndexSoda.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Purchase\\IndexSoda.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Purchase\\IndexSoda.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Purchase\\IndexSoda.cshtml",
+              "ViewState": "AgIAADAAAAAAAAAAAAAAADoAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T13:02:58.064Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Entry.cs",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Models\\Entry.cs",
+              "RelativeDocumentMoniker": "YIS\\Models\\Entry.cs",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Models\\Entry.cs",
+              "RelativeToolTip": "YIS\\Models\\Entry.cs",
+              "ViewState": "AgIAAJQAAAAAAAAAAAAQwKAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T11:20:20.615Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CreateSupplier.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Suppliers\\CreateSupplier.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Suppliers\\CreateSupplier.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Suppliers\\CreateSupplier.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Suppliers\\CreateSupplier.cshtml",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAUwGoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:17:36.564Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_SalesTableRows.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Sales\\_SalesTableRows.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Sales\\_SalesTableRows.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Sales\\_SalesTableRows.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Sales\\_SalesTableRows.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:41:46.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CreateItem.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Items\\CreateItem.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Items\\CreateItem.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Items\\CreateItem.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Items\\CreateItem.cshtml",
+              "ViewState": "AgIAADcAAAAAAAAAAAAUwEIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:17:10.909Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SubCategories.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\SubCategories.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\SubCategories.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\SubCategories.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\SubCategories.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:16:43.379Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MainCategories.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\MainCategories.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\MainCategories.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\MainCategories.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\MainCategories.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:16:37.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CreateSubCategory.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateSubCategory.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\CreateSubCategory.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateSubCategory.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\CreateSubCategory.cshtml",
+              "ViewState": "AgIAACcAAAAAAAAAAAAUwDIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:16:26.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "CreateMainCategory.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateMainCategory.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\CreateMainCategory.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateMainCategory.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\CreateMainCategory.cshtml",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAUwCoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:16:17.786Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "CreateCategoryType.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateCategoryType.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\CreateCategoryType.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateCategoryType.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\CreateCategoryType.cshtml",
+              "ViewState": "AgIAACQAAAAAAAAAAAAUwC8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:16:05.376Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CreateCustomer.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Customers\\CreateCustomer.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Customers\\CreateCustomer.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Customers\\CreateCustomer.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Customers\\CreateCustomer.cshtml",
+              "ViewState": "AgIAAF8AAAAAAAAAAAAUwGoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.419Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "CreateCategoryMaster.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateCategoryMaster.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\CreateCategoryMaster.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CreateCategoryMaster.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\CreateCategoryMaster.cshtml",
+              "ViewState": "AgIAADoAAAAAAAAAAAAUwEcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:15:52.645Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "CategoryTypes.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CategoryTypes.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\CategoryTypes.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CategoryTypes.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\CategoryTypes.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:15:43.227Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "CategoriesMaster.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CategoriesMaster.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Categories\\CategoriesMaster.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Categories\\CategoriesMaster.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Categories\\CategoriesMaster.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:15:25.958Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "CreateAccount.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Accounts\\CreateAccount.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Accounts\\CreateAccount.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Accounts\\CreateAccount.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Accounts\\CreateAccount.cshtml",
+              "ViewState": "AgIAACcAAAAAAAAAAAAAADUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T11:14:01.612Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Suppliers\\Index.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Suppliers\\Index.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Suppliers\\Index.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Suppliers\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.763Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Customers\\Index.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Customers\\Index.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Customers\\Index.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Customers\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.778Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Items\\Index.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Items\\Index.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Items\\Index.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Items\\Index.cshtml",
+              "ViewState": "AgIAAEsAAAAAAAAAAAAAABAAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.778Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Accounts\\Index.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Accounts\\Index.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Accounts\\Index.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Accounts\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.794Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "_Sidebar.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Shared\\_Sidebar.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Shared\\_Sidebar.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Shared\\_Sidebar.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Shared\\_Sidebar.cshtml",
+              "ViewState": "AgIAABAAAAAAAAAAAAAkwBsAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.794Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "YIS\\Pages\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\Pages\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "YIS\\Pages\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-16T10:35:34.81Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "libman.json",
+              "DocumentMoniker": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\libman.json",
+              "RelativeDocumentMoniker": "YIS\\libman.json",
+              "ToolTip": "C:\\Users\\h\\Desktop\\new copy\\another copy\\YIS\\YIS\\libman.json",
+              "RelativeToolTip": "YIS\\libman.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-16T10:35:34.81Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

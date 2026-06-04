@@ -1,0 +1,500 @@
+@page
+@model YIS.Pages.Sales.SodaModel
+@{
+    ViewData["Title"] = "Sale SODA";
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title mb-4">
+            Sale SODA Entry
+            <span class="badge bg-light text-dark fs-6 float-end">@Model.DisplayEntryNumber</span>
+        </h5>
+        <form method="post">
+            <input type="hidden" asp-for="Entry.EntryId" />
+            <div class="row mb-3">
+                <div class="col-md-2">
+                    <label asp-for="Entry.EntryDate" class="form-label">Sale Date <span
+                            class="text-danger">*</span></label>
+                    <input asp-for="Entry.EntryDate" class="form-control" type="date" required />
+                    <span asp-validation-for="Entry.EntryDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Entry.EntryAttribute1" class="form-label">Customer <span
+                            class="text-danger">*</span></label>
+                    <select asp-for="Entry.EntryAttribute1" class="form-select" asp-items="Model.CustomerList" required>
+                        <option value="">-- Select Customer --</option>
+                    </select>
+                    <span asp-validation-for="Entry.EntryAttribute1" class="text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Entry.EntryRefId" class="form-label">Against Purchase Soda No <span
+                            class="text-danger">*</span></label>
+                    <select asp-for="Entry.EntryRefId" class="form-select" asp-items="Model.PurchaseSodaList"
+                        id="ddlRef" required>
+                        <option value="">-- Select Purchase Reference --</option>
+                    </select>
+                    <small class="text-muted" id="refDetails"></small>
+                    <span asp-validation-for="Entry.EntryRefId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Line Items Table -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label class="form-label fw-bold">Items</label>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="lineItemsTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 30%;">Item <span class="text-danger">*</span></th>
+                                    <th style="width: 15%;">Quantity <span class="text-danger">*</span></th>
+                                    <th style="width: 15%;">LBS</th>
+                                    <th style="width: 15%;">Rate <span class="text-danger">*</span></th>
+                                    <th style="width: 15%;">Amount</th>
+                                    <th style="width: 10%;" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lineItemsBody">
+                                @for (int i = 0; i < Model.LineItems.Count; i++)
+                                {
+                                    <tr class="line-item-row">
+                                        <input type="hidden" name="LineItems[@i].EntryId"
+                                            value="@Model.LineItems[i].EntryId" />
+                                        <td>
+                                            <select name="LineItems[@i].ItemId" class="form-select item-select" required>
+                                                <option value="">-- Select Item --</option>
+                                                @if (Model.ItemList != null)
+                                                {
+                                                    foreach (var item in Model.ItemList)
+                                                    {
+                                                        if (Model.LineItems[i].ItemId?.ToString() == item.Value)
+                                                        {
+                                                            <option value="@item.Value" selected>@item.Text</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                }
+                                            </select>
+                                            <small class="text-info item-balance-info" style="display:none;"></small>
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" min="0" name="LineItems[@i].Qty"
+                                                value="@Model.LineItems[i].Qty"
+                                                class="form-control form-control-sm text-end qty-input" required />
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" min="0" name="LineItems[@i].Lbs"
+                                                value="@Model.LineItems[i].Lbs"
+                                                class="form-control form-control-sm text-end lbs-input" />
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" min="0" name="LineItems[@i].Rate"
+                                                value="@Model.LineItems[i].Rate"
+                                                class="form-control form-control-sm text-end rate-input" required />
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" name="LineItems[@i].Amount"
+                                                value="@Model.LineItems[i].Amount"
+                                                class="form-control form-control-sm text-end bg-light amount-input"
+                                                readonly />
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button"
+                                                class="btn btn-link p-0 border-0 bg-transparent remove-row-btn"
+                                                title="Delete">
+                                                <i class="bi bi-trash text-danger"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold text-muted small text-uppercase">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <button type="button" class="btn btn-primary px-3 shadow-sm border-0"
+                                                id="addRowBtn" title="Add Item">
+                                                Add +
+                                            </button>
+                                            <span>Grand Total:</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" id="grandTotal"
+                                            class="form-control form-control-sm fw-bold text-end bg-white border-0"
+                                            readonly value="0.00" />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remarks -->
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label asp-for="Entry.EntryRemarks" class="form-label">Remarks</label>
+                    <textarea asp-for="Entry.EntryRemarks" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="row mt-4">
+                <div class="col-12 text-end">
+                    <a href="/Sales/IndexSoda" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-outline-success px-4" id="btnSave">Save</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Template for new row -->
+<template id="lineItemRowTemplate">
+    <tr class="line-item-row">
+        <input type="hidden" name="LineItems[__INDEX__].EntryId" value="0" />
+        <td>
+            <select name="LineItems[__INDEX__].ItemId" class="form-select item-select" required>
+                <option value="">-- Select Item --</option>
+                @if (Model.ItemList != null)
+                {
+                    foreach (var item in Model.ItemList)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                }
+            </select>
+            <small class="text-info item-balance-info" style="display:none;"></small>
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Qty"
+                class="form-control form-control-sm text-end qty-input" required />
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Lbs"
+                class="form-control form-control-sm text-end lbs-input" />
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Rate"
+                class="form-control form-control-sm text-end rate-input" required />
+        </td>
+        <td>
+            <input type="number" step="0.01" name="LineItems[__INDEX__].Amount"
+                class="form-control form-control-sm text-end bg-light amount-input" readonly />
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-link p-0 border-0 bg-transparent remove-row-btn" title="Delete">
+                <i class="bi bi-trash text-danger"></i>
+            </button>
+        </td>
+    </tr>
+</template>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Data Map
+        const psdData = {};
+        @if (Model.PsdEntriesForJs != null)
+        {
+            foreach (var p in Model.PsdEntriesForJs)
+            {
+                var itemsJson = "[]";
+                if (p.Items != null && p.Items.Any())
+                {
+                    itemsJson = System.Text.Json.JsonSerializer.Serialize(p.Items.Select(i => new { itemId = i.ItemId, remainingQty = i.RemainingQty, originalQty = i.OriginalQty, rate = i.Rate, lbs = i.Lbs }));
+                }
+
+                @:psdData['@p.EntryId'] = {
+                @:date: '@(p.EntryDate.HasValue ? p.EntryDate.Value.ToString("yyyy-MM-dd") : "")',
+                @:remainingQty: @p.RemainingQty,
+                @:items: @Html.Raw(itemsJson)
+                @:};
+            }
+        }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const body = document.getElementById('lineItemsBody');
+                const addRowBtn = document.getElementById('addRowBtn');
+                const grandTotalInput = document.getElementById('grandTotal');
+                const template = document.getElementById('lineItemRowTemplate');
+                const ddlRef = document.getElementById('ddlRef');
+                const refDetails = document.getElementById('refDetails');
+
+                // --- Calculation Logic ---
+
+                function calcRow(row) {
+                    const lbs = parseFloat(row.querySelector('.lbs-input').value) || 0;
+                    const rate = parseFloat(row.querySelector('.rate-input').value) || 0;
+                    // Updated to use Lbs * Rate per user request
+
+                    const amount = lbs * rate;
+                    row.querySelector('.amount-input').value = amount.toFixed(2);
+                }
+
+                function calcTotals() {
+                    let total = 0;
+                    body.querySelectorAll('.amount-input').forEach(i => total += parseFloat(i.value) || 0);
+                    grandTotalInput.value = total.toFixed(2);
+                }
+
+                // --- Row Management ---
+                function reindex() {
+                    Array.from(body.children).forEach((row, idx) => {
+                        row.querySelectorAll('input, select').forEach(i => {
+                            const name = i.getAttribute('name');
+                            if (name) i.setAttribute('name', name.replace(/LineItems\[\d+\]/, `LineItems[${idx}]`));
+                        });
+                    });
+                }
+
+                if (addRowBtn) {
+                    addRowBtn.addEventListener('click', function () {
+                        const idx = body.children.length;
+                        const clone = template.content.cloneNode(true);
+                        clone.querySelectorAll('input, select').forEach(i => {
+                            const name = i.getAttribute('name');
+                            if (name) i.setAttribute('name', name.replace('__INDEX__', idx));
+                        });
+
+                        body.appendChild(clone);
+                        filterItemDropdowns(); // Filter the new row immediately
+                        updateItemSelection();
+                    });
+                }
+
+                // Event Delegation
+                body.addEventListener('input', function (e) {
+                    if (e.target.matches('.qty-input')) {
+                        const row = e.target.closest('tr');
+                        const qty = parseFloat(e.target.value) || 0;
+                        const lbsInput = row.querySelector('.lbs-input');
+                        // Auto-calculate LBS = Qty * 100
+                        lbsInput.value = (qty * 100).toFixed(2);
+                        calcRow(row);
+                        calcTotals();
+                        validateRowQty(row);
+                    } else if (e.target.matches('.rate-input, .lbs-input')) {
+                        calcRow(e.target.closest('tr'));
+                        calcTotals();
+                    }
+                });
+
+                body.addEventListener('change', function (e) {
+                    if (e.target.matches('.item-select')) {
+                        updateItemSelection();
+
+                        // Show Balance & Auto-fill ?
+                        const row = e.target.closest('tr');
+                        const itemId = e.target.value;
+                        const psdId = ddlRef.value;
+
+                        const infoSpan = row.querySelector('.item-balance-info');
+
+                        if (psdId && psdData[psdId] && itemId) {
+                            const itemData = psdData[psdId].items.find(i => i.itemId == itemId);
+                            if (itemData) {
+                                // Auto-fill Rate/Lbs? Usually Sale Rate might differ, but let's leave it empty or prefill if desired.
+                                // Requirement: "remaining quantity shown item each"
+                                infoSpan.textContent = `Available: ${itemData.remainingQty}`;
+                                infoSpan.style.display = 'block';
+
+                                // Auto-fill from reference (ONLY for real user interaction, not on load)
+                                if (e.isTrusted) {
+                                    if (itemData.remainingQty !== undefined && itemData.remainingQty !== null) row.querySelector('.qty-input').value = itemData.remainingQty;
+                                    if (itemData.lbs !== undefined && itemData.lbs !== null) row.querySelector('.lbs-input').value = itemData.lbs;
+                                    if (itemData.rate !== undefined && itemData.rate !== null) row.querySelector('.rate-input').value = itemData.rate.toFixed(4);
+                                }
+
+                                // Validate and Calculate
+                                validateRowQty(row);
+                                calcRow(row);
+                                calcTotals();
+                            } else {
+                                infoSpan.style.display = 'none';
+                                row.querySelector('.qty-input').removeAttribute('max');
+                            }
+                        } else {
+                            infoSpan.style.display = 'none';
+                            row.querySelector('.qty-input').removeAttribute('max');
+                        }
+                    }
+                });
+
+                body.addEventListener('click', function (e) {
+                    if (e.target.closest('.remove-row-btn')) {
+                        if (body.children.length > 1) {
+                            e.target.closest('tr').remove();
+                            reindex();
+                            calcTotals();
+                            updateItemSelection();
+                        } else {
+                            alert("At least one item is required.");
+                        }
+                    }
+                });
+
+
+                // --- Filtering Logic ---
+
+                function filterItemDropdowns() {
+                    const psdId = ddlRef.value;
+                    const selects = document.querySelectorAll('.item-select');
+                    const templateSelect = template.content.querySelector('.item-select');
+
+                    const allSelects = [...selects];
+                    if (templateSelect) allSelects.push(templateSelect);
+
+                    allSelects.forEach(select => {
+                        const currentValue = select.value;
+
+                        // If no PSD selected, or PSD has no items data, maybe show all? 
+                        // But requirement says filter against PSD. Usually PSD is Required.
+
+                        Array.from(select.options).forEach(option => {
+                            if (option.value === "") return;
+
+                            let isAvailable = true;
+                            if (psdId && psdData[psdId] && psdData[psdId].items && psdData[psdId].items.length > 0) {
+                                // Filter: Exists in PSD items?
+                                isAvailable = psdData[psdId].items.some(i => i.itemId == option.value);
+                            } else if (psdId && psdData[psdId] && (!psdData[psdId].items || psdData[psdId].items.length === 0)) {
+                                // Legacy PSD with no children? Allow all? Or block?
+                                // Let's allow all if PSD has no specific item breakdown (legacy fallback)
+                                isAvailable = true;
+                            } else if (!psdId) {
+                                isAvailable = true; // Show all if no PSD selected (though PSD is required)
+                            }
+
+                            if (isAvailable) {
+                                option.style.display = '';
+                                option.disabled = false;
+                            } else {
+                                option.style.display = 'none';
+                                option.disabled = true;
+                            }
+                        });
+
+                        // Clear if invalid
+                        if (currentValue && select.options[select.selectedIndex]?.style.display === 'none') {
+                            select.value = "";
+                            // Clear info text
+                            const row = select.closest('tr');
+                            if (row) {
+                                const info = row.querySelector('.item-balance-info');
+                                if (info) info.style.display = 'none';
+                            }
+                        }
+                    });
+                }
+
+                function updateItemSelection() {
+                    const selects = document.querySelectorAll('.item-select');
+                    const selectedItems = Array.from(selects)
+                        .map(select => select.value)
+                        .filter(val => val !== "");
+
+                    selects.forEach(select => {
+                        const currentValue = select.value;
+                        Array.from(select.options).forEach(option => {
+                            if (option.value === "") return;
+                            if (option.style.display === 'none') return;
+
+                            if (selectedItems.includes(option.value) && option.value !== currentValue) {
+                                option.disabled = true;
+                                option.style.backgroundColor = '#f8f9fa';
+                                option.style.color = '#adb5bd';
+                            } else {
+                                option.disabled = false;
+                                option.style.backgroundColor = '';
+                                option.style.color = '';
+                            }
+                        });
+                    });
+                }
+
+                function validateRowQty(row) {
+                    const qtyInput = row.querySelector('.qty-input');
+                    const itemSelect = row.querySelector('.item-select');
+                    const psdId = ddlRef.value;
+
+                    if (psdId && psdData[psdId] && itemSelect.value) {
+                        const itemData = psdData[psdId].items.find(i => i.itemId == itemSelect.value);
+                        if (itemData) {
+                            const max = itemData.remainingQty;
+                            const qty = parseFloat(qtyInput.value) || 0;
+                            if (qty > max) {
+                                qtyInput.classList.add('is-invalid');
+                                // Optional: Add tooltip or error text
+                            } else {
+                                qtyInput.classList.remove('is-invalid');
+                            }
+                        }
+                    }
+                }
+
+                // Logic for Reference Change
+                if (ddlRef) {
+                    ddlRef.addEventListener('change', function () {
+                        const val = this.value;
+
+                        // Clear all lines
+                        body.innerHTML = '';
+                        // Add one empty row
+                        const clone = template.content.cloneNode(true);
+                        clone.querySelectorAll('input, select').forEach(i => {
+                            const name = i.getAttribute('name');
+                            if (name) i.setAttribute('name', name.replace('__INDEX__', 0));
+                        });
+                        body.appendChild(clone);
+
+                        if (val && psdData[val]) {
+                            refDetails.textContent = `Date: ${psdData[val].date} | Total Remaining: ${psdData[val].remainingQty}`;
+                        } else {
+                            refDetails.textContent = '';
+                        }
+
+                        filterItemDropdowns();
+                        updateItemSelection();
+                    });
+
+                    // Initial Load
+                    if (ddlRef.value) {
+                        const val = ddlRef.value;
+                        if (psdData[val]) refDetails.textContent = `Date: ${psdData[val].date} | Total Remaining: ${psdData[val].remainingQty}`;
+                        filterItemDropdowns();
+                        // Trigger validation for existing rows (edit mode)
+                        body.querySelectorAll('.line-item-row').forEach(row => {
+                            const sel = row.querySelector('.item-select');
+                            if (sel) sel.dispatchEvent(new Event('change', { bubbles: true }));
+                        });
+                    }
+                }
+
+                // Validation before submit
+                document.querySelector('form').addEventListener('submit', function (e) {
+                    if (document.querySelectorAll('.is-invalid').length > 0) {
+                        e.preventDefault();
+                        alert("Please fix validation errors (Quantity exceeds available balance).");
+                    }
+                });
+
+                // Initial calcs
+                body.querySelectorAll('.line-item-row').forEach(row => calcRow(row));
+                calcTotals();
+                updateItemSelection();
+
+            });
+    </script>
+}

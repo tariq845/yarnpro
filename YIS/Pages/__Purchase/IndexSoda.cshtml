@@ -1,0 +1,75 @@
+@page
+@model YIS.Pages.Purchase.IndexSodaModel
+@{
+    ViewData["Title"] = "Purchase Soda List";
+}
+
+<div class="container-fluid">
+    <div class="row align-items-center mb-3">
+        <div class="col-6">
+            <h2 class="page-title">Purchase Soda List</h2>
+        </div>
+        <div class="col-6 text-end">
+                <a href="/Purchase/Soda" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Add New
+                </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-container">
+                <table class="data-table table table-hover mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Sr #</th>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th class="text-center">Items</th>
+                            <th class="text-end">Grand Total</th>
+                            <th class="text-center" style="width: 100px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Entries != null && Model.Entries.Count > 0)
+                        {
+                            foreach (var item in Model.Entries)
+                            {
+                                <tr>
+                                    <td>
+                                        <a href="/Purchase/Soda?id=@item.EntryId" class="text-decoration-none fw-bold">
+                                            PSD-@item.EntryNumber
+                                        </a>
+                                    </td>
+                                    <td>@(item.EntryDate?.ToString("yyyy-MM-dd"))</td>
+                                    <td>@item.SupplierName</td>
+                                    <td class="text-center">
+                                        <span class="badge bg-secondary">@item.ItemCount item(s)</span>
+                                    </td>
+                                    <td class="text-end fw-bold text-success">
+                                        @item.GrandTotal?.ToString("N2")
+                                    </td>
+                                    <td class="text-center">
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@item.EntryId" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this entry and all its items?');">
+                                           <button type="submit"
+                                                    class="btn btn-link p-0 border-0 bg-transparent"
+                                                    title="Delete">
+                                                <i class="bi bi-trash text-danger"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">No purchase soda entries found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+@page
+@model YIS.Pages.Accounts.CreateAccountModel
+@{
+    ViewData["Title"] = (Model.Account?.AccountId > 0 ? "Edit Account" : "Create Account");
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <h5 class="card-title mb-4">@(Model.Account?.AccountId > 0 ? "Edit Account" : "Create Account")</h5>
+
+            <!-- Hidden ID for edit mode -->
+            @if(Model.Account?.AccountId > 0)
+            {
+                <input type="hidden" asp-for="Account.AccountId" />
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label asp-for="Account.AccountName" class="form-label">Account Name <span class="text-danger">*</span></label>
+                    <input asp-for="Account.AccountName" class="form-control" placeholder="Enter account name" required data-val="true" data-val-required="Account Name is required" />
+                    <span asp-validation-for="Account.AccountName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Account.CategoryId" class="form-label">Category</label>
+                    <select asp-for="Account.CategoryId" class="form-select" asp-items="Model.CategoryId">
+                        <option value="">-- Select Category --</option>
+                    </select>
+                    <span asp-validation-for="Account.CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Accounts/Index" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,147 @@
+﻿@using System.Text.Json
+@{
+    var currentPath = Context.Request.Path.Value ?? "";
+    var rolePermissionsJson = Context.Session.GetString("RolePermissions");
+    var permissionsMap = string.IsNullOrEmpty(rolePermissionsJson)
+    ? new Dictionary<string, JsonElement>()
+    : JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(rolePermissionsJson);
+
+    bool HasUrlAccess(string url)
+    {
+        if (string.IsNullOrEmpty(url) || url == "/" || url == "/Dashboard" || url == "/Login" || url == "/AccessDenied" || url
+        == "/Logout" || url.Contains("."))
+            return true;
+
+        // Exact match check
+        if (permissionsMap != null && permissionsMap.ContainsKey(url))
+        {
+            var perm = permissionsMap[url];
+            return perm.TryGetProperty("CanRead", out var canReadProp) && canReadProp.GetBoolean();
+        }
+
+        // Default: Allow if not explicitly restricted in the dictionary
+        // (to avoid blocking internal/system pages not registered in menus)
+        return true;
+    }
+
+    if (!HasUrlAccess(currentPath))
+    {
+        Context.Response.Redirect("/AccessDenied");
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Yarn Pro</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="~/img/Favicon.png" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+    <!-- Permanent Toast Container -->
+    <div id="toast-container"
+        style="position: fixed; top: 70px; right: 15px; z-index: 999999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;">
+    </div>
+
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        @await Html.PartialAsync("_Sidebar")
+
+        <!-- Sidebar Overlay (Mobile) -->
+        <div class="sidebar-overlay"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            @await Html.PartialAsync("_Navbar")
+
+            <!-- Content Area -->
+            <div class="content-wrapper">
+                <!-- Page Title -->
+                @if (ViewData["Title"] != null)
+                {
+                    <h1 class="page-title-main">@ViewData["Title"]</h1>
+                }
+
+                <!-- Breadcrumb -->
+                <div class="breadcrumb-container">
+                    <nav class="breadcrumb">
+                        <a href="/Dashboard" class="breadcrumb-item">
+                            <i class="bi bi-house-door"></i>
+                            <span>Home</span>
+                        </a>
+
+                        @if (ViewData["BreadcrumbParent"] != null)
+                        {
+                            <i class="bi bi-chevron-right breadcrumb-separator"></i>
+                            @if (ViewData["BreadcrumbParentUrl"] != null)
+                            {
+                                <a href="@ViewData["BreadcrumbParentUrl"]" class="breadcrumb-item">
+                                    @ViewData["BreadcrumbParent"]
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="breadcrumb-item">@ViewData["BreadcrumbParent"]</span>
+                            }
+                        }
+
+                        @if (ViewData["Title"] != null && ViewData["Title"].ToString() != "Dashboard")
+                        {
+                            <i class="bi bi-chevron-right breadcrumb-separator"></i>
+                            <span class="breadcrumb-item active">@ViewData["Title"]</span>
+                        }
+                    </nav>
+                </div>
+
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <!-- HTMX -->
+    <!-- HTMX -->
+    <script src="~/lib/htmx/htmx.min.js"></script>
+
+    <!-- Bootstrap Bundle (includes Popper) -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Dashboard JS -->
+    <script src="~/js/dashboard.js"></script>
+
+    <!-- Toast Data for JS -->
+    <div id="toast-data" style="display:none;" data-success="@(TempData["StatusMessage"] ?? "")"
+        data-error="@(TempData["ErrorMessage"] ?? "")" data-warning="@(TempData["WarningMessage"] ?? "")"
+        data-info="@(TempData["InfoMessage"] ?? "")"></div>
+
+    <script>
+        console.log("Toast System: Script loaded and ready.");
+        if (typeof htmx !== 'undefined') {
+            console.log("HTMX: Detected and loaded.");
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

@@ -1,0 +1,705 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.js"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "C:\\Users\\shehryar.tariq\\.nuget\\packages\\bootstrap\\5.3.3\\contentFiles\\any\\any\\wwwroot\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\obj\\Release\\net8.0\\scopedcss\\projectbundle\\YIS.bundle.scp.css",
+      "PackagePath": "staticwebassets\\YIS.1wov3wz16m.bundle.scp.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\css\\categories.css",
+      "PackagePath": "staticwebassets\\css\\categories.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\css\\dashboard.css",
+      "PackagePath": "staticwebassets\\css\\dashboard.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\css\\site.css",
+      "PackagePath": "staticwebassets\\css\\site.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\1.png",
+      "PackagePath": "staticwebassets\\img\\1.png"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\2.png",
+      "PackagePath": "staticwebassets\\img\\2.png"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\3.png",
+      "PackagePath": "staticwebassets\\img\\3.png"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\Favicon.png",
+      "PackagePath": "staticwebassets\\img\\Favicon.png"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\YarnPro.png",
+      "PackagePath": "staticwebassets\\img\\YarnPro.png"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\dribbble_1.gif",
+      "PackagePath": "staticwebassets\\img\\dribbble_1.gif"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\fbrlogo.jpg",
+      "PackagePath": "staticwebassets\\img\\fbrlogo.jpg"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\img\\modified.png",
+      "PackagePath": "staticwebassets\\img\\modified.png"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\js\\dashboard.js",
+      "PackagePath": "staticwebassets\\js\\dashboard.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\js\\site.js",
+      "PackagePath": "staticwebassets\\js\\site.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\LICENSE",
+      "PackagePath": "staticwebassets\\lib\\bootstrap"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-grid.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-reboot.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap-utilities.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\css\\bootstrap.rtl.min.css.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.esm.min.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map",
+      "PackagePath": "staticwebassets\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\ajax-header.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\ajax-header.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\ajax-header.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\ajax-header.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\alpine-morph.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\alpine-morph.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\alpine-morph.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\alpine-morph.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\class-tools.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\class-tools.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\class-tools.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\class-tools.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\client-side-templates.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\client-side-templates.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\client-side-templates.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\client-side-templates.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\debug.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\debug.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\debug.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\debug.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\disable-element.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\disable-element.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\disable-element.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\disable-element.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\event-header.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\event-header.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\event-header.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\event-header.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\head-support.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\head-support.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\head-support.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\head-support.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\include-vals.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\include-vals.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\include-vals.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\include-vals.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\json-enc.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\json-enc.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\json-enc.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\json-enc.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\loading-states.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\loading-states.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\loading-states.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\loading-states.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\method-override.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\method-override.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\method-override.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\method-override.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\morphdom-swap.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\morphdom-swap.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\morphdom-swap.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\morphdom-swap.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\multi-swap.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\multi-swap.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\multi-swap.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\multi-swap.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\path-deps.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\path-deps.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\path-deps.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\path-deps.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\path-params.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\path-params.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\path-params.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\path-params.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\preload.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\preload.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\preload.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\preload.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\rails-method.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\rails-method.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\rails-method.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\rails-method.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\remove-me.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\remove-me.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\remove-me.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\remove-me.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\response-targets.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\response-targets.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\response-targets.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\response-targets.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\restored.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\restored.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\restored.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\restored.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\sse.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\sse.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\sse.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\sse.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\ws.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\ws.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\ext\\ws.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\ext\\ws.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.amd.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.amd.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.amd.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.amd.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.cjs.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.cjs.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.cjs.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.cjs.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.esm.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.esm.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.esm.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.esm.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\htmx\\htmx.min.js",
+      "PackagePath": "staticwebassets\\lib\\htmx\\htmx.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation-unobtrusive\\jquery.validate.unobtrusive.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation\\LICENSE.md",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\LICENSE.md"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation\\dist\\additional-methods.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\additional-methods.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery-validation\\dist\\jquery.validate.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery-validation\\dist\\jquery.validate.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery\\LICENSE.txt",
+      "PackagePath": "staticwebassets\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery\\dist\\jquery.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery\\dist\\jquery.min.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.js"
+    },
+    {
+      "Id": "E:\\VA projects\\YIS\\YIS\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.build.YIS.props",
+      "PackagePath": "build\\YIS.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.YIS.props",
+      "PackagePath": "buildMultiTargeting\\YIS.props"
+    },
+    {
+      "Id": "obj\\Release\\net8.0\\staticwebassets\\msbuild.buildTransitive.YIS.props",
+      "PackagePath": "buildTransitive\\YIS.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

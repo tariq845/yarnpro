@@ -1,0 +1,273 @@
+@page
+@model YIS.Pages.Sales.SodaModel
+@{
+    ViewData["Title"] = "Sale Soda";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2 class="page-title">Add New </h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Entry.EntryId" />
+
+                <!-- Row 1: Basic Info -->
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Sale Soda No</label>
+                        <input type="text" class="form-control" value="SSD-(Auto)" disabled readonly />
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Entry.EntryDate" class="form-label">Sale Date <span class="text-danger">*</span></label>
+                        <input asp-for="Entry.EntryDate" class="form-control" type="date" required />
+                        <span asp-validation-for="Entry.EntryDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Entry.EntryAttribute1" class="form-label">Customer <span class="text-danger">*</span></label>
+                        <select asp-for="Entry.EntryAttribute1" class="form-select" asp-items="Model.CustomerList" required>
+                            <option value="">-- Select Customer --</option>
+                        </select>
+                        <span asp-validation-for="Entry.EntryAttribute1" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Row 2: Reference Info -->
+                <div class="row mb-3 p-3 bg-light rounded">
+                    <div class="col-md-6">
+                        <label asp-for="Entry.EntryRefId" class="form-label">Against Purchase Soda No</label>
+                        <select asp-for="Entry.EntryRefId" class="form-select" asp-items="Model.PurchaseSodaList" id="ddlPurchaseRef">
+                            <option value="">-- Select Purchase Reference --</option>
+                        </select>
+                        <span asp-validation-for="Entry.EntryRefId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Entry.EntryRefDate" class="form-label">Purchase Soda Date</label>
+                         <!-- Display field -->
+                        <input class="form-control" type="date" id="txtRefDate" readonly />
+                        <!-- Actual bind field (hidden or read-only input that binds) -->
+                        <input type="hidden" asp-for="Entry.EntryRefDate" id="hdnRefDate" />
+                    </div>
+                </div>
+
+                <!-- Row 3: Item & Quantities -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="Entry.ItemId" class="form-label">Item <span class="text-danger">*</span></label>
+                        <select asp-for="Entry.ItemId" class="form-select" asp-items="Model.ItemList" required>
+                            <option value="">-- Select Item --</option>
+                        </select>
+                        <span asp-validation-for="Entry.ItemId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+                         <label asp-for="Entry.Qty" class="form-label">Quantity</label>
+                         <input asp-for="Entry.Qty" class="form-control" id="txtQty" min="0" />
+                         <span asp-validation-for="Entry.Qty" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+                         <label asp-for="Entry.Lbs" class="form-label">LBS</label>
+                         <input asp-for="Entry.Lbs" class="form-control" id="txtLbs" min="0" />
+                         <span asp-validation-for="Entry.Lbs" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+                         <label asp-for="Entry.Rate" class="form-label">Rate</label>
+                         <input asp-for="Entry.Rate" class="form-control" id="txtRate" min="0" />
+                         <span asp-validation-for="Entry.Rate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+                         <label asp-for="Entry.Amount" class="form-label">Amount</label>
+                         <input asp-for="Entry.Amount" class="form-control" id="txtAmount" readonly />
+                         <span asp-validation-for="Entry.Amount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Row 4: Remarks -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label asp-for="Entry.EntryRemarks" class="form-label">Remarks</label>
+                        <textarea asp-for="Entry.EntryRemarks" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Entry.EntryRemarks" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <a href="/Sales/IndexSoda" class="btn btn-outline-secondary me-2">Back to List</a>
+                        <button type="submit" class="btn btn-primary" id="btnSaveSale">Save Sale</button>
+                    </div>
+                    <div class="col-12 mt-2" id="zeroQtyWarning" style="display: none;">
+                        <div class="alert alert-warning mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Cannot sell against this Purchase Soda - Remaining quantity is 0.
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        // Build map of PurchaseEntryId -> { Date, OriginalQty, RemainingQty }
+        const purchaseDataMap = {};
+        @if (Model.PsdEntriesForJs != null)
+        {
+            foreach (var p in Model.PsdEntriesForJs)
+            {
+                // Date format yyyy-MM-dd for input type=date
+                @:purchaseDataMap['@p.EntryId'] = { 
+                @:    date: '@(p.EntryDate.HasValue ? p.EntryDate.Value.ToString("yyyy-MM-dd") : "")', 
+                @:    originalQty: @(p.OriginalQty ?? 0),
+                @:    remainingQty: @p.RemainingQty 
+                @:};
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Calculation Logic
+            const qtyInput = document.getElementById('txtQty');
+            const lbsInput = document.getElementById('txtLbs');
+            const rateInput = document.getElementById('txtRate');
+            const amountInput = document.getElementById('txtAmount');
+            const ddlRef = document.getElementById('ddlPurchaseRef');
+            const txtRefDate = document.getElementById('txtRefDate');
+            const hdnRefDate = document.getElementById('hdnRefDate');
+            const btnSave = document.getElementById('btnSaveSale');
+            const zeroQtyWarning = document.getElementById('zeroQtyWarning');
+
+            // Function to disable/enable form based on remaining qty
+            function updateFormState(remainingQty) {
+                const isZeroQty = remainingQty <= 0;
+                
+                // Disable/enable save button
+                if (btnSave) {
+                    btnSave.disabled = isZeroQty;
+                    if (isZeroQty) {
+                        btnSave.classList.remove('btn-primary');
+                        btnSave.classList.add('btn-secondary');
+                    } else {
+                        btnSave.classList.remove('btn-secondary');
+                        btnSave.classList.add('btn-primary');
+                    }
+                }
+                
+                // Gray out input fields
+                if (qtyInput) {
+                    qtyInput.disabled = isZeroQty;
+                    qtyInput.style.backgroundColor = isZeroQty ? '#e9ecef' : '';
+                }
+                if (lbsInput) {
+                    lbsInput.disabled = isZeroQty;
+                    lbsInput.style.backgroundColor = isZeroQty ? '#e9ecef' : '';
+                }
+                if (rateInput) {
+                    rateInput.disabled = isZeroQty;
+                    rateInput.style.backgroundColor = isZeroQty ? '#e9ecef' : '';
+                }
+                
+                // Show/hide warning message
+                if (zeroQtyWarning) {
+                    zeroQtyWarning.style.display = isZeroQty ? 'block' : 'none';
+                }
+                
+                // Reset values if qty is zero
+                if (isZeroQty) {
+                    if (qtyInput) qtyInput.value = 0;
+                    if (amountInput) amountInput.value = '0.00';
+                }
+            }
+
+            function calculateAmount() {
+                const qty = parseFloat(qtyInput.value) || 0;
+                
+                // VALIDATION: Check against REMAINING Purchase Qty
+                const refId = ddlRef.value;
+                if (refId && purchaseDataMap[refId]) {
+                    const maxQty = purchaseDataMap[refId].remainingQty;
+                    
+                    // Check if remaining qty is 0 or negative
+                    if (maxQty <= 0) {
+                        updateFormState(0);
+                        return;
+                    }
+                    
+                    if (qty > maxQty) {
+                        alert("Validation Error: Quantity (" + qty + ") cannot be greater than Remaining Balance (" + maxQty + ").");
+                        
+                        // If maxQty is > 0, set to max, else clear
+                        if(maxQty > 0) qtyInput.value = maxQty;
+                        else qtyInput.value = 0;
+                        
+                        // Re-calculate
+                        calculateAmount();
+                        return;
+                    }
+                }
+                
+                const lbs = parseFloat(lbsInput.value) || 0;
+                const rate = parseFloat(rateInput.value) || 0;
+                
+                let amount = 0;
+                if (qty > 0) {
+                    amount = qty * rate;
+                } else if (lbs > 0) {
+                    amount = lbs * rate;
+                }
+                
+                amountInput.value = amount.toFixed(2);
+            }
+
+            if (qtyInput) qtyInput.addEventListener('change', calculateAmount); // Trigger on change for validation
+            if (qtyInput) qtyInput.addEventListener('input', function() {
+                 const qty = parseFloat(qtyInput.value) || 0;
+                 const rate = parseFloat(rateInput.value) || 0;
+                 const lbs = parseFloat(lbsInput.value) || 0;
+                 
+                 let amount = 0;
+                 if (qty > 0) amount = qty * rate;
+                 else if (lbs > 0) amount = lbs * rate;
+                 amountInput.value = amount.toFixed(2);
+            });
+            
+            if (lbsInput) lbsInput.addEventListener('input', calculateAmount);
+            if (rateInput) rateInput.addEventListener('input', calculateAmount);
+
+            function updateRefDate() {
+                const val = ddlRef.value;
+                if (val && purchaseDataMap[val]) {
+                    const data = purchaseDataMap[val];
+                    txtRefDate.value = data.date;
+                    hdnRefDate.value = data.date;
+                    
+                    // Update form state based on remaining qty
+                    updateFormState(data.remainingQty);
+                    
+                    // Trigger validation if Qty is already entered
+                    if (data.remainingQty > 0) {
+                        calculateAmount();
+                    }
+                } else {
+                    txtRefDate.value = '';
+                    hdnRefDate.value = '';
+                    // If no reference selected, enable the form
+                    updateFormState(1); // Enable form
+                }
+            }
+            
+            if (ddlRef) {
+                ddlRef.addEventListener('change', updateRefDate);
+                // Trigger initially in case of Edit mode (if value is pre-selected)
+                updateRefDate(); 
+            }
+        });
+    </script>
+}

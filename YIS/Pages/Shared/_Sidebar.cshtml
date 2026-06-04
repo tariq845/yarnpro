@@ -1,0 +1,456 @@
+@using System.Text.Json
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    var rolePermissionsJson = Context.Session.GetString("RolePermissions");
+    var permissions = string.IsNullOrEmpty(rolePermissionsJson) 
+        ? new Dictionary<string, JsonElement>() 
+        : JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(rolePermissionsJson);
+
+    bool HasAccess(string url)
+    {
+        return YIS.Helpers.AuthHelper.CanRead(Context, url);
+    }
+}
+
+<aside class="sidebar">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+        <div class="sidebar-logo-icon" style="background: white;">
+            <img src="~/img/Favicon.png" alt="Icon" style="width: 24px; height: 24px;" /> 
+        </div>
+        <a href="/Dashboard" class="sidebar-logo m-lg-3" style="gap: 15px;">
+             <span class="sidebar-logo-text" style="background: linear-gradient(90deg, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 1.5rem;">Yarn Pro</span>
+        </a>
+    </div>
+    
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav">
+        <!-- Main Section -->
+        <div class="nav-section">
+            <div class="nav-section-title">Main</div>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+              
+                <li class="nav-item">
+                    <a href="/Dashboard" class="nav-link @(currentPage == "/Dashboard" || currentPage == "/" || currentPage == "" ? "active" : "")">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span class="nav-link-text">Dashboard</span>
+                    </a>
+                </li>
+
+           
+               
+                @if (HasAccess("/Purchase/PurchaseReturnIndex") || HasAccess("/Purchase/IndexSoda") || HasAccess("/Purchase/Index"))
+                {
+                    <li class="nav-item has-submenu @(currentPage.StartsWith("/Purchase") ? "open" : "")">
+                        <a href="#" class="nav-link @(currentPage.StartsWith("/Purchase") ? "active" : "")">
+                            <i class="bi bi-cart-check-fill"></i>
+                            <span class="nav-link-text">Purchases</span>
+                            <i class="bi bi-chevron-right submenu-arrow"></i>
+                        </a>
+                        <ul class="nav-submenu" style="list-style: none;">
+                            @if (HasAccess("/Purchase/IndexSoda"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Purchase/IndexSoda" class="nav-link">
+                                        <span class="nav-link-text">Purchase SODA</span>
+                                    </a>
+                                </li>
+                            }
+                            @if (HasAccess("/Purchase/Index"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Purchase/Index" class="nav-link">
+                                        <span class="nav-link-text">Purchase</span>
+                                    </a>
+                                </li>
+                            }
+                            @if (HasAccess("/Purchase/PurchaseReturnIndex"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Purchase/PurchaseReturnIndex" class="nav-link">
+                                        <span class="nav-link-text">Purchase Return (DN)</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+                     @if (HasAccess("/Sales/Index") || HasAccess("/Sales/IndexSoda") || HasAccess("/Sales/SaleReturnIndex"))
+                {
+                    <li class="nav-item has-submenu @(currentPage.StartsWith("/Sales") ? "open" : "")">
+                        <a href="#" class="nav-link @(currentPage.StartsWith("/Sales") ? "active" : "")">
+                            <i class="bi bi-graph-up-arrow"></i>
+                            <span class="nav-link-text">Sales</span>
+                            <i class="bi bi-chevron-right submenu-arrow"></i>
+                        </a>
+                        <ul class="nav-submenu" style="list-style: none;">
+                            @if (HasAccess("/Sales/IndexSoda"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Sales/IndexSoda" class="nav-link">
+                                        <span class="nav-link-text">Sales SODA</span>
+                                    </a>
+                                </li>
+                            }
+                            @if (HasAccess("/Sales/Index"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Sales/Index" class="nav-link">
+                                        <span class="nav-link-text">Sales </span>
+                                    </a>
+                                </li>
+                            }
+                            @if (HasAccess("/Sales/SaleReturnIndex"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Sales/SaleReturnIndex" class="nav-link">
+                                        <span class="nav-link-text">Sales Return (CN)</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+        
+        @if (HasAccess("/Customers/Index") || HasAccess("/Suppliers/Index"))
+        {
+            <div class="nav-section">
+                <div class="nav-section-title">Parties</div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                  @if (HasAccess("/Suppliers/Index"))
+                    {
+                        <li class="nav-item">
+                            <a href="/Suppliers/Index" class="nav-link @(currentPage.StartsWith("/Suppliers") ? "active" : "")">
+                                <i class="bi bi-person-fill"></i>
+                                <span class="nav-link-text">Supplier(s)</span>
+                            </a>
+                        </li>
+
+                    }
+                    @if (HasAccess("/Customers/Index"))
+                    {
+                        <li class="nav-item">
+                            <a href="/Customers/Index" class="nav-link @(currentPage.StartsWith("/Customers") ? "active" : "")">
+                                <i class="bi bi-person"></i>
+                                <span class="nav-link-text">Customer(s)</span>
+                            </a>
+                        </li>
+
+                    }
+                  
+                </ul>
+            </div>
+        }
+
+        <!-- Ledgers Section -->
+        @if (HasAccess("/Suppliers/Index") || HasAccess("/Customers/Index") || HasAccess("/Accounts/Index"))
+        {
+            <div class="nav-section">
+                <div class="nav-section-title">Accounting</div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="nav-item has-submenu @(currentPage.StartsWith("/Ledger") ? "open" : "")">
+                        <a href="#" class="nav-link @(currentPage.StartsWith("/Ledger") ? "active" : "")">
+                            <i class="bi bi-journal-check"></i>
+                            <span class="nav-link-text">Ledgers</span>
+                            <i class="bi bi-chevron-right submenu-arrow"></i>
+                        </a>
+                        <ul class="nav-submenu" style="list-style: none;">
+                            @if (HasAccess("/Suppliers/Index"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Ledger/SupplierLedger" class="nav-link @(currentPage == "/Ledger/SupplierLedger" ? "active" : "")">
+                                        <span class="nav-link-text">Supplier Ledger</span>
+                                    </a>
+                                </li>
+                            }
+                            @if (HasAccess("/Customers/Index"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Ledger/CustomerLedger" class="nav-link @(currentPage == "/Ledger/CustomerLedger" ? "active" : "")">
+                                        <span class="nav-link-text">Customer Ledger</span>
+                                    </a>
+                                </li>
+                            }
+                            @if (HasAccess("/Accounts/Index"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Ledger/AccountLedger" class="nav-link @(currentPage == "/Ledger/AccountLedger" ? "active" : "")">
+                                        <span class="nav-link-text">Account Ledger</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        }
+
+        <!-- Inventory Section -->
+        @if (HasAccess("/Items/Index"))
+        {
+            <div class="nav-section">
+                <div class="nav-section-title">Inventory</div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li class="nav-item">
+                        <a href="/Items/Index" class="nav-link @(currentPage.StartsWith("/Items") ? "active" : "")">
+                            <i class="bi bi-box-seam-fill"></i>
+                            <span class="nav-link-text">Items</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        }
+
+
+                 
+
+        <!-- Reports Section -->
+         @if (HasAccess("/Reports/PsdTrackIndex")){
+        <div class="nav-section">
+            <div class="nav-section-title">Reports</div>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link @(currentPage.StartsWith("/Reports") ? "active" : "")">
+                        <i class="bi bi-file-earmark-bar-graph"></i>
+                        <span class="nav-link-text">Tracking Reports</span>
+                        <i class="bi bi-chevron-right submenu-arrow"></i>
+                    </a>
+                    <ul class="nav-submenu" style="list-style: none;">
+                        <li class="nav-item">
+                            <a href="/Reports/PsdTrackIndex" class="nav-link @(currentPage == "/Reports/PsdTrackIndex" ? "active" : "")">
+                                <span class="nav-link-text">PSD Tracking</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Reports/SsdTrackIndex" class="nav-link @(currentPage == "/Reports/SsdTrackIndex" ? "active" : "")">
+                                <span class="nav-link-text">SSD Tracking</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Reports/PurchaseRegister" class="nav-link @(currentPage == "/Reports/PurchaseRegister" ? "active" : "")">
+                                <span class="nav-link-text">Purchase Register</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Reports/SaleRegister" class="nav-link @(currentPage == "/Reports/SaleRegister" ? "active" : "")">
+                                <span class="nav-link-text">Sale Register</span>
+                            </a>
+                        </li>
+                        @if (HasAccess("/Reports/Stock"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/Stock" class="nav-link">
+                                    <span class="nav-link-text">Stock Report</span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+         }
+        
+        <!-- Finance Section -->
+        @if (HasAccess("/Invoices") || HasAccess("/Accounts/") || HasAccess("/Categories/CategoriesMaster") || HasAccess("/Reports/Sales"))
+        {
+            <div class="nav-section">
+                <div class="nav-section-title">Finance</div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    @if (HasAccess("/Invoices"))
+                    {
+                        <li class="nav-item">
+                            <a href="/Invoices" class="nav-link @(currentPage.StartsWith("/Invoices") ? "active" : "")">
+                                <i class="bi bi-receipt"></i>
+                                <span class="nav-link-text">Invoices</span>
+                            </a>
+                        </li>
+                    }
+           
+
+                    @if (HasAccess("/Categories/CategoriesMaster") || HasAccess("/Categories/MainCategories") || HasAccess("/Categories/SubCategories") || HasAccess("/Categories/CategoryTypes") || HasAccess("/Vouchers/PaymentVoucherIndex") || HasAccess("/Vouchers/ReceiptVoucherIndex") || HasAccess("/Vouchers/JournalVoucherIndex"))
+                    {
+                        <li class="nav-item has-submenu @(currentPage.StartsWith("/Categories") || currentPage.StartsWith("/Accounts") ? "open" : "")">
+                            <a href="#" class="nav-link @(currentPage.StartsWith("/Categories") || currentPage.StartsWith("/Accounts") ? "active" : "")">
+                                <i class="bi bi-folder-fill"></i>
+                                <span class="nav-link-text">Accounts</span>
+                                <i class="bi bi-chevron-right submenu-arrow"></i>
+                            </a>
+                            <ul class="nav-submenu" style="list-style: none;">
+                                     @if (HasAccess("/Accounts/Index"))
+                    {
+                        <li class="nav-item">
+                            <a href="/Accounts/Index" class="nav-link">
+                                <span class="nav-link-text">Charts of Accounts</span>
+                            </a>
+                        </li>
+                        
+
+                    }
+                                @if (HasAccess("/Categories/CategoriesMaster"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Categories/CategoriesMaster" class="nav-link">
+                                            <span class="nav-link-text">Categories Master</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Categories/MainCategories"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Categories/MainCategories" class="nav-link">
+                                            <span class="nav-link-text">Main Categories</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Categories/SubCategories"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Categories/SubCategories" class="nav-link">
+                                            <span class="nav-link-text">Sub Categories</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Categories/CategoryTypes"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Categories/CategoryTypes" class="nav-link">
+                                            <span class="nav-link-text">Category Types</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    @if (HasAccess("/Vouchers/PaymentVoucherIndex") || HasAccess("/Vouchers/ReceiptVoucherIndex") || HasAccess("/Vouchers/JournalVoucherIndex"))
+                    {
+                        <li class="nav-item has-submenu @(currentPage.StartsWith("/Vouchers") ? "open" : "")">
+                            <a href="#" class="nav-link @(currentPage.StartsWith("/Vouchers") ? "active" : "")">
+                                <i class="bi bi-card-checklist"></i>
+                                <span class="nav-link-text">Vouchers</span>
+                                <i class="bi bi-chevron-right submenu-arrow"></i>
+                            </a>
+                            <ul class="nav-submenu" style="list-style: none;">
+                                @if (HasAccess("/Vouchers/PaymentVoucherIndex"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Vouchers/PaymentVoucherIndex" class="nav-link">
+
+                                            <span class="nav-link-text">Payment Voucher</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Vouchers/ReceiptVoucherIndex"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Vouchers/ReceiptVoucherIndex" class="nav-link">
+                                            
+                                            <span class="nav-link-text">Receipt Voucher</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Vouchers/JournalVoucherIndex"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Vouchers/JournalVoucherIndex" class="nav-link">
+                                           
+                                            <span class="nav-link-text">Journal Voucher</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                
+                </ul>
+            </div>
+        }
+        
+        <!-- Settings Section -->
+        @if (HasAccess("/Configuration/Users/Index") || HasAccess("/Configuration/UserRoles/Index") || HasAccess("/Configuration/Menus/Index") || HasAccess("/Settings") || HasAccess("/CompanyProfile/Index"))
+        {
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    @if (HasAccess("/Configuration/Users/Index") || HasAccess("/Configuration/UserRoles/Index") || HasAccess("/Configuration/Menus/Index"))
+                    {
+                        <li class="nav-item has-submenu @(currentPage.StartsWith("/Configuration") ? "open" : "")">
+                            <a href="#" class="nav-link @(currentPage.StartsWith("/Configuration") ? "active" : "")">
+                                <i class="bi bi-sliders"></i>
+                                <span class="nav-link-text">Configuration</span>
+                                <i class="bi bi-chevron-right submenu-arrow"></i>
+                            </a>
+                            <ul class="nav-submenu" style="list-style: none;">
+                                @if (HasAccess("/Configuration/Users/Index"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Configuration/Users/Index" class="nav-link">
+                                            <span class="nav-link-text">Users</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Configuration/UserRoles/Index"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Configuration/UserRoles/Index" class="nav-link">
+                                            <span class="nav-link-text">User Roles</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (HasAccess("/Configuration/Menus/Index"))
+                                {
+                                    <li class="nav-item">
+                                        <a href="/Configuration/Menus/Index" class="nav-link">
+                                            <span class="nav-link-text">Menus</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    
+
+                    @if (HasAccess("/Settings"))
+                    {
+                        <li class="nav-item">
+                            <a href="/Settings" class="nav-link @(currentPage.StartsWith("/Settings") ? "active" : "")">
+                                <i class="bi bi-gear-fill"></i>
+                                <span class="nav-link-text">Settings</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+ @if (HasAccess("/Sellers/Index") || HasAccess("/CompanyProfile/Index"))
+ { 
+        <!-- Business Section -->
+        <div class="nav-section">
+            <div class="nav-section-title">Business</div>
+            <ul style="list-style: none; padding: 0; margin: 0;">   
+                @if (HasAccess("/Sellers/Index"))
+                {
+                    <li class="nav-item">
+                        <a href="/Sellers/Index" class="nav-link @(currentPage.StartsWith("/Sellers") ? "active" : "")">
+                            <i class="bi bi-shop"></i>
+                            <span class="nav-link-text">Seller Account</span>
+                        </a>
+                    </li>
+                }
+                 @if (HasAccess("/CompanyProfile/Index")){
+                <li class="nav-item">
+                    <a href="/CompanyProfile/Index" class="nav-link @(currentPage.StartsWith("/CompanyProfile") ? "active" : "")">
+                        <i class="bi bi-building"></i>
+                        <span class="nav-link-text">Company Profile(s)</span>
+                    </a>
+                </li>
+                }
+            </ul>
+        </div>
+        }
+    </nav>
+</aside>

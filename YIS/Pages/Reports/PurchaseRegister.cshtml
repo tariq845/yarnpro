@@ -1,0 +1,280 @@
+@page
+@model YIS.Pages.Reports.PurchaseRegisterModel
+@{
+    ViewData["Title"] = "Purchase Register";
+}
+
+<style>
+    .text-indigo { color: #4e73df; }
+    .bg-indigo { background-color: #4e73df; }
+    .bg-indigo-subtle { background-color: rgba(78, 115, 223, 0.1); }
+    .yis-cat-search-icon { position: absolute; left: 15px; top: 10px; color: #adb5bd; }
+    .yis-cat-search-input { padding-left: 45px; border-radius: 8px; border: 1px solid #e3e6f0; }
+    
+    .register-table thead th {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 700;
+        vertical-align: middle;
+        white-space: nowrap;
+        background-color: #f8f9fc;
+        border-bottom: 2px solid #e3e6f0;
+    }
+
+    .register-table tbody td {
+        font-size: 0.75rem;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .header-group {
+        background-color: #eaecf4 !important;
+        color: #4e73df;
+        text-align: center;
+        font-size: 0.75rem !important;
+        padding: 5px !important;
+        border-bottom: 1px solid #d1d3e2 !important;
+    }
+
+    .line-item-group {
+        background-color: #fff4e5 !important;
+        color: #858796;
+        text-align: center;
+        font-size: 0.75rem !important;
+        padding: 5px !important;
+        border-bottom: 1px solid #ffeeba !important;
+    }
+
+    .return-row {
+        background-color: #fff5f5 !important;
+    }
+
+    .return-badge {
+        background-color: #e74a3b;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+    .purchase-badge {
+        background-color: #1cc88a;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        background-color: inherit;
+        z-index: 1;
+        border-right: 1px solid #e3e6f0;
+    }
+
+    .sticky-col-offset {
+        position: sticky;
+        left: 40px; /* Adjust based on ID width */
+        background-color: inherit;
+        z-index: 1;
+        border-right: 1px solid #e3e6f0;
+    }
+
+    .table-container {
+        max-height: 70vh;
+        overflow: auto;
+        border-radius: 8px;
+        border: 1px solid #e3e6f0;
+    }
+</style>
+
+<div class="container-fluid py-3">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold text-indigo mb-1">Purchase Register</h4>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="/Dashboard">Dashboard</a></li>
+                    <li class="breadcrumb-item active"><a href='/Reports/PurchaseRegister'>Purchase Register</li>
+                </ol>
+            </nav>
+        </div>
+        <div>
+            <a asp-page-handler="Download" 
+               asp-route-SearchTerm="@Model.SearchTerm" 
+               asp-route-FromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+               asp-route-ToDate="@Model.ToDate?.ToString("yyyy-MM-dd")"
+               class="btn btn-success shadow-sm px-4">
+                <i class="bi bi-file-earmark-spreadsheet me-1"></i> DOWNLOAD EXCEL (XLSX)
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Card -->
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body bg-light rounded shadow-sm">
+            <form method="get" id="filterForm">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="small fw-bold text-muted mb-1">Search Keywords</label>
+                        <div class="position-relative">
+                            <i class="bi bi-search yis-cat-search-icon"></i>
+                            <input type="text" 
+                                   asp-for="SearchTerm"
+                                   id="registerSearch"
+                                   class="form-control yis-cat-search-input" 
+                                   placeholder="No, Supplier, Item..."
+                                   hx-get="/Reports/PurchaseRegister"
+                                   hx-trigger="input changed delay:500ms, search"
+                                   hx-target="#register-table-body"
+                                   hx-select="#register-table-body"
+                                   hx-include="#filterForm">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold text-muted mb-1">From Date</label>
+                        <input type="date" 
+                               asp-for="FromDate"
+                               class="form-control form-control-sm"
+                               hx-get="/Reports/PurchaseRegister"
+                               hx-trigger="change"
+                               hx-target="#register-table-body"
+                               hx-select="#register-table-body"
+                               hx-include="#filterForm">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="small fw-bold text-muted mb-1">To Date</label>
+                        <input type="date" 
+                               asp-for="ToDate"
+                               class="form-control form-control-sm"
+                               hx-get="/Reports/PurchaseRegister"
+                               hx-trigger="change"
+                               hx-target="#register-table-body"
+                               hx-select="#register-table-body"
+                               hx-include="#filterForm">
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="submit" class="btn btn-indigo btn-sm px-4">Apply Filters</button>
+                        <a href="/Reports/PurchaseRegister" class="btn btn-outline-secondary btn-sm px-3">Reset</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Grid -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-container shadow-sm">
+                <table class="table table-hover register-table mb-0 stripe-rows" id="registerTable">
+                    <thead>
+                        <tr>
+                            <th colspan="16" class="header-group border-end">Purchase Header Information</th>
+                            <th colspan="9" class="line-item-group">Line Items</th>
+                        </tr>
+                        <tr>
+                            <th class="ps-3">ID</th>
+                            <th>Type</th>
+                            <th>Purchase No</th>
+                            <th>Date</th>
+                            <th>Against SODA</th>
+                            <th class="text-indigo">Against PUR</th>
+                            <th>Supplier ID</th>
+                            <th>Supplier Name</th>
+                            <th>Supplier Pur No</th>
+                            <th>Comm. Applicable</th>
+                            <th>Comm. Agent</th>
+                            <th class="text-center">Comm. %</th>
+                            <th class="text-end">Comm. Amount</th>
+                            <th class="text-end">SUKRI</th>
+                            <th class="text-center">Terms (Days)</th>
+                            <th class="border-end">Remarks</th>
+                            
+                            <th>Item ID</th>
+                            <th>Item Name</th>
+                            <th class="text-end">Quantity</th>
+                            <th class="text-end">LBS</th>
+                            <th class="text-end">Rate</th>
+                            <th class="text-end">Amount</th>
+                            <th class="text-center">GST %</th>
+                            <th class="text-end">GST Amount</th>
+                            <th class="pe-3 text-end">Net Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="register-table-body">
+                        @if (Model.Records != null && Model.Records.Any())
+                        {
+                            int count = 1;
+                            foreach (var record in Model.Records)
+                            {
+                                <tr class="@(record.Type == "PRN" ? "return-row" : "")">
+                                    <td class="ps-3 text-muted">@count</td>
+                                    <td>
+                                        <span class="@(record.Type == "PRN" ? "return-badge" : "purchase-badge")">
+                                            @record.Type
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold text-indigo">@record.PurchaseNo</td>
+                                    <td>@record.PurchaseDate?.ToString("dd/MM/yyyy")</td>
+                                    <td class="text-muted">@(string.IsNullOrEmpty(record.AgainstPsdNo) ? "-" : record.AgainstPsdNo)</td>
+                                    <td class="fw-bold text-success">@(string.IsNullOrEmpty(record.AgainstPurchaseNo) ? "-" : record.AgainstPurchaseNo)</td>
+                                    <td>@record.SupplierId</td>
+                                    <td class="fw-semibold">@record.SupplierName</td>
+                                    <td>@record.SupplierPurchaseNo</td>
+                                    <td class="text-center">@record.CommissionApplicable</td>
+                                    <td>@record.CommissionAgent</td>
+                                    <td class="text-center">@(record.CommissionPer?.ToString("N1") ?? "0.0")%</td>
+                                    <td class="text-end text-danger">@record.CommissionAmt?.ToString("N2")</td>
+                                    <td class="text-end text-success">@record.Sukri?.ToString("N2")</td>
+                                    <td class="text-center">@record.PaymentTerms</td>
+                                    <td class="border-end text-truncate" style="max-width: 150px;" title="@record.Remarks">
+                                        @record.Remarks
+                                    </td>
+                                    
+                                    <td>@record.ItemId</td>
+                                    <td class="fw-bold">@record.ItemName</td>
+                                    <td class="text-end fw-bold">@record.Qty?.ToString("N2")</td>
+                                    <td class="text-end">@record.Lbs?.ToString("N2")</td>
+                                    <td class="text-end">@record.Rate?.ToString("N2")</td>
+                                    <td class="text-end fw-bold">@record.Amount?.ToString("N2")</td>
+                                    <td class="text-center">@record.GstPercent?.ToString("N0")%</td>
+                                    <td class="text-end">@record.GstAmount?.ToString("N2")</td>
+                                    <td class="pe-3 text-end fw-bold text-dark">@record.NetAmount?.ToString("N2")</td>
+                                </tr>
+                                count++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="25" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                                        <h5 class="fw-bold">No Records Found</h5>
+                                        <p class="small">Try adjusting your date range or search filters.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Optional: Add basic client-side enhancements if needed
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'register-table-body') {
+                console.log('Register content updated via HTMX');
+            }
+        });
+    </script>
+}

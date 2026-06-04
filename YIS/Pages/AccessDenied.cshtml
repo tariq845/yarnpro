@@ -1,0 +1,91 @@
+@page
+@model YIS.Pages.AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+@section Styles {
+    <style>
+        .page_404 {
+            padding: 40px 0;
+            background: #fff;
+            font-family: 'Inter', sans-serif;
+            min-height: calc(100vh - 200px);
+            display: flex;
+            align-items: center;
+        }
+
+        .page_404 img {
+            width: 100%;
+        }
+
+        .four_zero_four_bg {
+            background-image: url(/img/dribbble_1.gif);
+            height: 400px;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .four_zero_four_bg h1 {
+            font-size: 80px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .contant_box_404 {
+            margin-top: -50px;
+        }
+
+        .contant_box_404 h3 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .contant_box_404 p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .link_404 {
+            color: #fff !important;
+            padding: 12px 30px;
+            background: #39ac31;
+            margin: 20px 0;
+            display: inline-block;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(57, 172, 49, 0.3);
+        }
+
+        .link_404:hover {
+            background: #2e8b28;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(57, 172, 49, 0.4);
+            color: #fff !important;
+        }
+    </style>
+}
+
+<section class="page_404 w-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-sm-10 offset-sm-1 text-center">
+                    <div class="four_zero_four_bg">
+                        <h1 class="text-center">403</h1>
+                    </div>
+
+                    <div class="contant_box_404">
+                        <h3 class="h2">Look like you're restricted</h3>
+                        <p>You don't have permission to access this page!</p>
+                        <a href="/Dashboard" class="link_404">Go to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

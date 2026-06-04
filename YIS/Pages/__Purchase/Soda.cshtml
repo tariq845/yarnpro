@@ -1,0 +1,287 @@
+@page
+@model YIS.Pages.Purchase.SodaModel
+@{
+    ViewData["Title"] = "Purchase Soda";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h2 class="page-title">Purchase Soda Entry</h2>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" asp-for="Entry.EntryId" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- Row 1: Basic Info -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Entry Number</label>
+                        <input type="text" class="form-control" value="@Model.DisplayEntryNumber" disabled readonly />
+                        @if (Model.Entry.EntryId == 0)
+                        {
+                            <small class="text-muted">Auto-generated upon save</small>
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Entry.EntryDate" class="form-label">Entry Date <span class="text-danger">*</span></label>
+                        <input asp-for="Entry.EntryDate" class="form-control" type="date" required />
+                        <span asp-validation-for="Entry.EntryDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Entry.EntryAttribute1" class="form-label">Supplier <span class="text-danger">*</span></label>
+                        <select asp-for="Entry.EntryAttribute1" class="form-select" asp-items="Model.SupplierList" required>
+                            <option value="">-- Select Supplier --</option>
+                        </select>
+                        <span asp-validation-for="Entry.EntryAttribute1" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Line Items Table -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Items</label>
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="lineItemsTable">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th style="width: 30%;">Item <span class="text-danger">*</span></th>
+                                        <th style="width: 12%;">Qty <span class="text-danger">*</span></th>
+                                        <th style="width: 12%;">LBS</th>
+                                        <th style="width: 15%;">Rate <span class="text-danger">*</span></th>
+                                        <th style="width: 18%;">Amount</th>
+                                        <th style="width: 13%;" class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lineItemsBody">
+                                    @for (int i = 0; i < Model.LineItems.Count; i++)
+                                    {
+                                        <tr class="line-item-row">
+                                            <input type="hidden" name="LineItems[@i].EntryId" value="@Model.LineItems[i].EntryId" />
+                                            <td>
+                                                <select name="LineItems[@i].ItemId" class="form-select item-select" required>
+                                                    <option value="">-- Select --</option>
+                                                    @foreach (var item in Model.ItemList)
+                                                    {
+                                                        if (Model.LineItems[i].ItemId?.ToString() == item.Value)
+                                                        {
+                                                            <option value="@item.Value" selected>@item.Text</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@item.Value">@item.Text</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" min="0" name="LineItems[@i].Qty" 
+                                                       value="@Model.LineItems[i].Qty" class="form-control qty-input" required />
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" min="0" name="LineItems[@i].Lbs" 
+                                                       value="@Model.LineItems[i].Lbs" class="form-control lbs-input" />
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" min="0" name="LineItems[@i].Rate" 
+                                                       value="@Model.LineItems[i].Rate" class="form-control rate-input" required />
+                                            </td>
+                                            <td>
+                                                <input type="number" step="0.01" name="LineItems[@i].Amount" 
+                                                       value="@Model.LineItems[i].Amount" class="form-control amount-input" readonly />
+                                            </td>
+                                            <td class="text-center">
+                                            <button type="button"
+                                                    class="btn btn-link p-0 border-0 bg-transparent remove-row-btn"
+                                                    title="Delete">
+                                                <i class="bi bi-trash text-danger"></i>
+                                            </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">Grand Total:</td>
+                                        <td>
+                                            <input type="text" id="grandTotal" class="form-control fw-bold bg-light" readonly value="0.00" />
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-success" id="addRowBtn" title="Add Item">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Remarks -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label asp-for="Entry.EntryRemarks" class="form-label">Remarks</label>
+                        <textarea asp-for="Entry.EntryRemarks" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Entry.EntryRemarks" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <a href="/Purchase/IndexSoda" class="btn btn-outline-secondary me-2">Back to List</a>
+                        <button type="submit" class="btn btn-primary">Save Entry</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Template for new row -->
+<template id="lineItemRowTemplate">
+    <tr class="line-item-row">
+        <input type="hidden" name="LineItems[__INDEX__].EntryId" value="0" />
+        <td>
+            <select name="LineItems[__INDEX__].ItemId" class="form-select item-select" required>
+                <option value="">-- Select --</option>
+                @foreach (var item in Model.ItemList)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Qty" class="form-control qty-input" required />
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Lbs" class="form-control lbs-input" />
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Rate" class="form-control rate-input" required />
+        </td>
+        <td>
+            <input type="number" step="0.01" name="LineItems[__INDEX__].Amount" class="form-control amount-input" readonly />
+        </td>
+        <td class="text-center">
+            <button type="button" class="btn btn-link p-0 border-0 bg-transparent remove-row-btn" title="Delete">
+                <i class="bi bi-trash text-danger"></i>
+            </button>
+        </td>
+    </tr>
+</template>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const lineItemsBody = document.getElementById('lineItemsBody');
+            const addRowBtn = document.getElementById('addRowBtn');
+            const grandTotalInput = document.getElementById('grandTotal');
+            const template = document.getElementById('lineItemRowTemplate');
+
+            // Calculate amount for a row
+            function calculateRowAmount(row) {
+                const qtyInput = row.querySelector('.qty-input');
+                const rateInput = row.querySelector('.rate-input');
+                const amountInput = row.querySelector('.amount-input');
+
+                const qty = parseFloat(qtyInput.value) || 0;
+                const rate = parseFloat(rateInput.value) || 0;
+                const amount = qty * rate;
+                amountInput.value = amount.toFixed(2);
+            }
+
+            // Calculate grand total
+            function calculateGrandTotal() {
+                const amountInputs = document.querySelectorAll('.amount-input');
+                let total = 0;
+                amountInputs.forEach(input => {
+                    total += parseFloat(input.value) || 0;
+                });
+                grandTotalInput.value = total.toFixed(2);
+            }
+
+            // Reindex all rows
+            function reindexRows() {
+                const rows = lineItemsBody.querySelectorAll('.line-item-row');
+                rows.forEach((row, index) => {
+                    row.querySelectorAll('input, select').forEach(input => {
+                        const name = input.getAttribute('name');
+                        if (name) {
+                            input.setAttribute('name', name.replace(/\[\d+\]/, `[${index}]`));
+                        }
+                    });
+                });
+            }
+
+            // Add new row
+            addRowBtn.addEventListener('click', function () {
+                const rowCount = lineItemsBody.querySelectorAll('.line-item-row').length;
+                const newRow = template.content.cloneNode(true);
+                
+                // Replace __INDEX__ with actual index
+                newRow.querySelectorAll('input, select').forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name) {
+                        input.setAttribute('name', name.replace('__INDEX__', rowCount));
+                    }
+                });
+
+                lineItemsBody.appendChild(newRow);
+                attachRowEvents();
+            });
+
+            // Attach events to row inputs
+            function attachRowEvents() {
+                lineItemsBody.querySelectorAll('.line-item-row').forEach(row => {
+                    const qtyInput = row.querySelector('.qty-input');
+                    const rateInput = row.querySelector('.rate-input');
+                    const removeBtn = row.querySelector('.remove-row-btn');
+
+                    // Calculate on input
+                    qtyInput.removeEventListener('input', handleInputChange);
+                    rateInput.removeEventListener('input', handleInputChange);
+                    qtyInput.addEventListener('input', handleInputChange);
+                    rateInput.addEventListener('input', handleInputChange);
+
+                    // Remove row
+                    removeBtn.removeEventListener('click', handleRemoveRow);
+                    removeBtn.addEventListener('click', handleRemoveRow);
+                });
+            }
+
+            function handleInputChange(e) {
+                const row = e.target.closest('.line-item-row');
+                calculateRowAmount(row);
+                calculateGrandTotal();
+            }
+
+            function handleRemoveRow(e) {
+                const rows = lineItemsBody.querySelectorAll('.line-item-row');
+                if (rows.length > 1) {
+                    e.target.closest('.line-item-row').remove();
+                    reindexRows();
+                    calculateGrandTotal();
+                } else {
+                    alert('At least one item is required.');
+                }
+            }
+
+            // Initial setup
+            attachRowEvents();
+            // Calculate initial amounts
+            lineItemsBody.querySelectorAll('.line-item-row').forEach(row => {
+                calculateRowAmount(row);
+            });
+            calculateGrandTotal();
+        });
+    </script>
+}

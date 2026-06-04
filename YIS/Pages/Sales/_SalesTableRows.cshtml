@@ -1,0 +1,141 @@
+@* Partial view for Sales Table Rows *@
+<tr>
+    <td><input type="checkbox"></td>
+    <td><a href="/Sales/Details/1" style="color: var(--primary-color); font-weight: 600;">#INV-2024-001</a></td>
+    <td>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px;">AC</div>
+            <div>
+                <div style="font-weight: 500;">ABC Company</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">abc@company.com</div>
+            </div>
+        </div>
+    </td>
+    <td>Dec 15, 2024</td>
+    <td style="font-weight: 600;">₹15,000</td>
+    <td><span class="status-badge success">Paid</span></td>
+    <td>Cash</td>
+    <td>
+        <div style="display: flex; gap: 4px;">
+            <button class="navbar-icon-btn" title="View" hx-get="/Sales/Details/1" hx-target="#modal-content" hx-trigger="click">
+                <i class="bi bi-eye"></i>
+            </button>
+
+            <button class="navbar-icon-btn" title="Print">
+                <i class="bi bi-printer"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td><input type="checkbox"></td>
+    <td><a href="/Sales/Details/2" style="color: var(--primary-color); font-weight: 600;">#INV-2024-002</a></td>
+    <td>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--success-light); color: var(--success-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px;">XY</div>
+            <div>
+                <div style="font-weight: 500;">XYZ Industries</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">xyz@industries.com</div>
+            </div>
+        </div>
+    </td>
+    <td>Dec 14, 2024</td>
+    <td style="font-weight: 600;">₹8,500</td>
+    <td><span class="status-badge warning">Pending</span></td>
+    <td>Bank Transfer</td>
+    <td>
+        <div style="display: flex; gap: 4px;">
+            <button class="navbar-icon-btn" title="View" hx-get="/Sales/Details/2" hx-target="#modal-content">
+                <i class="bi bi-eye"></i>
+            </button>
+
+            <button class="navbar-icon-btn" title="Print">
+                <i class="bi bi-printer"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td><input type="checkbox"></td>
+    <td><a href="/Sales/Details/3" style="color: var(--primary-color); font-weight: 600;">#INV-2024-003</a></td>
+    <td>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--info-light); color: var(--info-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px;">QM</div>
+            <div>
+                <div style="font-weight: 500;">Quick Mart</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">contact@quickmart.com</div>
+            </div>
+        </div>
+    </td>
+    <td>Dec 14, 2024</td>
+    <td style="font-weight: 600;">₹22,000</td>
+    <td><span class="status-badge success">Paid</span></td>
+    <td>UPI</td>
+    <td>
+        <div style="display: flex; gap: 4px;">
+            <button class="navbar-icon-btn" title="View" hx-get="/Sales/Details/3" hx-target="#modal-content">
+                <i class="bi bi-eye"></i>
+            </button>
+
+            <button class="navbar-icon-btn" title="Print">
+                <i class="bi bi-printer"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td><input type="checkbox"></td>
+    <td><a href="/Sales/Details/4" style="color: var(--primary-color); font-weight: 600;">#INV-2024-004</a></td>
+    <td>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--warning-light); color: var(--warning-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px;">GT</div>
+            <div>
+                <div style="font-weight: 500;">Global Traders</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">info@globaltraders.com</div>
+            </div>
+        </div>
+    </td>
+    <td>Dec 13, 2024</td>
+    <td style="font-weight: 600;">₹5,200</td>
+    <td><span class="status-badge danger">Overdue</span></td>
+    <td>Credit</td>
+    <td>
+        <div style="display: flex; gap: 4px;">
+            <button class="navbar-icon-btn" title="View" hx-get="/Sales/Details/4" hx-target="#modal-content">
+                <i class="bi bi-eye"></i>
+            </button>
+
+            <button class="navbar-icon-btn" title="Print">
+                <i class="bi bi-printer"></i>
+            </button>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td><input type="checkbox"></td>
+    <td><a href="/Sales/Details/5" style="color: var(--primary-color); font-weight: 600;">#INV-2024-005</a></td>
+    <td>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--danger-light); color: var(--danger-color); display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 12px;">LS</div>
+            <div>
+                <div style="font-weight: 500;">Local Store</div>
+                <div style="font-size: 12px; color: var(--text-secondary);">sales@localstore.com</div>
+            </div>
+        </div>
+    </td>
+    <td>Dec 13, 2024</td>
+    <td style="font-weight: 600;">₹12,800</td>
+    <td><span class="status-badge info">Processing</span></td>
+    <td>Cash</td>
+    <td>
+        <div style="display: flex; gap: 4px;">
+            <button class="navbar-icon-btn" title="View" hx-get="/Sales/Details/5" hx-target="#modal-content">
+                <i class="bi bi-eye"></i>
+            </button>
+
+            <button class="navbar-icon-btn" title="Print">
+                <i class="bi bi-printer"></i>
+            </button>
+        </div>
+    </td>
+</tr>

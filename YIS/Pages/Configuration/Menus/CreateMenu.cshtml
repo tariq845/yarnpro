@@ -1,0 +1,72 @@
+@page
+@model YIS.Pages.Configuration.Menus.CreateMenuModel
+@{
+    ViewData["Title"] = (Model.Menu?.MoId > 0 ? "Edit Menu" : "Create Menu");
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <h5 class="card-title mb-4">@(Model.Menu?.MoId > 0 ? "Edit Menu" : "Create Menu")</h5>
+
+            @if (Model.Menu?.MoId > 0)
+            {
+                <input type="hidden" asp-for="Menu.MoId" />
+            }
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Menu.MoName" class="form-label">Menu Name <span class="text-danger">*</span></label>
+                    <input asp-for="Menu.MoName" class="form-control" placeholder="Enter menu name" />
+                    <span asp-validation-for="Menu.MoName" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Menu.MoType" class="form-label">Type</label>
+                    <select asp-for="Menu.MoType" class="form-select">
+                        <option value="Page">Page</option>
+                        <option value="Link">Link</option>
+                        <option value="Header">Header</option>
+                    </select>
+                    <span asp-validation-for="Menu.MoType" class="text-danger"></span>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Menu.MoDeactiveOn" class="form-label">Deactivate On (Date)</label>
+                    <input asp-for="Menu.MoDeactiveOn" type="date" class="form-control" />
+                    <span asp-validation-for="Menu.MoDeactiveOn" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Menu.MoUrl" class="form-label">Menu URL (e.g., /Configuration/Items/Index)</label>
+                    <input asp-for="Menu.MoUrl" class="form-control" placeholder="/Path/To/Page" />
+                    <span asp-validation-for="Menu.MoUrl" class="text-danger"></span>
+                    <div class="form-text text-muted small">This URL mapping allows for automatic RBAC permission checks on the specific page.</div>
+                </div>
+            </div>
+
+            <div class="row">
+                
+                
+                <div class="col-md-12 text-end align-self-end mb-3">
+                    <a href="/Configuration/Menus/Index" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-outline-success">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

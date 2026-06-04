@@ -1,0 +1,173 @@
+@page
+@model YIS.Pages.Reports.SsdTrackIndexModel
+@{
+    ViewData["Title"] = "SSD Tracking List";
+}
+
+<link rel="stylesheet" href="~/css/categories.css" />
+
+<style>
+    .track-index-container {
+        margin-top: 20px;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .header-title {
+        color: #0d6efd;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .ssd-number {
+        font-weight: 700;
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+    .item-count-badge {
+        background: #64748b;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .progress-track {
+        height: 6px;
+        background-color: #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 100px;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background-color: #0d6efd;
+        transition: width 1s ease-in-out;
+    }
+
+    .btn-view-report {
+        color: #0d6efd;
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+        display: inline-block;
+    }
+
+    .btn-view-report:hover {
+        transform: scale(1.2);
+        color: #0d6efd;
+    }
+
+    @@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+
+<div class="track-index-container">
+   
+
+    <!-- Standard Search Bar -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <form method="get">
+                        <div class="position-relative">
+                            <i class="bi bi-search yis-cat-search-icon"></i>
+                            <input type="text" 
+                                   name="SearchTerm"
+                                   class="form-control yis-cat-search-input" 
+                                   id="reportSearch" 
+                                   placeholder="Search by SSD number or Customer..."
+                                   value="@Model.SearchTerm"
+                                   hx-get="/Reports/SsdTrackIndex"
+                                   hx-trigger="input changed delay:500ms, search"
+                                   hx-target="#table-container"
+                                   hx-select="#table-container"
+                                   hx-push-url="true">
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="text-muted small fw-bold text-uppercase">Total Records: @Model.Entries.Count</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Standard Table Card -->
+    <div class="card shadow-sm" id="table-container">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0 px-4 py-3">SSD Number</th>
+                            <th class="border-0 px-4 py-3">Date</th>
+                            <th class="border-0 px-4 py-3">Customer</th>
+                            <th class="border-0 px-4 py-3 text-center">Items</th>
+                            <th class="border-0 px-4 py-3 text-end">Grand Total</th>
+                            <th class="border-0 px-4 py-3">Invoicing Progress</th>
+                            <th class="border-0 px-4 py-3 text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                        @if (Model.Entries.Any())
+                        {
+                            foreach (var entry in Model.Entries)
+                            {
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <a href="/Reports/SsdTrackRecord/@entry.EntryId" class="ssd-number">
+                                            SSD-@entry.EntryNumber
+                                        </a>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="fw-medium">@entry.EntryDate?.ToString("MMM dd, yyyy")</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="fw-bold text-dark">@entry.CustomerName</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <span class="badge bg-secondary rounded-pill">@entry.ItemCount</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="fw-bold text-success">@entry.GrandTotal?.ToString("N2")</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="progress-track" title="@entry.Progress.ToString("0")% Invoiced">
+                                                <div class="progress-bar-fill" style="width: @entry.Progress%"></div>
+                                            </div>
+                                            <span class="small fw-bold text-muted" style="font-size: 0.7rem;">@entry.Progress.ToString("0")%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <a href="/Reports/SsdTrackRecord/@entry.EntryId" class="btn-view-report" title="View Report">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <i class="bi bi-inbox-fill fs-1 d-block mb-3 opacity-25"></i>
+                                    No SSD tracking records found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Server-side search implemented *@
