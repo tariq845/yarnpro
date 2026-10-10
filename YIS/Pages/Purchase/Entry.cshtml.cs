@@ -39,6 +39,13 @@ namespace YIS.Pages.Purchase
             public long EntryId { get; set; }
             public string? DisplayText { get; set; }
             public string? SupplierId { get; set; }
+            public string? PaymentMode { get; set; }
+            public int? TermsDays { get; set; }
+            public string? ApplyCommission { get; set; }
+            public string? CommAgent { get; set; }
+            public double? CommPer { get; set; }
+            public double? CommAmt { get; set; }
+            public double? Sukri { get; set; }
             public List<PsdLineItem>? Items { get; set; }
         }
 
@@ -49,6 +56,7 @@ namespace YIS.Pages.Purchase
             public double Qty { get; set; }
             public double Lbs { get; set; }
             public double Rate { get; set; }
+            public double GstPercent { get; set; } = 0;
             public double ConsumedQty { get; set; }
             public double RemainingQty { get; set; }
         }
@@ -61,7 +69,7 @@ namespace YIS.Pages.Purchase
             public double? Lbs { get; set; }
             public double? Rate { get; set; }
             public double? Amount { get; set; }
-            public double? GstPercent { get; set; }
+            public double? GstPercent { get; set; } = 0;
             public double? TaxAmount { get; set; }
             public double? NetAmount { get; set; }
         }
@@ -102,7 +110,7 @@ namespace YIS.Pages.Purchase
                     Lbs = c.Lbs,
                     Rate = c.Rate,
                     Amount = c.Amount,
-                    GstPercent = c.EntryAttribute2 != null ? double.Parse(c.EntryAttribute2) : 0,
+                    GstPercent = double.TryParse(c.EntryAttribute2, out double gst) ? gst : 0,
                     TaxAmount = c.TaxAmount,
                     NetAmount = (c.Amount ?? 0) + (c.TaxAmount ?? 0)
                 }).ToList();
@@ -117,10 +125,10 @@ namespace YIS.Pages.Purchase
                     EntryRefNo = psdId
                 };
                 DisplayEntryNumber = "PUR-(Auto)";
-                LineItems.Add(new LineItemViewModel { EntryId = 0 });
+                LineItems.Add(new LineItemViewModel { EntryId = 0, GstPercent = 0 });
             }
 
-            if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0 });
+            if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0, GstPercent = 0 });
 
             await LoadDropdowns();
             return Page();
@@ -172,6 +180,7 @@ namespace YIS.Pages.Purchase
 
             double grandTotal = 0;
             double totalQty = 0;
+            double totalTax = 0;
             foreach (var item in LineItems)
             {
                 // Auto-calculate LBs = Qty * 100
@@ -186,20 +195,19 @@ namespace YIS.Pages.Purchase
                     item.Rate = Math.Round(item.Rate.Value, 4);
                 }
 
-                // Default GST to 18% if not provided
-                if (!item.GstPercent.HasValue || item.GstPercent == 0)
+                // Default GST to 0% if not provided
+                if (!item.GstPercent.HasValue)
                 {
-                    item.GstPercent = 18;
+                    item.GstPercent = 0;
                 }
 
                 if (item.Lbs.HasValue && item.Rate.HasValue)
                 {
                     item.Amount = (item.Lbs.Value * item.Rate.Value);
                 }
-                if (item.GstPercent.HasValue && item.Amount.HasValue)
-                {
-                    item.TaxAmount = item.Amount.Value * (item.GstPercent.Value / 100);
-                }
+                
+                item.TaxAmount = (item.Amount ?? 0) * ((item.GstPercent ?? 0) / 100);
+                totalTax += item.TaxAmount ?? 0;
 
                 grandTotal += (item.Amount ?? 0) + (item.TaxAmount ?? 0);
                 totalQty += item.Qty ?? 0;
@@ -207,6 +215,7 @@ namespace YIS.Pages.Purchase
 
             Entry.EntryType = "PUR";
             Entry.Amount = grandTotal;
+            Entry.TaxAmount = totalTax;
             Entry.Qty = totalQty;
             Entry.EntryAttribute3 = grandTotal.ToString(); // NET AMOUNT
 
@@ -251,8 +260,8 @@ namespace YIS.Pages.Purchase
                             Lbs = l.Lbs,
                             Rate = l.Rate,
                             Amount = l.Amount,
-                            TaxAmount = l.TaxAmount,
-                            EntryAttribute2 = l.GstPercent?.ToString(),
+                            TaxAmount = l.TaxAmount ?? 0,
+                            EntryAttribute2 = (l.GstPercent ?? 0).ToString(),
                             UcpId = activeUcpId,
                             CreationOn = DateTime.Now
                         };
@@ -280,6 +289,7 @@ namespace YIS.Pages.Purchase
 
                     existing.EntryRemarks = Entry.EntryRemarks;
                     existing.Amount = grandTotal;
+                    existing.TaxAmount = totalTax;
                     existing.Qty = totalQty;
                     existing.UcpId = activeUcpId;
                     existing.LastUpdateOn = DateTime.Now;
@@ -295,16 +305,16 @@ namespace YIS.Pages.Purchase
                         {
                             EntryId = 0,
                             EntryType = "PURL",
-                            EntryDate = Entry.EntryDate,
-                            EntryRefId = Entry.EntryId,
-                            EntryAttribute1 = Entry.EntryAttribute1,
+                            EntryDate = existing.EntryDate,
+                            EntryRefId = existing.EntryId,
+                            EntryAttribute1 = existing.EntryAttribute1,
                             ItemId = l.ItemId,
                             Qty = l.Qty,
                             Lbs = l.Lbs,
                             Rate = l.Rate,
                             Amount = l.Amount,
-                            TaxAmount = l.TaxAmount,
-                            EntryAttribute2 = l.GstPercent?.ToString(),
+                            TaxAmount = l.TaxAmount ?? 0,
+                            EntryAttribute2 = (l.GstPercent ?? 0).ToString(),
                             UcpId = activeUcpId,
                             CreationOn = DateTime.Now
                         };
@@ -357,70 +367,95 @@ namespace YIS.Pages.Purchase
                 var psdRaw = await _context.Entries
                     .Where(e => e.EntryType == "PSD" && e.UcpId == activeUcpId)
                     .OrderByDescending(e => e.EntryDate)
-                     .ThenByDescending(e => e.EntryNumber)
-                    .Select(e => new { e.EntryId, e.EntryNumber, e.EntryDate, e.EntryAttribute1, e.Qty })
+                    .ThenByDescending(e => e.EntryNumber)
                     .ToListAsync();
 
-                // Calculate Utilized and Remaining Qty for PSDs
+                var psdIds = psdRaw.Select(p => p.EntryId).ToList();
+
                 // 1. Get all Purchase Lines (PURL) that are linked to a PSD (EntryRefNo)
                 var purchaseLines = await _context.Entries
                     .Where(e => e.EntryType == "PURL")
                     .Join(_context.Entries, child => child.EntryRefId, parent => parent.EntryId, (child, parent) => new { child, parent })
-                    .Where(x => x.parent.EntryRefNo != null) // Only those linked to PSD
+                    .Where(x => x.parent.EntryRefNo != null && psdIds.Contains(x.parent.EntryRefNo.Value))
                     .Select(x => new
                     {
-                        PsdEntryNumber = x.parent.EntryRefNo,
+                        PsdId = x.parent.EntryRefNo!.Value,
                         ItemId = x.child.ItemId,
                         Qty = x.child.Qty,
-                        ParentEntryId = x.parent.EntryId // For exclusion
+                        ParentEntryId = x.parent.EntryId
                     })
                     .ToListAsync();
 
                 var consumedQtyMap = purchaseLines
-                    .Where(x => Entry == null || x.ParentEntryId != Entry.EntryId) // EXCLUDE CURRENT DOCUMENT
-                    .GroupBy(x => new { x.PsdEntryNumber, x.ItemId })
+                    .Where(x => Entry == null || x.ParentEntryId != Entry.EntryId)
+                    .GroupBy(x => new { x.PsdId, x.ItemId })
                     .ToDictionary(g => g.Key, g => g.Sum(x => x.Qty ?? 0));
 
-                var psdLineItems = await _context.Entries
-                    .Where(e => e.EntryType == "PSDL" && e.EntryRefId != null)
-                    .Join(_context.Entries, child => child.EntryRefId, parent => parent.EntryId, (child, parent) => new { parent.EntryId, parent.EntryNumber, child })
-                    .Join(_context.ItemMasters, psdl => psdl.child.ItemId, item => item.ItemId, (psdl, item) => new
-                    {
-                        psdl.EntryId,
-                        psdl.EntryNumber,
-                        psdl.child.ItemId,
-                        ItemName = item.ItemName,
-                        psdl.child.Qty,
-                        psdl.child.Lbs,
-                        psdl.child.Rate
-                    })
+                var itemMap = _context.ItemMasters != null 
+                    ? await _context.ItemMasters.Where(i => i.UcpId == activeUcpId).ToDictionaryAsync(i => i.ItemId, i => i.ItemName)
+                    : new Dictionary<long, string>();
+
+                var psdChildLines = await _context.Entries
+                    .Where(e => e.EntryType == "PSDL" && e.EntryRefId != null && psdIds.Contains(e.EntryRefId.Value))
                     .ToListAsync();
 
-                var groupedItems = psdLineItems
-                   .GroupBy(x => x.EntryId)
-                   .ToDictionary(g => g.Key, g => g.Select(x =>
-                   {
-                       double consumed = 0;
-                       if (x.EntryNumber.HasValue && x.ItemId.HasValue)
-                       {
-                           var key = new { PsdEntryNumber = x.EntryNumber, ItemId = x.ItemId };
-                           if (consumedQtyMap.ContainsKey(key))
-                           {
-                               consumed = consumedQtyMap[key];
-                           }
-                       }
+                var groupedItems = new Dictionary<long, List<PsdLineItem>>();
 
-                       return new PsdLineItem
-                       {
-                           ItemId = x.ItemId ?? 0,
-                           ItemName = x.ItemName,
-                           Qty = x.Qty ?? 0,
-                           ConsumedQty = consumed,
-                           RemainingQty = (x.Qty ?? 0) - consumed,
-                           Lbs = x.Lbs ?? 0,
-                           Rate = x.Rate ?? 0
-                       };
-                   }).ToList());
+                foreach (var p in psdRaw)
+                {
+                    var lines = psdChildLines.Where(c => c.EntryRefId == p.EntryId).ToList();
+                    var list = new List<PsdLineItem>();
+
+                    if (lines.Any())
+                    {
+                        foreach (var l in lines)
+                        {
+                            var itemId = l.ItemId ?? 0;
+                            var itemName = itemMap.ContainsKey(itemId) ? itemMap[itemId] : "Item";
+                            var key = new { PsdId = p.EntryId, ItemId = (long?)itemId };
+                            double consumed = consumedQtyMap.ContainsKey(key) ? consumedQtyMap[key] : 0;
+                            double gst = double.TryParse(l.EntryAttribute2, out double g) ? g : 0;
+                            double qty = l.Qty ?? 0;
+                            double remaining = qty - consumed;
+
+                            list.Add(new PsdLineItem
+                            {
+                                ItemId = itemId,
+                                ItemName = itemName,
+                                Qty = qty,
+                                ConsumedQty = consumed,
+                                RemainingQty = remaining > 0 ? remaining : qty,
+                                Lbs = l.Lbs ?? (qty * 100),
+                                Rate = l.Rate ?? 0,
+                                GstPercent = gst
+                            });
+                        }
+                    }
+                    else if (p.ItemId.HasValue && p.ItemId > 0)
+                    {
+                        var itemId = p.ItemId.Value;
+                        var itemName = itemMap.ContainsKey(itemId) ? itemMap[itemId] : "Item";
+                        var key = new { PsdId = p.EntryId, ItemId = (long?)itemId };
+                        double consumed = consumedQtyMap.ContainsKey(key) ? consumedQtyMap[key] : 0;
+                        double gst = double.TryParse(p.EntryAttribute2, out double g) ? g : 0;
+                        double qty = p.Qty ?? 0;
+                        double remaining = qty - consumed;
+
+                        list.Add(new PsdLineItem
+                        {
+                            ItemId = itemId,
+                            ItemName = itemName,
+                            Qty = qty,
+                            ConsumedQty = consumed,
+                            RemainingQty = remaining > 0 ? remaining : qty,
+                            Lbs = p.Lbs ?? (qty * 100),
+                            Rate = p.Rate ?? 0,
+                            GstPercent = gst
+                        });
+                    }
+
+                    groupedItems[p.EntryId] = list;
+                }
 
                 PsdEntriesForJs = psdRaw.Select(p =>
                 {
@@ -436,6 +471,13 @@ namespace YIS.Pages.Purchase
                         EntryId = p.EntryId,
                         DisplayText = "PSD-" + p.EntryNumber + " (" + (p.EntryDate.HasValue ? p.EntryDate.Value.ToString("yyyy-MM-dd") : "") + ")" + itemsStr + (items != null && items.Any() ? " | Rates: " + string.Join(", ", items.Select(i => i.Rate.ToString("0.0000")).Distinct()) : ""),
                         SupplierId = p.EntryAttribute1,
+                        PaymentMode = p.EntryAttribute2,
+                        TermsDays = p.EntryTermsDays,
+                        ApplyCommission = p.EntryAttribute5 ?? "No",
+                        CommAgent = p.EntryAttribute4,
+                        CommPer = p.EntryCommPer,
+                        CommAmt = p.EntryCommAmt ?? 0,
+                        Sukri = p.EntryCommSukri ?? 0,
                         Items = items
                     };
                 }).ToList();

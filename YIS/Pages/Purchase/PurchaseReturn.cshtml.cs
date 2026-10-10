@@ -123,6 +123,7 @@ namespace YIS.Pages.Purchase
 
             double grandTotal = 0;
             double totalQty = 0;
+            double totalTax = 0;
             foreach (var item in LineItems)
             {
                 // Auto-calculate LBs = Qty * 100
@@ -137,21 +138,20 @@ namespace YIS.Pages.Purchase
                     item.Rate = Math.Round(item.Rate.Value, 4);
                 }
 
-                // Default GST to 18% if not provided
-                if (!item.GstPercent.HasValue || item.GstPercent == 0)
+                // Default GST to 0% if not provided
+                if (!item.GstPercent.HasValue)
                 {
-                    item.GstPercent = 18;
+                    item.GstPercent = 0;
                 }
 
                 if (item.Qty.HasValue && item.Rate.HasValue)
                 {
                     item.Amount = (item.Qty.Value * item.Rate.Value);
                 }
+                
                 // GST Amt
-                if (item.GstPercent.HasValue && item.Amount.HasValue)
-                {
-                    item.TaxAmount = item.Amount.Value * (item.GstPercent.Value / 100);
-                }
+                item.TaxAmount = (item.Amount ?? 0) * ((item.GstPercent ?? 0) / 100);
+                totalTax += item.TaxAmount ?? 0;
                 
                 grandTotal += (item.Amount ?? 0) + (item.TaxAmount ?? 0);
                 totalQty += item.Qty ?? 0;
@@ -159,6 +159,7 @@ namespace YIS.Pages.Purchase
 
             Entry.EntryType = "DN";
             Entry.Amount = grandTotal; 
+            Entry.TaxAmount = totalTax;
             Entry.Qty = totalQty;
             
             // ENTRY_ATTRIBUTE3 : NET AMOUNT
@@ -199,8 +200,8 @@ namespace YIS.Pages.Purchase
                         Lbs = l.Lbs,
                         Rate = l.Rate,
                         Amount = l.Amount,
-                        TaxAmount = l.TaxAmount, // GST AMT
-                        EntryAttribute2 = l.GstPercent?.ToString(), // GST %
+                        TaxAmount = l.TaxAmount ?? 0, // GST AMT
+                        EntryAttribute2 = (l.GstPercent ?? 0).ToString(), // GST %
                         CreationOn = DateTime.Now
                     };
                     _context.Entries.Add(child);
@@ -228,6 +229,7 @@ namespace YIS.Pages.Purchase
                  
                  existing.EntryRemarks = Entry.EntryRemarks;
                  existing.Amount = grandTotal;
+                 existing.TaxAmount = totalTax;
                  existing.Qty = totalQty;
                  existing.LastUpdateOn = DateTime.Now;
                  
@@ -251,8 +253,8 @@ namespace YIS.Pages.Purchase
                         Lbs = l.Lbs,
                         Rate = l.Rate,
                         Amount = l.Amount,
-                        TaxAmount = l.TaxAmount,
-                        EntryAttribute2 = l.GstPercent?.ToString(),
+                        TaxAmount = l.TaxAmount ?? 0,
+                        EntryAttribute2 = (l.GstPercent ?? 0).ToString(),
                         CreationOn = DateTime.Now
                     };
                     _context.Entries.Add(child);

@@ -20,25 +20,20 @@ namespace YIS.Pages.Customers
         [BindProperty]
         public CustomerMaster Customer { get; set; } = default!;
 
-        public SelectList AcountId { get; set; } = default!;
+        public SelectList AccountList { get; set; } = default!;
+        public SelectList AcountId => AccountList;
 
         public string? Id { get; set; }
 
         public async Task<IActionResult> OnGetAsync(long? id)
         {
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
-
-            if (_context.AccountMasters != null)
-            {
-                var accounts = await _context.AccountMasters
-                     .Where(a => a.UcpId == activeUcpId)
-                     .ToListAsync();
-                AcountId = new SelectList(accounts, "AccountId", "AccountName");
-            }
+            await LoadAccountsDropdown(activeUcpId);
 
             if (id == null)
             {
                 // Create mode
+                Customer = new CustomerMaster { CustomerId = 0 };
                 return Page();
             }
 
@@ -52,6 +47,7 @@ namespace YIS.Pages.Customers
 
             Customer = customer;
             Id = id.ToString();
+
             return Page();
         }
 
@@ -59,64 +55,86 @@ namespace YIS.Pages.Customers
         {
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
 
-            if (!ModelState.IsValid)
-            {
-                // Reload accounts if validaton fails
-                if (_context.AccountMasters != null)
-                {
-                    var accounts = await _context.AccountMasters
-                         .Where(a => a.UcpId == activeUcpId)
-                         .ToListAsync();
-                    AcountId = new SelectList(accounts, "AccountId", "AccountName");
-                }
-                return Page();
-            }
-
-            // Get Active Company Profile from Session
             if (!activeUcpId.HasValue)
             {
                 TempData["ErrorMessage"] = "Cannot save: No company selected. Please select a company first.";
                 return RedirectToPage("/SelectCompany");
             }
 
-            if (Customer.CustomerId == 0)
+            ModelState.Remove("Customer.CustomerId");
+
+            try
             {
-                // New Customer
-                Customer.CreationOn = DateTime.Now;
-                Customer.UcpId = activeUcpId;
-                _context.CustomerMasters.Add(Customer);
-                TempData["StatusMessage"] = $"Customer '{Customer.CustomerName}' created successfully.";
+                if (Customer.CustomerId == 0)
+                {
+                    // New Customer
+                    Customer.CreationOn = DateTime.Now;
+                    Customer.UcpId = activeUcpId;
+                    _context.CustomerMasters.Add(Customer);
+                    await _context.SaveChangesAsync();
+
+                    TempData["StatusMessage"] = $"Customer '{Customer.CustomerName}' created successfully.";
+                }
+                else
+                {
+                    // Update Customer
+                    var existingCustomer = await _context.CustomerMasters.FindAsync(Customer.CustomerId);
+                    if (existingCustomer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingCustomer.CustomerName = Customer.CustomerName;
+                    existingCustomer.Province = Customer.Province;
+                    existingCustomer.CustomerAddress = Customer.CustomerAddress;
+                    existingCustomer.CustomerContact = Customer.CustomerContact;
+                    existingCustomer.CustomerEmail = Customer.CustomerEmail;
+                    existingCustomer.CustomerNtnNo = Customer.CustomerNtnNo;
+                    existingCustomer.CustomerStrNo = Customer.CustomerStrNo;
+                    existingCustomer.CustomerCnic = Customer.CustomerCnic;
+                    existingCustomer.RegistrationType = Customer.RegistrationType;
+                    existingCustomer.CustomerDeactiveOn = Customer.CustomerDeactiveOn;
+
+                    // Dedicated GL Account Mappings
+                    existingCustomer.AccountId = Customer.AccountId;
+                    existingCustomer.SalesAccountId = Customer.SalesAccountId;
+                    existingCustomer.TaxAccountId = Customer.TaxAccountId;
+                    existingCustomer.CommExpenseAccountId = Customer.CommExpenseAccountId;
+                    existingCustomer.CommPayableAccountId = Customer.CommPayableAccountId;
+
+                    existingCustomer.UcpId = activeUcpId;
+                    existingCustomer.LastUpdateOn = DateTime.Now;
+
+                    _context.CustomerMasters.Update(existingCustomer);
+                    await _context.SaveChangesAsync();
+
+                    TempData["StatusMessage"] = $"Customer '{existingCustomer.CustomerName}' updated successfully.";
+                }
+
+                return RedirectToPage("./Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Error saving customer: " + ex.Message;
+                await LoadAccountsDropdown(activeUcpId);
+                return Page();
+            }
+        }
+
+        private async Task LoadAccountsDropdown(long? activeUcpId)
+        {
+            if (_context.AccountMasters != null && activeUcpId.HasValue)
+            {
+                var accounts = await _context.AccountMasters
+                     .Where(a => a.UcpId == activeUcpId)
+                     .OrderBy(a => a.AccountName)
+                     .ToListAsync();
+                AccountList = new SelectList(accounts, "AccountId", "AccountName");
             }
             else
             {
-                // Update Customer
-                var existingCustomer = await _context.CustomerMasters.FindAsync(Customer.CustomerId);
-                if (existingCustomer == null)
-                {
-                    return NotFound();
-                }
-
-                existingCustomer.CustomerName = Customer.CustomerName;
-                existingCustomer.Province = Customer.Province;
-                existingCustomer.CustomerAddress = Customer.CustomerAddress;
-                existingCustomer.CustomerContact = Customer.CustomerContact;
-                existingCustomer.CustomerEmail = Customer.CustomerEmail;
-                existingCustomer.CustomerNtnNo = Customer.CustomerNtnNo;
-                existingCustomer.CustomerStrNo = Customer.CustomerStrNo;
-                existingCustomer.CustomerCnic = Customer.CustomerCnic;
-                existingCustomer.RegistrationType = Customer.RegistrationType;
-                existingCustomer.CustomerDeactiveOn = Customer.CustomerDeactiveOn;
-                existingCustomer.AccountId = Customer.AccountId;
-                existingCustomer.UcpId = activeUcpId;
-                existingCustomer.LastUpdateOn = DateTime.Now;
-
-                _context.CustomerMasters.Update(existingCustomer);
-                TempData["StatusMessage"] = $"Customer '{existingCustomer.CustomerName}' updated successfully.";
+                AccountList = new SelectList(new List<AccountMaster>(), "AccountId", "AccountName");
             }
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
         }
     }
 }

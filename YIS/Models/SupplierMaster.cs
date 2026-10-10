@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace YIS.Models
@@ -47,6 +47,34 @@ namespace YIS.Models
         // Maps to [ACCOUNT_ID] bigint NULL (Likely a link to a GL/Chart of Accounts)
         [Column("ACCOUNT_ID")]
         public long? AccountId { get; set; }
+
+        // Maps to [PURCHASE_ACCOUNT_ID] bigint NULL (Default Purchase / Inventory Account)
+        [Column("PURCHASE_ACCOUNT_ID")]
+        public long? PurchaseAccountId { get; set; }
+
+        // Maps to [TAX_ACCOUNT_ID] bigint NULL (Default Input Tax Account)
+        [Column("TAX_ACCOUNT_ID")]
+        public long? TaxAccountId { get; set; }
+
+        // Maps to [COMM_EXPENSE_ACCOUNT_ID] bigint NULL (Default Commission Expense Account)
+        [Column("COMM_EXPENSE_ACCOUNT_ID")]
+        public long? CommExpenseAccountId { get; set; }
+
+        // Maps to [COMM_PAYABLE_ACCOUNT_ID] bigint NULL (Default Commission Payable to Agent Account)
+        [Column("COMM_PAYABLE_ACCOUNT_ID")]
+        public long? CommPayableAccountId { get; set; }
+
+        [ForeignKey("PurchaseAccountId")]
+        public virtual AccountMaster? PurchaseAccount { get; set; }
+
+        [ForeignKey("TaxAccountId")]
+        public virtual AccountMaster? TaxAccount { get; set; }
+
+        [ForeignKey("CommExpenseAccountId")]
+        public virtual AccountMaster? CommExpenseAccount { get; set; }
+
+        [ForeignKey("CommPayableAccountId")]
+        public virtual AccountMaster? CommPayableAccount { get; set; }
 
         // --- Audit Fields ---
 

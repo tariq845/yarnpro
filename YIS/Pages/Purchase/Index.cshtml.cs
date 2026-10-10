@@ -186,14 +186,14 @@ namespace YIS.Pages.Purchase
 
         public async Task<IActionResult> OnPostPostToLedgerAsync(long id)
         {
-            // Check if already posted
+            // 1. Check if already posted
             if (await _context.Transactions.AnyAsync(t => t.EntryId == id))
             {
                 TempData["ErrorMessage"] = "This purchase entry is already posted.";
                 return RedirectToPage();
             }
 
-            // Get the parent entry
+            // 2. Get the parent entry
             var parentEntry = await _context.Entries.FindAsync(id);
             if (parentEntry == null || parentEntry.EntryType != "PUR")
             {
@@ -201,40 +201,7 @@ namespace YIS.Pages.Purchase
                 return RedirectToPage();
             }
 
-            // Get Supplier Account
-            long? supplierAccountId = null;
-            if (long.TryParse(parentEntry.EntryAttribute1, out long supplierId))
-            {
-                var supplier = await _context.SupplierMasters.FindAsync(supplierId);
-                supplierAccountId = supplier?.AccountId;
-            }
-
-            if (supplierAccountId == null)
-            {
-                TempData["ErrorMessage"] = "Supplier account not found. Please link an account to the supplier first.";
-                return RedirectToPage();
-            }
-
-            // Get Grand Total (inc. GST) from EntryAttribute3
-            double grandTotal = 0;
-            double.TryParse(parentEntry.EntryAttribute3, out grandTotal);
-
-            if (grandTotal <= 0)
-            {
-                TempData["ErrorMessage"] = "Cannot post: Grand total is zero or invalid.";
-                return RedirectToPage();
-            }
-
-            // Use the entry's own EntryNumber as TransNo (PUR-1 → TRANS_NO = 1)
-            var newTransNo = parentEntry.EntryNumber ?? 0;
-
-            if (newTransNo == 0)
-            {
-                TempData["ErrorMessage"] = "Cannot post: Purchase Entry Number is missing or zero.";
-                return RedirectToPage();
-            }
-
-            // Get Active Company Profile from Session
+            // 3. Get Active Company Profile from Session
             long? activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
             if (!activeUcpId.HasValue)
             {
@@ -242,67 +209,361 @@ namespace YIS.Pages.Purchase
                 return RedirectToPage("/SelectCompany");
             }
 
-            // Dynamically find "Purchase" account from Chart of Accounts
-            var purchaseAccount = await _context.AccountMasters
-                .FirstOrDefaultAsync(a => a.AccountName!.Contains("Purchase") && a.UcpId == activeUcpId);
+            // 4. Get Supplier and GL Accounts from SupplierMaster
+            long? supplierAccountId = null;
+            string supplierName = "Supplier";
+            SupplierMaster? supplier = null;
 
-            if (purchaseAccount == null)
+            if (long.TryParse(parentEntry.EntryAttribute1, out long supplierId))
             {
-                TempData["ErrorMessage"] = "Cannot post: 'Purchase' account not found in Chart of Accounts. Please create it first.";
+                supplier = await _context.SupplierMasters.FindAsync(supplierId);
+                if (supplier != null)
+                {
+                    supplierName = supplier.SupplierName ?? "Supplier";
+                    if (supplier.AccountId.HasValue && supplier.AccountId.Value > 0)
+                    {
+                        supplierAccountId = supplier.AccountId.Value;
+                    }
+                }
+            }
+
+            // Verify supplier account exists in active company
+            if (supplierAccountId.HasValue && supplierAccountId.Value > 0)
+            {
+                var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplierAccountId.Value && a.UcpId == activeUcpId);
+                if (!exists)
+                {
+                    supplierAccountId = null;
+                }
+            }
+
+            // Fallback 1: Match by Supplier Name in active company
+            if (supplierAccountId == null || supplierAccountId <= 0)
+            {
+                var matchedSupplierAcc = await _context.AccountMasters
+                    .FirstOrDefaultAsync(a => a.AccountName == supplierName && a.UcpId == activeUcpId);
+
+                if (matchedSupplierAcc != null)
+                {
+                    supplierAccountId = matchedSupplierAcc.AccountId;
+                }
+            }
+
+            // Fallback 2: Search for any existing Local Creditors / Trade Creditors account in active company
+            if (supplierAccountId == null || supplierAccountId <= 0)
+            {
+                var tradeCreditorAcc = await _context.AccountMasters
+                    .Where(a => a.UcpId == activeUcpId && 
+                        (a.AccountName!.Contains("LOCAL CREDITOR") || 
+                         a.AccountName!.Contains("TRADE CREDITOR") || 
+                         a.AccountName!.Contains("TRADE CREATOR") || 
+                         a.AccountName!.Contains("CREDITOR")))
+                    .OrderBy(a => a.AccountId)
+                    .FirstOrDefaultAsync();
+
+                if (tradeCreditorAcc != null)
+                {
+                    supplierAccountId = tradeCreditorAcc.AccountId;
+                }
+                else
+                {
+                    var newAcc = await GetOrCreateAccountAsync("Trade Creditors (Local)", "Creditor", "Liability", activeUcpId.Value);
+                    supplierAccountId = newAcc.AccountId;
+                }
+            }
+
+            // 5. Get Child Line Items (PURL) to compute Yarn Purchase Price vs Tax Amounts
+            var lineItems = await _context.Entries
+                .Where(e => e.EntryRefId == id && e.EntryType == "PURL")
+                .ToListAsync();
+
+            double yarnExclusiveAmount = lineItems.Any()
+                ? lineItems.Sum(l => l.Amount ?? 0)
+                : (parentEntry.Amount ?? 0);
+
+            double totalSalesTax = lineItems.Any()
+                ? lineItems.Sum(l => l.TaxAmount ?? 0)
+                : (parentEntry.TaxAmount ?? 0);
+
+            // Grand Total (Supplier Payable)
+            double grandTotal = yarnExclusiveAmount + totalSalesTax;
+            if (grandTotal <= 0 && double.TryParse(parentEntry.EntryAttribute3, out double parsedGrandTotal))
+            {
+                grandTotal = parsedGrandTotal;
+                if (yarnExclusiveAmount <= 0) yarnExclusiveAmount = grandTotal - totalSalesTax;
+            }
+
+            if (grandTotal <= 0)
+            {
+                TempData["ErrorMessage"] = "Cannot post: Grand total is zero or invalid.";
                 return RedirectToPage();
             }
-            // Dynamically find "Trade Creditors" account from Chart of Accounts
-            var tradeCreditorAccount = await _context.AccountMasters
-                .FirstOrDefaultAsync(a => a.AccountName!.Contains("TRADE CREATOR (LOCAL)") && a.UcpId == activeUcpId);
 
-            if (tradeCreditorAccount == null)
+            // Commission details
+            double commissionAmt = parentEntry.EntryCommAmt ?? 0;
+            string? agentName = parentEntry.EntryAttribute4?.Trim();
+
+            // TransNo from PUR EntryNumber
+            var newTransNo = parentEntry.EntryNumber ?? 0;
+            if (newTransNo == 0)
             {
-                TempData["ErrorMessage"] = "Cannot post: '(TRADE CREATOR (LOCAL)' account not found in Chart of Accounts. Please create it first.";
+                TempData["ErrorMessage"] = "Cannot post: Purchase Entry Number is missing or zero.";
                 return RedirectToPage();
+            }
+
+            // 6. Get GL accounts (Configured on Supplier with Fallback to Standard Defaults)
+            // A. Purchase Account
+            long purchaseAccountId = 0;
+            if (supplier?.PurchaseAccountId.HasValue == true && supplier.PurchaseAccountId.Value > 0)
+            {
+                var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.PurchaseAccountId.Value && a.UcpId == activeUcpId);
+                if (exists) purchaseAccountId = supplier.PurchaseAccountId.Value;
+            }
+            if (purchaseAccountId == 0)
+            {
+                var defPurchase = await GetOrCreateAccountAsync("Purchase / Inventory", "Purchase", "Expense", activeUcpId.Value);
+                purchaseAccountId = defPurchase.AccountId;
+            }
+
+            // B. Tax Account
+            long? inputTaxAccountId = null;
+            if (totalSalesTax > 0)
+            {
+                if (supplier?.TaxAccountId.HasValue == true && supplier.TaxAccountId.Value > 0)
+                {
+                    var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.TaxAccountId.Value && a.UcpId == activeUcpId);
+                    if (exists) inputTaxAccountId = supplier.TaxAccountId.Value;
+                }
+                if (!inputTaxAccountId.HasValue)
+                {
+                    var defTax = await GetOrCreateAccountAsync("Input Sales Tax", "Tax", "Asset", activeUcpId.Value);
+                    inputTaxAccountId = defTax.AccountId;
+                }
+            }
+
+            // C. Commission Expense Account
+            long? commExpenseAccountId = null;
+            if (commissionAmt > 0)
+            {
+                if (supplier?.CommExpenseAccountId.HasValue == true && supplier.CommExpenseAccountId.Value > 0)
+                {
+                    var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.CommExpenseAccountId.Value && a.UcpId == activeUcpId);
+                    if (exists) commExpenseAccountId = supplier.CommExpenseAccountId.Value;
+                }
+                if (!commExpenseAccountId.HasValue)
+                {
+                    var defCommExp = await GetOrCreateAccountAsync("Commission Expense", "Commission Expense", "Expense", activeUcpId.Value);
+                    commExpenseAccountId = defCommExp.AccountId;
+                }
+            }
+
+            // D. Commission Payable Account
+            long? commPayableAccountId = null;
+            if (commissionAmt > 0)
+            {
+                if (supplier?.CommPayableAccountId.HasValue == true && supplier.CommPayableAccountId.Value > 0)
+                {
+                    var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.CommPayableAccountId.Value && a.UcpId == activeUcpId);
+                    if (exists) commPayableAccountId = supplier.CommPayableAccountId.Value;
+                }
+                if (!commPayableAccountId.HasValue)
+                {
+                    var defCommPay = await GetOrCreateAccountAsync("Commission Payable", "Commission Payable", "Liability", activeUcpId.Value);
+                    commPayableAccountId = defCommPay.AccountId;
+                }
             }
 
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                // Entry 1: Debit - Purchase Account (dynamically picked from Chart of Accounts)
-                var debitTrans = new Trans
-                {
-                    TransId = 0,
-                    TransNo = newTransNo,
-                    TransType = "PUR",
-                    AccountId = purchaseAccount.AccountId,
-                    Debit = grandTotal,
-                    Credit = 0,
-                    Remarks = $"Purchase Entry PUR-{parentEntry.EntryNumber}",
-                    EntryId = id,
-                    UcpId = activeUcpId
-                };
-                _context.Transactions.Add(debitTrans);
+                int glLineCount = 0;
 
-                // Entry 2: Credit - Trade Creditors Account (dynamically picked from Chart of Accounts)
-                var creditTrans = new Trans
+                // Entry 1: Debit - Purchase / Inventory Account (Yarn Exclusive Price)
+                if (yarnExclusiveAmount > 0)
+                {
+                    _context.Transactions.Add(new Trans
+                    {
+                        TransId = 0,
+                        TransNo = newTransNo,
+                        TransType = "PUR",
+                        AccountId = purchaseAccountId,
+                        Debit = yarnExclusiveAmount,
+                        Credit = 0,
+                        Remarks = $"Inventory Received against Purchase Invoice PUR-{parentEntry.EntryNumber}",
+                        EntryId = id,
+                        UcpId = activeUcpId
+                    });
+                    glLineCount++;
+                }
+
+                // Entry 2: Debit - Input Sales Tax Account
+                if (totalSalesTax > 0 && inputTaxAccountId.HasValue)
+                {
+                    _context.Transactions.Add(new Trans
+                    {
+                        TransId = 0,
+                        TransNo = newTransNo,
+                        TransType = "PUR",
+                        AccountId = inputTaxAccountId.Value,
+                        Debit = totalSalesTax,
+                        Credit = 0,
+                        Remarks = $"Input Sales Tax against Purchase Invoice PUR-{parentEntry.EntryNumber}",
+                        EntryId = id,
+                        UcpId = activeUcpId
+                    });
+                    glLineCount++;
+                }
+
+                // Entry 3: Credit - Supplier Payable / Trade Creditors Account
+                _context.Transactions.Add(new Trans
                 {
                     TransId = 0,
                     TransNo = newTransNo,
                     TransType = "PUR",
-                    AccountId = tradeCreditorAccount.AccountId,
+                    AccountId = supplierAccountId.Value,
                     Debit = 0,
                     Credit = grandTotal,
-                    Remarks = $"Purchase Entry PUR-{parentEntry.EntryNumber}",
+                    Remarks = $"Supplier Payable ({supplierName}) against Purchase Invoice PUR-{parentEntry.EntryNumber}",
                     EntryId = id,
                     UcpId = activeUcpId
-                };
-                _context.Transactions.Add(creditTrans);
+                });
+                glLineCount++;
+
+                // Entry 4: Debit - Commission Expense Account (if applicable)
+                if (commissionAmt > 0 && commExpenseAccountId.HasValue)
+                {
+                    _context.Transactions.Add(new Trans
+                    {
+                        TransId = 0,
+                        TransNo = newTransNo,
+                        TransType = "PUR",
+                        AccountId = commExpenseAccountId.Value,
+                        Debit = commissionAmt,
+                        Credit = 0,
+                        Remarks = $"Commission Expense against Purchase Invoice PUR-{parentEntry.EntryNumber}",
+                        EntryId = id,
+                        UcpId = activeUcpId
+                    });
+                    glLineCount++;
+                }
+
+                // Entry 5: Credit - Commission Payable to Agent Account (if applicable)
+                if (commissionAmt > 0 && commPayableAccountId.HasValue)
+                {
+                    _context.Transactions.Add(new Trans
+                    {
+                        TransId = 0,
+                        TransNo = newTransNo,
+                        TransType = "PUR",
+                        AccountId = commPayableAccountId.Value,
+                        Debit = 0,
+                        Credit = commissionAmt,
+                        Remarks = $"Commission Payable to {(!string.IsNullOrWhiteSpace(agentName) ? agentName : "Agent")} against Purchase Invoice PUR-{parentEntry.EntryNumber}",
+                        EntryId = id,
+                        UcpId = activeUcpId
+                    });
+                    glLineCount++;
+                }
 
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                TempData["StatusMessage"] = $"Purchase PUR-{parentEntry.EntryNumber} posted to ledger successfully.";
+                TempData["StatusMessage"] = $"Purchase PUR-{parentEntry.EntryNumber} posted to ledger successfully with {glLineCount} balanced GL entries.";
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
                 TempData["ErrorMessage"] = "Error posting to ledger: " + ex.Message;
+            }
+
+            return RedirectToPage();
+        }
+
+        private async Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
+        {
+            var acc = await _context.AccountMasters
+                .FirstOrDefaultAsync(a => a.AccountName != null && a.AccountName.Contains(searchKeyword) && a.UcpId == activeUcpId);
+
+            if (acc != null) return acc;
+
+            // Search category or pick first available category
+            var category = await _context.CategoryMasters
+                .Where(c => c.UcpId == activeUcpId)
+                .OrderByDescending(c => c.CategoryName != null && c.CategoryName.Contains(preferredCategoryName))
+                .FirstOrDefaultAsync();
+
+            if (category == null)
+            {
+                category = await _context.CategoryMasters.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
+                if (category == null)
+                {
+                    category = new CategoryMaster
+                    {
+                        CategoryName = preferredCategoryName,
+                        UcpId = activeUcpId,
+                        CreationOn = DateTime.Now
+                    };
+                    _context.CategoryMasters.Add(category);
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            acc = new AccountMaster
+            {
+                AccountId = 0,
+                AccountName = defaultName,
+                CategoryId = category.CategoryId,
+                UcpId = activeUcpId,
+                CreationOn = DateTime.Now
+            };
+            _context.AccountMasters.Add(acc);
+            await _context.SaveChangesAsync();
+            return acc;
+        }
+
+        public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)
+        {
+            // 1. Permission check
+            var path = HttpContext.Request.Path.Value ?? "";
+            if (!AuthHelper.CanUpdate(HttpContext, path))
+            {
+                TempData["ErrorMessage"] = "Access Denied: You do not have permission to unpost ledger entries.";
+                return RedirectToPage();
+            }
+
+            // 2. Find the parent PUR entry
+            var entry = await _context.Entries.FindAsync(id);
+            if (entry == null || entry.EntryType != "PUR")
+            {
+                TempData["ErrorMessage"] = "Purchase entry not found.";
+                return RedirectToPage();
+            }
+
+            // 3. Get the TRANS rows (Debit + Credit) linked to this entry
+            var transRows = await _context.Transactions
+                .Where(t => t.EntryId == id)
+                .ToListAsync();
+
+            if (!transRows.Any())
+            {
+                TempData["ErrorMessage"] = "This entry is not posted to ledger.";
+                return RedirectToPage();
+            }
+
+            // 4. Delete TRANS rows inside a DB transaction
+            using var dbTxn = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Transactions.RemoveRange(transRows);
+                await _context.SaveChangesAsync();
+                await dbTxn.CommitAsync();
+
+                TempData["StatusMessage"] = $"PUR-{entry.EntryNumber} has been unposted from the ledger. {transRows.Count} GL entries removed.";
+            }
+            catch (Exception ex)
+            {
+                await dbTxn.RollbackAsync();
+                TempData["ErrorMessage"] = "Error unposting from ledger: " + ex.Message;
             }
 
             return RedirectToPage();

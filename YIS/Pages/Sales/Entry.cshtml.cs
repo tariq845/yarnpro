@@ -906,6 +906,13 @@ namespace YIS.Pages.Sales
             public long? CustomerId { get; set; }
             public long? PsdId { get; set; }
             public string RefCode { get; set; }
+            public string? PaymentMode { get; set; }
+            public int? TermsDays { get; set; }
+            public string? ApplyCommission { get; set; }
+            public string? CommAgent { get; set; }
+            public double? CommPer { get; set; }
+            public double? CommAmt { get; set; }
+            public double? Sukri { get; set; }
             public double RemainingQty { get; set; }
             public List<SsdItemInfo> Items { get; set; } = new List<SsdItemInfo>();
         }
@@ -918,6 +925,7 @@ namespace YIS.Pages.Sales
             public double RemainingQty { get; set; }
             public double Rate { get; set; }
             public double Lbs { get; set; }
+            public double GstPer { get; set; } = 0;
         }
 
         // PUR JS Data
@@ -1130,6 +1138,13 @@ namespace YIS.Pages.Sales
                         e.EntryNumber,
                         e.EntryDate,
                         e.EntryAttribute1, // CustomerID
+                        e.EntryAttribute2, // Payment Mode
+                        e.EntryTermsDays,
+                        e.EntryAttribute4, // Comm Agent
+                        e.EntryAttribute5, // Apply Commission
+                        e.EntryCommPer,
+                        e.EntryCommAmt,
+                        e.EntryCommSukri,
                         e.EntryRefId, // PSD ID link
                         e.EntryRefCode, // Added Ref Code
                         e.Qty // Total Qty
@@ -1142,12 +1157,13 @@ namespace YIS.Pages.Sales
                    .Join(_context.Entries, child => child.EntryRefId, parent => parent.EntryId, (child, parent) => new { parent.EntryId, child })
                    .Join(_context.ItemMasters, p => p.child.ItemId, i => i.ItemId, (p, i) => new
                    {
-                       p.EntryId,
-                       p.child.ItemId,
-                       p.child.Qty,
-                       p.child.Lbs,
-                       p.child.Rate,
-                       i.ItemName
+                        p.EntryId,
+                        p.child.ItemId,
+                        p.child.Qty,
+                        p.child.Lbs,
+                        p.child.Rate,
+                        GstPercent = p.child.EntryAttribute1 ?? p.child.EntryAttribute2,
+                        i.ItemName
                    })
                    .ToListAsync();
 
@@ -1203,6 +1219,8 @@ namespace YIS.Pages.Sales
                             var rem = original - sold;
                             if (rem < 0) rem = 0;
 
+                            double gst = double.TryParse(si.GstPercent, out double g) ? g : 0;
+
                             items.Add(new SsdItemInfo
                             {
                                 ItemId = si.ItemId ?? 0,
@@ -1210,7 +1228,8 @@ namespace YIS.Pages.Sales
                                 OriginalQty = original,
                                 RemainingQty = rem,
                                 Rate = si.Rate ?? 0,
-                                Lbs = si.Lbs ?? 0
+                                Lbs = si.Lbs ?? 0,
+                                GstPer = gst
                             });
                             totalRemaining += rem;
                         }
@@ -1227,6 +1246,13 @@ namespace YIS.Pages.Sales
                         EntryId = ssd.EntryId,
                         EntryDate = ssd.EntryDate,
                         CustomerId = custId,
+                        PaymentMode = ssd.EntryAttribute2,
+                        TermsDays = ssd.EntryTermsDays,
+                        ApplyCommission = ssd.EntryAttribute5,
+                        CommAgent = ssd.EntryAttribute4,
+                        CommPer = ssd.EntryCommPer,
+                        CommAmt = ssd.EntryCommAmt,
+                        Sukri = ssd.EntryCommSukri,
                         PsdId = ssd.EntryRefId,
                         RefCode = ssd.EntryRefCode,
                         RemainingQty = totalRemaining,

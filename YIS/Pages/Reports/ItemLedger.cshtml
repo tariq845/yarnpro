@@ -49,12 +49,25 @@
                         </h5>
                     </div>
                     <div class="col-auto">
-                         <h6 class="text-uppercase text-muted mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">
-                            Opening balance :
-                            <span class="fs-5 fw-bold ms-1 @(Model.FinalBalance >= 0 ? "text-success" : "text-danger")">
-                                @Model.FinalBalance.ToString("N0")
-                            </span>
-                        </h6>
+                        <div class="d-flex align-items-center gap-3">
+                            <h6 class="text-uppercase text-muted mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                                Opening Stock :
+                                <span class="fs-5 fw-bold ms-1 text-dark">
+                                    @Model.OpeningBalance.ToString("N0")
+                                </span>
+                            </h6>
+                            <span class="text-muted">|</span>
+                            <h6 class="text-uppercase text-muted mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                                Opening Value :
+                                <span class="fs-6 fw-bold ms-1 text-primary">
+                                    Rs. @Model.OpeningValue.ToString("N2")
+                                </span>
+                                @if (Model.LastPurchaseRate > 0)
+                                {
+                                    <span class="text-muted fw-normal small"> (@@ @Model.LastPurchaseRate.ToString("N2"))</span>
+                                }
+                            </h6>
+                        </div>
                     </div>
                  </div>
             </div>
@@ -72,10 +85,40 @@
                                 <th class="border-0 px-4 py-3 text-end text-warning">Debit Note</th>
                                 <th class="border-0 px-4 py-3 text-end text-danger">Sale</th>
                                 <th class="border-0 px-4 py-3 text-end text-info">Credit Note</th>
-                                <th class="border-0 px-4 py-3 text-end fw-bold">Runnung Balance</th>
+                                <th class="border-0 px-4 py-3 text-end">Rate</th>
+                                <th class="border-0 px-4 py-3 text-end">Amount</th>
+                                <th class="border-0 px-4 py-3 text-end fw-bold">Balance</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @* Opening Stock Row if filtered by date or opening balance exists *@
+                            @if (Model.FromDate.HasValue || Model.OpeningBalance != 0)
+                            {
+                                <tr class="table-light fw-medium">
+                                    <td class="px-4 py-3 text-nowrap text-muted">
+                                        @(Model.FromDate?.ToString("dd-MMM-yyyy") ?? "-")
+                                    </td>
+                                    <td class="px-4 py-3 text-muted">-</td>
+                                    <td class="px-4 py-3">
+                                        <span class="fw-bold text-secondary">Opening Stock</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-muted">-</td>
+                                    <td class="px-4 py-3 text-end text-muted">-</td>
+                                    <td class="px-4 py-3 text-end text-muted">-</td>
+                                    <td class="px-4 py-3 text-end text-muted">-</td>
+                                    <td class="px-4 py-3 text-end text-muted">-</td>
+                                    <td class="px-4 py-3 text-end text-muted">
+                                        @(Model.LastPurchaseRate > 0 ? Model.LastPurchaseRate.ToString("N2") : "-")
+                                    </td>
+                                    <td class="px-4 py-3 text-end fw-bold text-primary">
+                                        @(Model.OpeningValue != 0 ? Model.OpeningValue.ToString("N2") : "-")
+                                    </td>
+                                    <td class="px-4 py-3 text-end fw-bold">
+                                        @Model.OpeningBalance.ToString("N0")
+                                    </td>
+                                </tr>
+                            }
+
                             @if (Model.LedgerList.Any())
                             {
                                 foreach (var item in Model.LedgerList)
@@ -126,6 +169,16 @@
                                             }
                                         </td>
 
+                                        <!-- Rate -->
+                                        <td class="px-4 py-3 text-end">
+                                            @(item.Rate.HasValue && item.Rate.Value > 0 ? item.Rate.Value.ToString("N2") : "-")
+                                        </td>
+
+                                        <!-- Amount -->
+                                        <td class="px-4 py-3 text-end fw-medium text-dark">
+                                            @(item.Amount.HasValue && item.Amount.Value > 0 ? item.Amount.Value.ToString("N2") : "-")
+                                        </td>
+
                                         <!-- Balance -->
                                         <td class="px-4 py-3 text-end fw-bold">
                                             @item.Balance.ToString("N0")
@@ -133,10 +186,10 @@
                                     </tr>
                                 }
                             }
-                            else
+                            else if (!Model.FromDate.HasValue && Model.OpeningBalance == 0)
                             {
                                 <tr>
-                                    <td colspan="9" class="text-center py-5">
+                                    <td colspan="11" class="text-center py-5">
                                         <div class="py-4">
                                             <i class="bi bi-journal-text text-muted" style="font-size: 3rem;"></i>
                                             <h5 class="mt-3 text-muted">No transactions found</h5>
@@ -165,7 +218,5 @@
 @section Scripts {
     <script>
         // Initialize Select2 implies standard behavior if included in layout.
-        // If not, standard select will work.
-        // Assuming Select2 is available as per class="form-select" data-control="select2" pattern used in modern templates.
     </script>
 }

@@ -60,7 +60,7 @@
 
             <!-- Row 2: References -->
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-4 mb-3">
                     <label asp-for="Entry.EntryRefNo" class="form-label">Against Pur Soda No</label>
                     <select asp-for="Entry.EntryRefNo" class="form-select" asp-items="Model.PurchaseSodaList"
                         disabled="@Model.IsPosted">
@@ -76,6 +76,10 @@
                     <label asp-for="Entry.EntryTermsDays" class="form-label">Payment Terms (Days)</label>
                     <input asp-for="Entry.EntryTermsDays" type="number" class="form-control" min="0"
                         disabled="@Model.IsPosted" />
+                </div>
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Payment Mode</label>
+                    <input type="text" id="txtPaymentMode" class="form-control bg-light" readonly placeholder="Payment Mode" disabled="@Model.IsPosted" />
                 </div>
             </div>
 
@@ -138,7 +142,7 @@
                                                class="form-control form-control-sm amount-input text-end bg-light" readonly
                                             disabled="@Model.IsPosted" /></td>
                                     <td><input type="number" step="0.01" name="LineItems[@i].GstPercent"
-                                            value="@Model.LineItems[i].GstPercent"
+                                            value="@(Model.LineItems[i].GstPercent ?? 0)"
                                             class="form-control form-control-sm gst-percent-input text-end"
                                             disabled="@Model.IsPosted" /></td>
                                     <td><input type="text" name="LineItems[@i].TaxAmount"
@@ -326,13 +330,20 @@
                 @:psdData['@p.EntryId'] = {
                 @:supplierId: '@p.SupplierId',
                 @:text: '@p.DisplayText',
+                @:paymentMode: '@p.PaymentMode',
+                @:termsDays: '@p.TermsDays',
+                @:applyCommission: '@p.ApplyCommission',
+                @:commAgent: '@p.CommAgent',
+                @:commPer: @(p.CommPer ?? 0),
+                @:commAmt: @(p.CommAmt ?? 0),
+                @:sukri: @(p.Sukri ?? 0),
                 @:items: [
                 if (p.Items != null)
                 {
                     var i = 0;
                     foreach (var item in p.Items)
                     {
-                        @:{ itemId: @item.ItemId, itemName: '@item.ItemName.Replace("'", "\\'")', qty: @item.Qty, lbs: @item.Lbs, rate: @item.Rate, consumed: @item.ConsumedQty, remaining: @item.RemainingQty }@(i < p.Items.Count - 1 ? "," : "")
+                        @:{ itemId: @item.ItemId, itemName: '@item.ItemName.Replace("'", "\\'")', qty: @item.Qty, lbs: @item.Lbs, rate: @item.Rate, gstPercent: @item.GstPercent, consumed: @item.ConsumedQty, remaining: @item.RemainingQty }@(i < p.Items.Count - 1 ? "," : "")
                         i++;
                     }
                 }
@@ -361,22 +372,20 @@
             const commAmtInput = document.getElementById('txtCommAmt');
             const sukriInput = document.getElementById('txtSukri');
 
-            function formatNumber(num) {
-                return new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
-            }
-
             function calcRow(row) {
                 const qtyInput = row.querySelector('.qty-input');
-                let qty = parseFloat(qtyInput.value) || 0;
+                let qty = parseFloat(qtyInput ? qtyInput.value : 0) || 0;
 
                 // Auto-calculate LBS = Qty * 100
                 const lbsInput = row.querySelector('.lbs-input');
-                lbsInput.value = (qty * 100).toFixed(2);
+                const lbs = qty * 100;
+                if (lbsInput) lbsInput.value = lbs.toFixed(2);
 
                 // --- Validation Logic Start ---
                 const psdId = ddlPsd ? ddlPsd.value : "";
-                const itemId = row.querySelector('.item-select').value;
-                const initialQty = parseFloat(qtyInput.dataset.initialQty) || 0; // For edit mode
+                const itemSelect = row.querySelector('.item-select');
+                const itemId = itemSelect ? itemSelect.value : "";
+                const initialQty = parseFloat(qtyInput ? qtyInput.dataset.initialQty : 0) || 0; // For edit mode
 
                 if (psdId && psdData[psdId] && itemId) {
                     const psdItem = psdData[psdId].items.find(i => i.itemId == itemId);
@@ -385,14 +394,11 @@
                         const maxAllowed = psdItem.remaining + initialQty;
 
                         if (qty > maxAllowed) {
-                            // Show Toast
                             if (typeof showToast === 'function') {
                                 showToast("Quantity is not more than psd qty (" + maxAllowed.toFixed(2) + ")", "error");
                             } else {
                                 alert("Quantity is not more than psd qty (" + maxAllowed.toFixed(2) + ")");
                             }
-
-                            // Visual Feedback
                             qtyInput.classList.add('is-invalid');
                             qtyInput.classList.add('border-danger');
                         } else {
@@ -403,19 +409,23 @@
                 }
                 // --- Validation Logic End ---
 
-                const rate = parseFloat(row.querySelector('.rate-input').value) || 0;
-                const lbs = parseFloat(qtyInput.value) * 100 || 0;
+                const rateInput = row.querySelector('.rate-input');
+                const rate = parseFloat(rateInput ? rateInput.value : 0) || 0;
                 const amt = lbs * rate;
 
-                lbsInput.value = formatNumber(lbs);
-                row.querySelector('.amount-input').value = formatNumber(amt);
+                const amountInput = row.querySelector('.amount-input');
+                if (amountInput) amountInput.value = amt.toFixed(2);
 
-                const gstPer = parseFloat(row.querySelector('.gst-percent-input').value) || 0;
+                const gstPercentInput = row.querySelector('.gst-percent-input');
+                const gstPer = parseFloat(gstPercentInput ? gstPercentInput.value : 0) || 0;
                 const gstAmt = amt * (gstPer / 100);
-                row.querySelector('.gst-amount-input').value = formatNumber(gstAmt);
+
+                const gstAmountInput = row.querySelector('.gst-amount-input');
+                if (gstAmountInput) gstAmountInput.value = gstAmt.toFixed(2);
 
                 const net = amt + gstAmt;
-                row.querySelector('.net-amount-input').value = formatNumber(net);
+                const netAmountInput = row.querySelector('.net-amount-input');
+                if (netAmountInput) netAmountInput.value = net.toFixed(2);
             }
 
             function calcTotals() {
@@ -424,14 +434,18 @@
                 let tNet = 0;
 
                 body.querySelectorAll('.line-item-row').forEach(row => {
-                    tAmount += parseFloat(row.querySelector('.amount-input').value) || 0;
-                    tGst += parseFloat(row.querySelector('.gst-amount-input').value) || 0;
-                    tNet += parseFloat(row.querySelector('.net-amount-input').value) || 0;
+                    const amt = parseFloat(row.querySelector('.amount-input')?.value) || 0;
+                    const gst = parseFloat(row.querySelector('.gst-amount-input')?.value) || 0;
+                    const net = parseFloat(row.querySelector('.net-amount-input')?.value) || 0;
+
+                    tAmount += amt;
+                    tGst += gst;
+                    tNet += net;
                 });
 
-                grandTotalAmountInput.value = formatNumber(tAmount);
-                grandTotalGstInput.value = formatNumber(tGst);
-                grandTotalNetInput.value = formatNumber(tNet);
+                if (grandTotalAmountInput) grandTotalAmountInput.value = tAmount.toFixed(2);
+                if (grandTotalGstInput) grandTotalGstInput.value = tGst.toFixed(2);
+                if (grandTotalNetInput) grandTotalNetInput.value = tNet.toFixed(2);
 
                 calculateCommission(tNet);
             }
@@ -444,12 +458,12 @@
 
             function calculateCommission(totalNet) {
                 if (commissionSelect && commissionSelect.value === 'Yes') {
-                    const commPer = parseFloat(commPerInput.value) || 0;
+                    const commPer = parseFloat(commPerInput ? commPerInput.value : 10) || 10;
                     const commAmt = totalNet * (commPer / 100);
-                    commAmtInput.value = commAmt.toFixed(2);
+                    if (commAmtInput) commAmtInput.value = commAmt.toFixed(2);
 
                     const sukriAmt = commAmt * 0.10;
-                    sukriInput.value = sukriAmt.toFixed(2);
+                    if (sukriInput) sukriInput.value = sukriAmt.toFixed(2);
                 } else {
                     if (commAmtInput) commAmtInput.value = '0.00';
                     if (sukriInput) sukriInput.value = '0.00';
@@ -466,42 +480,41 @@
                 if (!isCommission) {
                     if (commAgentInput) { commAgentInput.value = ''; commAgentInput.style.backgroundColor = '#e9ecef'; }
                     if (commPerInput) { commPerInput.value = '10'; commPerInput.style.backgroundColor = '#e9ecef'; }
+                    if (commAmtInput) { commAmtInput.value = '0.00'; commAmtInput.style.backgroundColor = '#e9ecef'; }
                     if (sukriInput) { sukriInput.value = '0.00'; sukriInput.style.backgroundColor = '#e9ecef'; }
-                    if (commAmtInput) commAmtInput.value = '0.00';
                 } else {
                     if (commAgentInput) { commAgentInput.style.backgroundColor = ''; }
-                    if (commPerInput) { commPerInput.value = '10'; commPerInput.readOnly = true; commPerInput.style.backgroundColor = '#e9ecef'; }
+                    if (commPerInput) {
+                        if (!commPerInput.value || commPerInput.value === '0') commPerInput.value = '10';
+                        commPerInput.style.backgroundColor = '';
+                    }
+                    if (commAmtInput) { commAmtInput.style.backgroundColor = ''; }
                     if (sukriInput) { sukriInput.style.backgroundColor = ''; }
-                    calcTotals();
                 }
+
+                let totalNet = 0;
+                body.querySelectorAll('.line-item-row').forEach(row => {
+                    totalNet += parseFloat(row.querySelector('.net-amount-input')?.value) || 0;
+                });
+                calculateCommission(totalNet);
             }
 
-            // Bind Events via Delegation for Robustness
-            body.addEventListener('input', function (e) {
-                if (e.target.matches('.qty-input, .lbs-input, .rate-input, .gst-percent-input')) {
-                    const row = e.target.closest('tr');
-                    calcRow(row);
-                    calcTotals();
-                }
-            });
-
-            body.addEventListener('click', function (e) {
-                if (e.target.closest('.remove-row-btn')) {
-                    if (body.querySelectorAll('.line-item-row').length > 1) {
-                        e.target.closest('tr').remove();
-                        // Re-filter removed item back into pool
-                        filterItemDropdowns();
-                        reindex();
-                        calcTotals();
-                        updateItemSelection();
-                    } else {
-                        alert("At least one item required");
-                    }
-                }
-            });
+            if (commPerInput) {
+                commPerInput.addEventListener('input', function () {
+                    let totalNet = 0;
+                    body.querySelectorAll('.line-item-row').forEach(row => {
+                        totalNet += parseFloat(row.querySelector('.net-amount-input')?.value) || 0;
+                    });
+                    calculateCommission(totalNet);
+                });
+            }
 
             // Commission Events
-            if (commissionSelect) commissionSelect.addEventListener('change', toggleCommissionFields);
+            if (commissionSelect) {
+                commissionSelect.addEventListener('change', function () {
+                    toggleCommissionFields();
+                });
+            }
             toggleCommissionFields();
 
             // Initial Calc
@@ -533,13 +546,36 @@
                 };
             }
 
+            // Listen for input changes (qty, rate, gst)
+            body.addEventListener('input', function (e) {
+                if (e.target.matches('.qty-input, .rate-input, .gst-percent-input')) {
+                    const row = e.target.closest('tr');
+                    if (row) {
+                        calcRow(row);
+                        calcTotals();
+                    }
+                }
+            });
+
+            // Listen for row removal
+            body.addEventListener('click', function (e) {
+                const removeBtn = e.target.closest('.remove-row-btn');
+                if (removeBtn) {
+                    const row = removeBtn.closest('tr');
+                    if (row && body.querySelectorAll('.line-item-row').length > 1) {
+                        row.remove();
+                        reindex();
+                        calcTotals();
+                        updateItemSelection();
+                    }
+                }
+            });
+
             // Listen for changes on item selects
             body.addEventListener('change', function (e) {
                 if (e.target.matches('.item-select')) {
-                    // Update uniqueness
                     updateItemSelection();
 
-                    // Auto-fill details if PSD selected
                     const itemId = e.target.value;
                     const psdId = ddlPsd.value;
                     const row = e.target.closest('tr');
@@ -552,23 +588,26 @@
                             const rateInput = row.querySelector('.rate-input');
                             const gstInput = row.querySelector('.gst-percent-input');
 
-                            // Auto-fill with remaining qty
+                            const remQty = (psdItem.remaining !== undefined && psdItem.remaining !== null && psdItem.remaining > 0) ? psdItem.remaining : psdItem.qty;
+
                             if (qtyInput) {
-                                qtyInput.value = psdItem.remaining;
+                                qtyInput.value = remQty;
                                 qtyInput.dataset.initialQty = 0;
                             }
-                            if (lbsInput) lbsInput.value = (psdItem.remaining * 100).toFixed(2);
-                            if (rateInput) rateInput.value = parseFloat(psdItem.rate).toFixed(4);
-                            // Auto-populate GST with default 18%
-                            if (gstInput) gstInput.value = '18.00';
+                            if (lbsInput) lbsInput.value = (remQty * 100).toFixed(2);
+                            if (rateInput) rateInput.value = parseFloat(psdItem.rate || 0).toFixed(4);
+                            if (gstInput) gstInput.value = parseFloat(psdItem.gstPercent !== undefined && psdItem.gstPercent !== null ? psdItem.gstPercent : 0).toFixed(2);
 
                             calcRow(row);
                             calcTotals();
                         }
                     } else {
-                        // If no PSD selected, set default GST
                         const gstInput = row.querySelector('.gst-percent-input');
-                        if (gstInput && !gstInput.value) gstInput.value = '18.00';
+                        if (gstInput && (gstInput.value === '' || gstInput.value === null)) gstInput.value = '0.00';
+                        if (row) {
+                            calcRow(row);
+                            calcTotals();
+                        }
                     }
                 }
             });
@@ -634,14 +673,12 @@
             }
 
             function resetAllLineItems() {
-                // Clear values first
                 body.querySelectorAll('.line-item-row').forEach(row => {
                     row.querySelector('input, select').value = '';
                     row.querySelectorAll('input').forEach(i => i.value = '');
                     row.querySelector('.item-select').value = '';
                 });
 
-                // Remove extra rows
                 while (body.querySelectorAll('.line-item-row').length > 1) {
                     body.lastElementChild.remove();
                 }
@@ -671,7 +708,66 @@
                     if (id && psdData[id]) {
                         const d = psdData[id];
                         if (d.supplierId && ddlSupp) ddlSupp.value = d.supplierId;
+
+                        // Auto-populate Terms Days & Payment Mode
+                        const termsDaysInput = document.getElementById('Entry_EntryTermsDays');
+                        if (termsDaysInput) termsDaysInput.value = d.termsDays || '';
+                        const txtPaymentMode = document.getElementById('txtPaymentMode');
+                        if (txtPaymentMode) txtPaymentMode.value = d.paymentMode || '';
+
+                        // Auto-populate Commission
+                        const isComm = (d.applyCommission || '').toLowerCase() === 'yes';
+                        if (commissionSelect) {
+                            commissionSelect.value = isComm ? 'Yes' : 'No';
+                            if (isComm) {
+                                if (commAgentInput) commAgentInput.value = d.commAgent || '';
+                                if (commPerInput) commPerInput.value = (d.commPer !== undefined && d.commPer !== null && d.commPer > 0) ? d.commPer : 10;
+                            } else {
+                                if (commAgentInput) commAgentInput.value = '';
+                                if (commPerInput) commPerInput.value = '10';
+                            }
+                            toggleCommissionFields();
+                        }
+
+                        // Auto-populate Line Items from PSD
+                        if (d.items && d.items.length > 0) {
+                            body.innerHTML = '';
+                            d.items.forEach((item, idx) => {
+                                const clone = template.content.cloneNode(true);
+                                const itemSelect = clone.querySelector('.item-select');
+                                const qtyInput = clone.querySelector('.qty-input');
+                                const lbsInput = clone.querySelector('.lbs-input');
+                                const rateInput = clone.querySelector('.rate-input');
+                                const gstInput = clone.querySelector('.gst-percent-input');
+
+                                const qtyVal = (item.remaining !== undefined && item.remaining !== null && item.remaining > 0) ? item.remaining : (item.qty || 0);
+
+                                if (itemSelect) itemSelect.value = item.itemId;
+                                if (qtyInput) {
+                                    qtyInput.value = qtyVal;
+                                    qtyInput.dataset.initialQty = 0;
+                                }
+                                if (lbsInput) lbsInput.value = (qtyVal * 100).toFixed(2);
+                                if (rateInput) rateInput.value = parseFloat(item.rate || 0).toFixed(4);
+                                if (gstInput) gstInput.value = parseFloat(item.gstPercent !== undefined && item.gstPercent !== null ? item.gstPercent : 0).toFixed(2);
+
+                                clone.querySelectorAll('input, select').forEach(inp => {
+                                    const name = inp.getAttribute('name');
+                                    if (name) inp.setAttribute('name', name.replace('__INDEX__', idx));
+                                });
+                                body.appendChild(clone);
+                            });
+
+                            body.querySelectorAll('.line-item-row').forEach(row => calcRow(row));
+                            calcTotals();
+                        }
+                    } else {
+                        const txtPaymentMode = document.getElementById('txtPaymentMode');
+                        if (txtPaymentMode) txtPaymentMode.value = '';
+                        toggleCommissionFields();
+                        calcTotals();
                     }
+
                     filterItemDropdowns();
                     updateItemSelection();
                 });
@@ -679,7 +775,13 @@
                 // Initial
                 const initialPsd = ddlPsd.value;
                 if (ddlSupp && ddlSupp.value) filterPsdOptions(ddlSupp.value, initialPsd);
-                if (initialPsd) filterItemDropdowns();
+                if (initialPsd) {
+                    if (psdData[initialPsd]) {
+                        const txtPaymentMode = document.getElementById('txtPaymentMode');
+                        if (txtPaymentMode && !txtPaymentMode.value) txtPaymentMode.value = psdData[initialPsd].paymentMode || '';
+                    }
+                    filterItemDropdowns();
+                }
             }
 
             // Disable already selected items (Unique Item Selection)

@@ -1,742 +1,387 @@
 @page "{id:long}"
 @model YIS.Pages.Reports.SsdTrackRecordModel
 @{
-    ViewData["Title"] = "SSD Record Track";
+    ViewData["Title"] = "Contract Sell Movement - SSD-" + Model.SsdHeader?.EntryNumber;
 }
 
 <style>
-    /* Premium Report Styling */
-    .ssd-report-container {
-        max-width: 1100px;
-        margin: 20px auto;
-        background: #fff;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        position: relative;
-        overflow: hidden;
+    /* Clean, Professional Report Styling - No KPI Cards */
+    .movement-report {
+        background-color: #ffffff;
+        color: #212529;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    .report-header {
-        border-bottom: 2px solid #0d6efd;
-        padding-bottom: 20px;
-        margin-bottom: 30px;
-    }
-
-    .report-title {
-        font-size: 28px;
-        font-weight: 800;
-        color: #0d6efd;
-        letter-spacing: -0.5px;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .ssd-badge {
-        background: #0d6efd;
-        color: white;
-        padding: 6px 16px;
-        border-radius: 50px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .section-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 25px;
+    .report-sheet {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 24px;
         margin-bottom: 25px;
-        transition: transform 0.3s ease;
     }
 
-    .section-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-left: 4px solid #0d6efd;
-        padding-left: 15px;
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.86rem;
     }
 
-    .info-grid td {
-        padding: 12px 15px;
-        border: none !important;
-    }
-
-    .info-grid td:nth-child(odd) {
-        font-weight: 600;
-        color: #64748b;
-        width: 20%;
-    }
-
-    .info-grid td:nth-child(even) {
-        color: #1e293b;
-        width: 30%;
-    }
-
-    .ssd-table {
-        border-radius: 8px;
-        overflow: hidden;
-        border: none;
-    }
-
-    .ssd-table thead {
-        background: #6f42c1;
-        color: white;
-    }
-
-    .ssd-table th {
+    .report-table th {
+        background-color: #f1f3f5;
+        color: #343a40;
         font-weight: 600;
         text-transform: uppercase;
-        font-size: 13px;
-        padding: 15px;
-        border: none;
-    }
-
-    .ssd-table td {
-        padding: 15px;
+        font-size: 0.76rem;
+        letter-spacing: 0.5px;
+        padding: 8px 10px;
+        border: 1px solid #dee2e6;
         vertical-align: middle;
-        border-color: #f1f5f9;
     }
 
-    .item-badge {
-        font-weight: 600;
-        font-size: 13px;
-        color: #1e293b;
+    .report-table td {
+        padding: 7px 10px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
     }
 
-    .status-badge {
-        padding: 5px 12px;
-        border-radius: 50px;
-        font-size: 12px;
-        font-weight: 600;
+    .report-table tbody tr:hover {
+        background-color: #f8f9fa;
     }
 
-    .status-active { background: #dcfce7; color: #166534; }
-
-    .balance-box {
+    .section-heading {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #198754;
+        border-bottom: 2px solid #198754;
+        padding-bottom: 4px;
+        margin-top: 20px;
+        margin-bottom: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 20px;
-        background: #1e293b;
-        color: white;
-        border-radius: 8px;
-        font-weight: 700;
-        font-size: 18px;
     }
 
-    .balance-amount {
-        color: #0d6efd;
-        background: white;
-        padding: 5px 15px;
-        border-radius: 6px;
+    .info-table {
+        width: 100%;
+        margin-bottom: 15px;
+        font-size: 0.88rem;
+        border-collapse: collapse;
     }
 
-    .footer-actions {
-        margin-top: 40px;
-        padding-top: 20px;
-        border-top: 1px solid #e2e8f0;
-        display: flex;
-        justify-content: space-between;
+    .info-table td {
+        padding: 6px 12px;
+        border: 1px solid #e9ecef;
     }
 
-    .btn-back {
-        background: #f1f5f9;
-        color: #64748b;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 8px;
+    .info-table .label {
         font-weight: 600;
-        transition: all 0.2s;
+        color: #495057;
+        background-color: #f8f9fa;
+        width: 15%;
     }
 
-    .btn-back:hover { background: #e2e8f0; color: #1e293b; }
-
-    .btn-pdf {
-        background: #0d6efd;
-        color: white !important;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 8px;
-        font-weight: 600;
-        box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+    .info-table .value {
+        width: 35%;
+        color: #111827;
     }
 
-    /* Progress Bar Styles */
-    .stock-progress {
-        height: 6px;
+    .summary-matrix th {
         background-color: #e9ecef;
-        border-radius: 3px;
-        margin-top: 8px;
-        overflow: hidden;
+        font-size: 0.8rem;
     }
 
-    .stock-progress-bar {
-        height: 100%;
-        background-color: #0d6efd;
-        border-radius: 3px;
-        transition: width 1s ease-in-out;
+    .summary-matrix td {
+        font-size: 0.88rem;
     }
 
-    .stock-progress-bar.low-stock { background-color: #dc3545; }
-    .stock-progress-bar.mid-stock { background-color: #ffc107; }
-    .stock-progress-bar.high-stock { background-color: #198754; }
-
-    /* Animations */
-    @@keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    .text-num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
     }
-
-    .stagger-item {
-        opacity: 0;
-        animation: fadeInUp 0.5s ease-out forwards;
-    }
-
-    .text-sold { color: #dc3545; font-weight: 600; }
-    .text-remaining { color: #198754; font-weight: 600; }
 
     @@media print {
-        .footer-actions { display: none; }
-        .ssd-report-container { box-shadow: none; margin: 0; padding: 20px; }
+        body {
+            background-color: #ffffff !important;
+        }
+        .no-print {
+            display: none !important;
+        }
+        .report-sheet {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .report-table th {
+            background-color: #f1f3f5 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .info-table .label {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
     }
 </style>
 
-<div class="ssd-report-container" id="reportContent">
-    <!-- HEADER SECTION -->
-    <div class="report-header d-flex justify-content-between align-items-center flex-wrap">
-        <div class="stagger-item" style="animation-delay: 0.1s;">
-            <div class="report-title">
-                <i class="bi bi-shop-window"></i>
-                SSD RECORD TRACK
-            </div>
-            <div class="text-muted mt-1">Lifecycle Tracking - Sale Soda Record</div>
+<div class="container-fluid px-4 py-3 movement-report">
+    <!-- Top Action Bar (No-Print) -->
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <div>
+            <a href="/Reports/SsdTrackIndex" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Contract List
+            </a>
         </div>
-        <div class="text-end stagger-item" style="animation-delay: 0.2s;">
-            <span class="ssd-badge">
-                <i class="bi bi-hash"></i> SSD-@Model.SsdHeader?.EntryNumber
-            </span>
-            <div class="text-muted mt-2 small">
-                <i class="bi bi-calendar3"></i> Generated: <span id="reportDate"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- SSD HEADER DETAILS -->
-    <div class="section-card stagger-item" style="animation-delay: 0.3s;">
-        <div class="section-title">
-            <i class="bi bi-info-circle-fill"></i>
-            SSD Header Details
-        </div>
-        <table class="table table-bordered info-grid mb-0">
-            <tr>
-                <td>SSD Number</td>
-                <td><strong style="color: #0d6efd;">SSD-@Model.SsdHeader?.EntryNumber</strong></td>
-                <td>SSD Date</td>
-                <td>@Model.SsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
-            </tr>
-            <tr>
-                <td>Customer</td>
-                <td><strong>@Model.CustomerName</strong></td>
-                <td>Parent PSD</td>
-                <td>
-                    @if (Model.ParentPsdId.HasValue)
-                    {
-                        <a href="/Reports/PsdRecordTrack/@Model.ParentPsdId" class="text-decoration-none fw-bold" style="color: #0d6efd;">
-                            PSD-@Model.ParentPsdNumber <i class="bi bi-link-45deg"></i>
-                        </a>
-                    }
-                    else
-                    {
-                        @Model.ParentPsdNumber
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td>Status</td>
-                <td>
-                    <span class="status-badge status-active">
-                        <i class="bi bi-check-circle"></i> Active Tracking
-                    </span>
-                </td>
-                <td>Created On</td>
-                <td>@Model.SsdHeader?.CreationOn?.ToString("dd-MMM-yyyy hh:mm tt")</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- SSD LINE ITEMS TRACKING -->
-    <div class="section-card stagger-item" style="animation-delay: 0.4s;">
-        <div class="section-title">
-            <i class="bi bi-graph-up-arrow"></i>
-            Consumption Tracking (Sales vs Stock)
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered ssd-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">#</th>
-                        <th style="width: 25%;">Item Description</th>
-                        <th class="text-end" style="width: 12%;">SSD Qty</th>
-                        <th class="text-end" style="width: 12%;">Invoiced</th>
-                        <th class="text-end" style="width: 12%;">Pending</th>
-                        <th style="width: 15%;">Status</th>
-                        <th class="text-end" style="width: 19%;">SSD Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{ int lineNo = 1; }
-                    @foreach (var item in Model.LineItems)
-                    {
-                        double percent = (item.Qty > 0) ? (double)((item.SoldQty ?? 0) / item.Qty * 100) : 0;
-                        string progressClass = percent > 90 ? "high-stock" : (percent > 50 ? "mid-stock" : "low-stock");
-                        
-                        // Calculate GST Amount (assuming standard calculation)
-                        double gstAmount = (item.Amount ?? 0) * 0.18; // Adjust GST rate as needed
-                        
-                        <tr>
-                            <td class="text-center">@lineNo</td>
-                            <td>
-                                <span class="fw-medium text-dark">@item.ItemName</span>
-                            </td>
-                            <td class="text-end">@item.Qty?.ToString("N2")</td>
-                            <td class="text-end">@item.Rate?.ToString("N2")</td>
-                            <td class="text-end fw-bold">@item.Amount?.ToString("N2")</td>
-                            <td class="text-end text-sold">@item.SoldQty?.ToString("N2")</td>
-                            <td class="text-end text-remaining">@item.RemainingQty?.ToString("N2")</td>
-                            <td class="text-end">@gstAmount.ToString("N2")</td>
-                            <td>
-                                <div class="small text-muted d-flex justify-content-between mb-1">
-                                    <span>@percent.ToString("0")%</span>
-                                    <span>Invoiced</span>
-                                </div>
-                                <div class="stock-progress">
-                                    <div class="stock-progress-bar @progressClass" style="width: @percent%"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        lineNo++;
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- RELATED INVOICES -->
-    <div class="section-card stagger-item" style="animation-delay: 0.5s;">
-        <div class="section-title" style="border-left-color: #198754;">
-            <i class="bi bi-receipt-cutoff" style="color: #198754;"></i>
-            Invoices vs This SSD
-        </div>
-        @if (Model.RelatedSales.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-sm table-hover ssd-table">
-                    <thead>
-                        <tr style="background: #198754; color: white;">
-                            <th>Invoice #</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th class="text-end">Invoice Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var inv in Model.RelatedSales)
-                        {
-                            <tr>
-                               <td>
-                                    <a href="/Sales/Entry?id=@inv.EntryId" class="text-decoration-none fw-semibold" style="color: #198754;">
-                                        SAL-@inv.EntryNumber
-                                    </a>
-                                </td>
-                                <td class="small">@inv.EntryDate?.ToString("dd-MMM-yy")</td>
-                                <td class="small">@inv.Description</td>
-                                <td class="text-end fw-bold">@inv.Amount?.ToString("N2")</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="text-center py-4 text-muted">
-                <i class="bi bi-info-circle"></i> No invoices generated against this SSD yet.
-            </div>
-        }
-    </div>
-
-    <!-- FOOTER ACTIONS -->
-    <div class="footer-actions" id="footerActions">
-        <a href="/Reports/SsdTrackIndex" class="btn btn-back">
-            <i class="bi bi-arrow-left"></i>
-            Back to List
-        </a>
         <div class="d-flex gap-2">
-            <button class="btn btn-pdf shadow-sm" onclick="downloadPDF()">
-                <i class="bi bi-file-earmark-pdf"></i>
-                Download PDF Report
+            <button class="btn btn-success btn-sm" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i>Print Movement Statement
             </button>
         </div>
     </div>
-</div>
 
-<!-- HIDDEN PRINT TEMPLATE (Premium A4 Portrait Statement) -->
-<div id="printTemplate" style="display: none;">
-    <style>
-        .report-print-body {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 0mm 15mm 15mm 15mm;
-            margin: 0 auto;
-            background: #ffffff;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #1a1a1a;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        /* Branding Header */
-        .report-header-premium {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 2px solid #0d6efd;
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-            margin-top: 5mm;
-        }
-
-        .brand-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-logo-circle {
-            width: 45px;
-            height: 45px;
-            background: #6f42c1;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .brand-name {
-            font-size: 24px;
-            font-weight: 800;
-            color: #0d6efd;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .brand-tagline {
-            font-size: 11px;
-            color: #6c757d;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .report-meta {
-            text-align: right;
-        }
-
-        .report-type-badge {
-            background: #6f42c1;
-            color: white;
-            padding: 4px 12px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-
-        /* Information Grid */
-        .statement-box {
-            background: #fcfaff;
-            border: 1px solid #efe5ff;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 25px;
-        }
-
-        .info-table-premium {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .info-table-premium td {
-            padding: 6px 10px;
-            font-size: 12px;
-            vertical-align: top;
-        }
-
-        .info-label {
-            font-weight: 700;
-            color: #495057;
-            width: 110px;
-        }
-
-        .info-value {
-            color: #212529;
-        }
-
-        /* Main Data Table */
-        .premium-data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .premium-data-table th {
-            background: #f8f9fa;
-            color: #495057;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 10px;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .premium-data-table td {
-            padding: 10px;
-            font-size: 11px;
-            border-bottom: 1px solid #f1f3f5;
-            color: #333;
-        }
-
-        .premium-data-table tr:nth-child(even) {
-            background-color: #fafbfb;
-        }
-
-        .text-right { text-align: right; }
-
-        /* Valuation Box */
-        .valuation-summary {
-            margin-top: 10px;
-            padding: 15px;
-            background: #f1f9f6;
-            border: 1px solid #d1e7dd;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .valuation-label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #146c43;
-        }
-
-        .valuation-amount {
-            font-size: 18px;
-            font-weight: 800;
-            color: #198754;
-        }
-
-        /* Approval Section */
-        .signature-section {
-            margin-top: 60px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .sig-box {
-            width: 200px;
-            text-align: center;
-        }
-
-        .sig-line {
-            border-top: 1px solid #333;
-            margin-bottom: 8px;
-        }
-
-        .sig-text {
-            font-size: 11px;
-            font-weight: 600;
-            color: #6c757d;
-        }
-
-        /* Footer */
-        .premium-footer {
-            position: absolute;
-            bottom: 15mm;
-            left: 15mm;
-            right: 15mm;
-            border-top: 1px solid #dee2e6;
-            padding-top: 10px;
-            font-size: 9px;
-            color: #adb5bd;
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
-
-    <div class="report-print-body">
-        <header class="report-header-premium">
-            <div class="brand-section">
-                <div class="brand-logo-circle">Y</div>
-                <div>
-                    <h1 class="brand-name">YARN PRO</h1>
-                    <p class="brand-tagline">Professional Sale Tracking</p>
+    <!-- Printable Statement Container -->
+    <div class="report-sheet shadow-sm" id="printableReport">
+        <!-- Header -->
+        <div class="border-bottom pb-3 mb-3">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="fw-bold mb-0 text-dark">@Model.CompanyName</h3>
+                    <h5 class="text-success fw-semibold mb-0 mt-1">CONTRACT SELL MOVEMENT</h5>
+                    <small class="text-muted">Sales Soda Contract Lifecycle & Delivery Realization Statement</small>
+                </div>
+                <div class="col-4 text-end">
+                    <div class="fs-5 fw-bold text-dark">SSD-@Model.SsdHeader?.EntryNumber</div>
+                    <div class="text-muted small">Date: @Model.SsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</div>
+                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MMM-yyyy hh:mm tt")</div>
                 </div>
             </div>
-            <div class="report-meta">
-                <span class="report-type-badge">SALE SODA STATEMENT</span>
-                <div style="font-size: 11px; color: #6c757d;">Generated On: @DateTime.Now.ToString("dd MMM yyyy, hh:mm tt")</div>
-            </div>
-        </header>
+        </div>
 
-        <section class="statement-box">
-            <table class="info-table-premium">
+        <!-- 1. Contract Header Info -->
+        <table class="info-table">
+            <tr>
+                <td class="label">Contract (SSD) #:</td>
+                <td class="value fw-bold text-success">SSD-@Model.SsdHeader?.EntryNumber</td>
+                <td class="label">Contract Date:</td>
+                <td class="value">@Model.SsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
+            </tr>
+            <tr>
+                <td class="label">Customer Name:</td>
+                <td class="value fw-bold">@Model.CustomerName</td>
+                <td class="label">Source PSD #:</td>
+                <td class="value">
+                    @if (Model.ParentPsd != null)
+                    {
+                        <a href="/Reports/PsdRecordTrack/@Model.ParentPsd.PsdId" class="fw-bold text-primary text-decoration-none">
+                            PSD-@Model.ParentPsd.PsdNumber
+                        </a>
+                        <span class="text-muted small ms-1">(@Model.ParentPsd.SupplierName)</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Direct Stock</span>
+                    }
+                </td>
+            </tr>
+            @if (!string.IsNullOrEmpty(Model.SsdHeader?.EntryRemarks))
+            {
                 <tr>
-                    <td class="info-label">Statement Ref:</td>
-                    <td class="info-value">SSD-@Model.SsdHeader?.EntryNumber</td>
-                    <td class="info-label">Customer:</td>
-                    <td class="info-value">@Model.CustomerName</td>
+                    <td class="label">Remarks / Terms:</td>
+                    <td colspan="3" class="value">@Model.SsdHeader?.EntryRemarks</td>
                 </tr>
-                <tr>
-                    <td class="info-label">Entry Date:</td>
-                    <td class="info-value">@Model.SsdHeader?.EntryDate?.ToString("dd MMM yyyy")</td>
-                    <td class="info-label">Parent PSD:</td>
-                    <td class="info-value">PSD-@Model.ParentPsdNumber</td>
-                </tr>
-                <tr>
-                    <td class="info-label">System ID:</td>
-                    <td colspan="3" class="info-value">#@Model.SsdHeader?.EntryId | Sale Lifecycle Account</td>
-                </tr>
-            </table>
-        </section>
+            }
+        </table>
 
-        <h3 style="font-size: 14px; margin-bottom: 12px; color: #6f42c1;">Consumption & Invoicing Summary</h3>
-        <table class="premium-data-table">
+        <!-- 2. SSD Contract Booked Items -->
+        <div class="section-heading">
+            <span>1. CONTRACT DETAILS (SALES SODA BOOKING)</span>
+            <span class="fs-6 text-muted">Total Items: @Model.ContractItems.Count</span>
+        </div>
+        <table class="report-table mb-3">
             <thead>
                 <tr>
-                    <th style="width: 30px;">SN</th>
+                    <th class="text-center" style="width: 40px;">#</th>
                     <th>Item Description</th>
-                    <th class="text-right">SSD Qty</th>
-                    <th class="text-right">Invoiced</th>
-                    <th class="text-right">Pending</th>
-                    <th class="text-right">Rate</th>
-                    <th class="text-right">Amount (PKR)</th>
+                    <th class="text-num" style="width: 120px;">Contract Qty (Bags)</th>
+                    <th class="text-num" style="width: 120px;">Total LBS</th>
+                    <th class="text-num" style="width: 110px;">Sale Rate</th>
+                    <th class="text-num" style="width: 130px;">Amount</th>
+                    <th class="text-num" style="width: 110px;">Sales Tax</th>
+                    <th class="text-num" style="width: 140px;">Net Amount</th>
                 </tr>
             </thead>
             <tbody>
-                @{ int sCount = 1; }
-                @foreach (var item in Model.LineItems)
+                @{
+                    int cIdx = 1;
+                    double sumCQty = 0, sumCLbs = 0, sumCAmt = 0, sumCTax = 0, sumCNet = 0;
+                }
+                @foreach (var c in Model.ContractItems)
                 {
+                    sumCQty += c.Qty;
+                    sumCLbs += c.Lbs;
+                    sumCAmt += c.Amount;
+                    sumCTax += c.TaxAmount;
+                    sumCNet += c.NetAmount;
+
                     <tr>
-                        <td>@sCount</td>
-                        <td style="font-weight: 600;">@item.ItemName</td>
-                        <td class="text-right">@item.Qty?.ToString("N2")</td>
-                        <td class="text-right" style="color: #6f42c1; font-weight: 700;">@item.SoldQty?.ToString("N2")</td>
-                        <td class="text-right">@item.RemainingQty?.ToString("N2")</td>
-                        <td class="text-right">@item.Rate?.ToString("N2")</td>
-                        <td class="text-right" style="font-weight: 600;">@item.Amount?.ToString("N2")</td>
+                        <td class="text-center text-muted">@cIdx</td>
+                        <td class="fw-semibold">@c.ItemName</td>
+                        <td class="text-num fw-bold">@c.Qty.ToString("N2")</td>
+                        <td class="text-num">@c.Lbs.ToString("N2")</td>
+                        <td class="text-num">@c.Rate.ToString("F4")</td>
+                        <td class="text-num">@c.Amount.ToString("N2")</td>
+                        <td class="text-num text-muted">@c.TaxAmount.ToString("N2")</td>
+                        <td class="text-num fw-bold text-dark">@c.NetAmount.ToString("N2")</td>
                     </tr>
-                    sCount++;
+                    cIdx++;
+                }
+                <tr class="table-light fw-bold border-top border-2">
+                    <td colspan="2" class="text-uppercase text-center">Total Contract</td>
+                    <td class="text-num">@sumCQty.ToString("N2")</td>
+                    <td class="text-num">@sumCLbs.ToString("N2")</td>
+                    <td class="text-num">@((sumCLbs > 0 ? (sumCAmt / (sumCLbs / 10.0)) : (sumCQty > 0 ? sumCAmt / sumCQty : 0)).ToString("F4"))</td>
+                    <td class="text-num">@sumCAmt.ToString("N2")</td>
+                    <td class="text-num">@sumCTax.ToString("N2")</td>
+                    <td class="text-num text-success">@sumCNet.ToString("N2")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 3. Sales Invoices Delivered (SAL Receipts / Deliveries) -->
+        <div class="section-heading">
+            <span>2. SALES INVOICES DELIVERED (SAL DELIVERIES)</span>
+            <span class="fs-6 text-muted">Deliveries Count: @Model.DeliveryItems.Count</span>
+        </div>
+        @if (Model.DeliveryItems.Any())
+        {
+            <table class="report-table mb-3">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">SAL #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th>Item Description</th>
+                        <th>Remarks / DC Ref</th>
+                        <th class="text-num" style="width: 110px;">Delivered Qty</th>
+                        <th class="text-num" style="width: 110px;">Delivered LBS</th>
+                        <th class="text-num" style="width: 100px;">Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int dIdx = 1;
+                        double sumDQty = 0, sumDLbs = 0, sumDAmt = 0, sumDTax = 0, sumDNet = 0;
+                    }
+                    @foreach (var d in Model.DeliveryItems)
+                    {
+                        sumDQty += d.Qty;
+                        sumDLbs += d.Lbs;
+                        sumDAmt += d.Amount;
+                        sumDTax += d.TaxAmount;
+                        sumDNet += d.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@dIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Sales/Entry?id=@d.SalId" class="text-decoration-none text-success" target="_blank">
+                                    SAL-@d.SalNumber
+                                </a>
+                            </td>
+                            <td>@d.SalDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="fw-semibold">@d.ItemName</td>
+                            <td class="text-muted small">@(string.IsNullOrEmpty(d.Remarks) ? "-" : d.Remarks)</td>
+                            <td class="text-num fw-bold text-success">@d.Qty.ToString("N2")</td>
+                            <td class="text-num">@d.Lbs.ToString("N2")</td>
+                            <td class="text-num">@d.Rate.ToString("F4")</td>
+                            <td class="text-num">@d.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@d.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@d.NetAmount.ToString("N2")</td>
+                        </tr>
+                        dIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="5" class="text-uppercase text-center">Total Delivered</td>
+                        <td class="text-num text-success">@sumDQty.ToString("N2")</td>
+                        <td class="text-num">@sumDLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumDLbs > 0 ? (sumDAmt / (sumDLbs / 10.0)) : (sumDQty > 0 ? sumDAmt / sumDQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumDAmt.ToString("N2")</td>
+                        <td class="text-num">@sumDTax.ToString("N2")</td>
+                        <td class="text-num text-success">@sumDNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No sales invoices delivered yet against this sales contract.
+            </div>
+        }
+
+        <!-- 4. Movement & Balance Summary Ledger (Clean Tabular Matrix, No Cards) -->
+        <div class="section-heading">
+            <span>3. MOVEMENT & BALANCE SUMMARY LEDGER</span>
+            <span class="fs-6 text-muted">Sales Realization & Delivery Position</span>
+        </div>
+        <table class="report-table summary-matrix mb-4">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Movement Stage / Description</th>
+                    <th class="text-num" style="width: 15%;">Quantity (Bags)</th>
+                    <th class="text-num" style="width: 15%;">Weight (LBS)</th>
+                    <th class="text-num" style="width: 15%;">Avg Rate / Unit</th>
+                    <th class="text-num" style="width: 20%;">Total Amount (PKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-dark">A. Sales Contract Booked (SSD)</td>
+                    <td class="text-num fw-bold">@Model.Summary.ContractQty.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.ContractLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.ContractAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold">@Model.Summary.ContractAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-success">B. Sales Delivered & Invoiced (SAL)</td>
+                    <td class="text-num fw-bold text-success">@Model.Summary.DeliveredQty.ToString("N2")</td>
+                    <td class="text-num text-success">@Model.Summary.DeliveredLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.DeliveredAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold text-success">@Model.Summary.DeliveredAmount.ToString("N2")</td>
+                </tr>
+                <tr class="table-warning">
+                    <td class="fw-bold text-danger">C. Pending Delivery to Customer (A - B)</td>
+                    <td class="text-num fw-bold text-danger">@Model.Summary.PendingDeliveryQty.ToString("N2")</td>
+                    <td class="text-num text-danger">@Model.Summary.PendingDeliveryLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num fw-bold text-danger">@Model.Summary.PendingDeliveryAmount.ToString("N2")</td>
+                </tr>
+                @if (Model.ParentPsd != null)
+                {
+                    <tr class="table-light">
+                        <td class="fw-bold text-primary">D. Source Purchase Contract (PSD-@Model.ParentPsd.PsdNumber)</td>
+                        <td class="text-num fw-bold text-primary">@Model.Summary.LinkedPsdQty.ToString("N2")</td>
+                        <td class="text-num text-primary">@Model.Summary.LinkedPsdLbs.ToString("N2")</td>
+                        <td class="text-num">@((Model.ParentPsd.Rate ?? 0).ToString("F4"))</td>
+                        <td class="text-num fw-bold text-primary">@Model.Summary.LinkedPsdAmount.ToString("N2")</td>
+                    </tr>
                 }
             </tbody>
         </table>
 
-        <div class="valuation-summary">
-            <span class="valuation-label">Total SSD Valuation</span>
-            <span class="valuation-amount">PKR @Model.GrandTotal.ToString("N2")</span>
-        </div>
-
-        @if (Model.RelatedSales.Any())
-        {
-            <h3 style="font-size: 13px; margin: 25px 0 10px 0; color: #495057;">Related Invoices</h3>
-            <table class="premium-data-table">
-                <thead>
-                    <tr>
-                        <th>Invoice Number</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th class="text-right">Grand Total (PKR)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var sale in Model.RelatedSales)
-                    {
-                        <tr>
-                            <td>SAL-@sale.EntryNumber</td>
-                            <td>@sale.EntryDate?.ToString("dd MMM yyyy")</td>
-                            <td><span style="color: #198754;">Verified Posting</span></td>
-                            <td class="text-right" style="font-weight: 600;">@sale.GrandTotal?.ToString("N2")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-
-        <div class="signature-section">
-            <div class="sig-box">
-                <div class="sig-line"></div>
-                <div class="sig-text">Verified By</div>
+        <!-- Signatures for Official Movement Statement -->
+        <div class="row pt-5 mt-4 text-center">
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Prepared By</div>
             </div>
-            <div class="sig-box">
-                <div class="sig-line"></div>
-                <div class="sig-text">Authorized Signature</div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Checked By</div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Authorized Signature</div>
             </div>
         </div>
-
-        <footer class="premium-footer">
-            <span>&copy; 2026 YARN PRO - Confidential Sale Statement</span>
-            <span>Ref: SSD-@Model.SsdHeader?.EntryNumber</span>
-        </footer>
     </div>
 </div>
-
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        document.getElementById('reportDate').innerText = new Date().toLocaleString();
-
-        function downloadPDF() {
-            const element = document.getElementById('printTemplate');
-            element.style.display = 'block';
-
-            const ssdNumber = '@Model.SsdHeader?.EntryNumber';
-            
-            const opt = {
-                margin: [0, 0, 0, 0],
-                filename: `SSD_Statement_${ssdNumber}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 4, 
-                    useCORS: true,
-                    letterRendering: true,
-                    logging: false,
-                    scrollY: 0
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: 'a4', 
-                    orientation: 'portrait',
-                    compress: true
-                }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                element.style.display = 'none';
-            });
-        }
-    </script>
-}

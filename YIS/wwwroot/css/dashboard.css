@@ -1,4 +1,4 @@
-﻿/* ============================================
+/* ============================================
    SaaS Dashboard CSS - Modern Design
    ============================================ */
 
@@ -90,16 +90,23 @@ body {
     z-index: 1000;
     transition: width var(--transition-normal);
     overflow-x: hidden;
-    overflow-y: auto;
-    /* Enable vertical scrolling */
+    overflow-y: scroll;
+    /* Always reserve scrollbar space to avoid layout shift */
     display: flex;
     flex-direction: column;
-    scrollbar-width: thin;
-    /* Firefox */
-    scrollbar-color: var(--border-color) transparent;
+    /* Firefox: hide scrollbar by default */
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+    transition: width var(--transition-normal), scrollbar-color 0.3s ease;
 }
 
-/* Custom scrollbar for sidebar */
+/* Firefox: show scrollbar on hover */
+.sidebar:hover {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.5) transparent;
+}
+
+/* Custom scrollbar for sidebar — hidden by default, visible on hover */
 .sidebar::-webkit-scrollbar {
     width: 4px;
 }
@@ -108,9 +115,20 @@ body {
     background: transparent;
 }
 
+/* Hidden by default */
 .sidebar::-webkit-scrollbar-thumb {
-    background: var(--border-color);
+    background: transparent;
     border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+/* Show on hover */
+.sidebar:hover::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.9);
 }
 
 .sidebar-collapsed .sidebar {
@@ -844,19 +862,89 @@ body {
 }
 
 /* ============================================
-   HTMX Loading States
+   Global & HTMX Loading States
    ============================================ */
+
+/* ============================================
+   YouTube-Style Top Loading Progress Bar
+   ============================================ */
+
+#yis-top-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: #ff0000;
+    background: linear-gradient(90deg, #ff0000 0%, #ff4d4d 50%, #ff0000 100%);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 5px rgba(255, 77, 77, 0.6);
+    z-index: 99999999;
+    pointer-events: none;
+    opacity: 0;
+    transition: width 0.3s cubic-bezier(0.1, 0.9, 0.2, 1), opacity 0.3s ease;
+}
+
+#yis-top-loader::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 3px;
+    width: 100px;
+    box-shadow: 0 0 12px #ff0000, 0 0 6px #ffffff;
+    opacity: 1;
+    transform: rotate(3deg) translate(0px, -4px);
+}
+
+/* Inside-Button Spinner Loader */
+.btn-loader-spinner {
+    display: inline-block;
+    width: 0.95rem;
+    height: 0.95rem;
+    vertical-align: -0.125em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: btnLoaderSpin 0.6s linear infinite;
+    margin-right: 0.45rem;
+    flex-shrink: 0;
+}
+
+.btn-loader-spinner.no-margin {
+    margin-right: 0;
+}
+
+@keyframes btnLoaderSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 .htmx-indicator {
     display: none;
 }
 
-.htmx-request .htmx-indicator {
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
     display: inline-flex;
 }
 
-.htmx-request.htmx-indicator {
-    display: inline-flex;
+/* Live Search Input Spinner on Index pages */
+.yis-cat-search-input.htmx-request,
+.search-input-loading {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 38 38' stroke='%234f46e5'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg transform='translate(1 1)' stroke-width='3'%3E%3Ccircle stroke-opacity='.25' cx='18' cy='18' r='18' stroke='%234f46e5'/%3E%3Cpath d='M36 18c0-9.94-8.06-18-18-18'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 18 18' to='360 18 18' dur='0.75s' repeatCount='indefinite'/%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    background-size: 18px 18px !important;
+}
+
+/* Button Loading State */
+button[data-loading-active="true"],
+.btn[data-loading-active="true"],
+button.disabled[data-loading-active="true"],
+.btn.disabled[data-loading-active="true"] {
+    opacity: 0.9 !important;
+    pointer-events: none !important;
 }
 
 .loading-spinner {

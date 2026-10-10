@@ -37,6 +37,9 @@ namespace YIS.Pages.Sales
             public double? Lbs { get; set; }
             public double? Rate { get; set; }
             public double? Amount { get; set; }
+            public double? GstPer { get; set; } = 0;
+            public double? GstAmt { get; set; }
+            public double? NetAmount { get; set; }
         }
 
         public class PsdEntryInfo
@@ -56,6 +59,7 @@ namespace YIS.Pages.Sales
             public double RemainingQty { get; set; }
             public double Rate { get; set; }
             public double Lbs { get; set; }
+            public double GstPer { get; set; } = 0;
         }
 
         public List<PsdEntryInfo> PsdEntriesForJs { get; set; } = new List<PsdEntryInfo>();
@@ -76,18 +80,28 @@ namespace YIS.Pages.Sales
 
                 if (childEntries.Any())
                 {
-                    LineItems = childEntries.Select(c => new LineItemViewModel
+                    LineItems = childEntries.Select(c =>
                     {
-                        EntryId = c.EntryId,
-                        ItemId = c.ItemId,
-                        Qty = c.Qty,
-                        Lbs = c.Lbs,
-                        Rate = c.Rate,
-                        Amount = c.Amount
+                        double gst = double.TryParse(c.EntryAttribute1, out double g1) ? g1 : (double.TryParse(c.EntryAttribute2, out double g2) ? g2 : 0);
+                        double tax = c.TaxAmount ?? ((c.Amount ?? 0) * (gst / 100.0));
+                        return new LineItemViewModel
+                        {
+                            EntryId = c.EntryId,
+                            ItemId = c.ItemId,
+                            Qty = c.Qty,
+                            Lbs = c.Lbs,
+                            Rate = c.Rate,
+                            Amount = c.Amount,
+                            GstPer = gst,
+                            GstAmt = tax,
+                            NetAmount = (c.Amount ?? 0) + tax
+                        };
                     }).ToList();
                 }
                 else if (Entry.ItemId.HasValue)
                 {
+                    double gst = double.TryParse(Entry.EntryAttribute1, out double g1) ? g1 : (double.TryParse(Entry.EntryAttribute2, out double g2) ? g2 : 0);
+                    double tax = Entry.TaxAmount ?? ((Entry.Amount ?? 0) * (gst / 100.0));
                     LineItems.Add(new LineItemViewModel
                     {
                         EntryId = 0,
@@ -95,7 +109,10 @@ namespace YIS.Pages.Sales
                         Qty = Entry.Qty,
                         Lbs = Entry.Lbs,
                         Rate = Entry.Rate,
-                        Amount = Entry.Amount
+                        Amount = Entry.Amount,
+                        GstPer = gst,
+                        GstAmt = tax,
+                        NetAmount = (Entry.Amount ?? 0) + tax
                     });
                 }
             }
@@ -106,13 +123,29 @@ namespace YIS.Pages.Sales
                     EntryId = 0,
                     EntryDate = DateTime.Today,
                     EntryType = "SSD",
-                    EntryRefType = "PSD"
+                    EntryRefType = "PSD",
+                    EntryAttribute2 = "Credit",
+                    EntryAttribute5 = "No",
+                    EntryCommPer = 10
                 };
                 DisplayEntryNumber = "SSD-(Auto)";
-                LineItems.Add(new LineItemViewModel { EntryId = 0 });
+                LineItems.Add(new LineItemViewModel { EntryId = 0, GstPer = 0 });
             }
 
-            if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0 });
+            if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0, GstPer = 0 });
+
+            if (Entry != null && string.IsNullOrEmpty(Entry.EntryAttribute2))
+            {
+                Entry.EntryAttribute2 = "Credit";
+            }
+            if (Entry != null && string.IsNullOrEmpty(Entry.EntryAttribute5))
+            {
+                Entry.EntryAttribute5 = "No";
+            }
+            if (Entry != null && !Entry.EntryCommPer.HasValue)
+            {
+                Entry.EntryCommPer = 10;
+            }
 
             await LoadDropdowns();
             return Page();
@@ -126,17 +159,54 @@ namespace YIS.Pages.Sales
                 return Page();
             }
 
-            // Recalculate amounts based on Lbs * Rate
+            // Recalculate amounts and GST based on Lbs * Rate and GstPer
+            double totalQty = 0;
+            double totalAmount = 0;
+            double totalGst = 0;
+            double grandTotalNet = 0;
+
             foreach (var item in LineItems)
             {
+                if (item.Qty.HasValue && (!item.Lbs.HasValue || item.Lbs == 0))
+                {
+                    item.Lbs = item.Qty.Value * 100;
+                }
                 if (item.Lbs.HasValue && item.Rate.HasValue)
                 {
                     item.Amount = item.Lbs.Value * item.Rate.Value;
                 }
+                if (item.Amount.HasValue && item.GstPer.HasValue)
+                {
+                    item.GstAmt = item.Amount.Value * (item.GstPer.Value / 100.0);
+                }
+                else
+                {
+                    item.GstAmt = 0;
+                }
+                item.NetAmount = (item.Amount ?? 0) + (item.GstAmt ?? 0);
+
+                totalQty += item.Qty ?? 0;
+                totalAmount += item.Amount ?? 0;
+                totalGst += item.GstAmt ?? 0;
+                grandTotalNet += item.NetAmount ?? 0;
             }
 
-            double totalQty = LineItems.Sum(x => x.Qty ?? 0);
-            double totalAmount = LineItems.Sum(x => x.Amount ?? 0);
+            // Commission Calculation
+            if (Entry.EntryAttribute5 == "Yes")
+            {
+                double commPer = Entry.EntryCommPer ?? 10;
+                Entry.EntryCommPer = commPer;
+                Entry.EntryCommAmt = grandTotalNet * (commPer / 100.0);
+                Entry.EntryCommSukri = (Entry.EntryCommAmt ?? 0) * 0.10;
+            }
+            else
+            {
+                Entry.EntryAttribute5 = "No";
+                Entry.EntryAttribute4 = null;
+                Entry.EntryCommPer = null;
+                Entry.EntryCommAmt = null;
+                Entry.EntryCommSukri = null;
+            }
 
             // Get Active Company Profile from Session
             long? activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
@@ -153,7 +223,9 @@ namespace YIS.Pages.Sales
                 Entry.EntryRefType = "PSD";
                 Entry.CreationOn = DateTime.Now;
                 Entry.Qty = totalQty;
-                Entry.Amount = totalAmount;
+                Entry.Amount = grandTotalNet; // Store grand total including GST
+                Entry.TaxAmount = totalGst; // Store total GST
+                Entry.EntryAttribute3 = grandTotalNet.ToString("F2");
 
                 var lastEntry = await _context.Entries
                     .Where(e => e.EntryType == "SSD" && e.UcpId == activeUcpId)
@@ -170,10 +242,19 @@ namespace YIS.Pages.Sales
 
                 existing.EntryDate = Entry.EntryDate;
                 existing.EntryAttribute1 = Entry.EntryAttribute1; // Customer
+                existing.EntryAttribute2 = Entry.EntryAttribute2; // Payment Mode
+                existing.EntryTermsDays = Entry.EntryTermsDays; // Payment Terms Days
                 existing.EntryRefId = Entry.EntryRefId; // PSD Ref
                 existing.EntryRemarks = Entry.EntryRemarks;
+                existing.EntryAttribute4 = Entry.EntryAttribute4;
+                existing.EntryAttribute5 = Entry.EntryAttribute5;
+                existing.EntryCommPer = Entry.EntryCommPer;
+                existing.EntryCommAmt = Entry.EntryCommAmt;
+                existing.EntryCommSukri = Entry.EntryCommSukri;
                 existing.Qty = totalQty;
-                existing.Amount = totalAmount;
+                existing.Amount = grandTotalNet;
+                existing.TaxAmount = totalGst;
+                existing.EntryAttribute3 = grandTotalNet.ToString("F2");
                 existing.UcpId = activeUcpId;
                 existing.LastUpdateOn = DateTime.Now;
 
@@ -208,6 +289,9 @@ namespace YIS.Pages.Sales
                         existingLine.Lbs = item.Lbs;
                         existingLine.Rate = item.Rate;
                         existingLine.Amount = item.Amount;
+                        existingLine.EntryAttribute1 = item.GstPer?.ToString(); // GST %
+                        existingLine.TaxAmount = item.GstAmt; // GST Amount
+                        existingLine.EntryAttribute3 = item.NetAmount?.ToString();
                         existingLine.UcpId = activeUcpId;
                         existingLine.LastUpdateOn = DateTime.Now;
                     }
@@ -225,6 +309,9 @@ namespace YIS.Pages.Sales
                         Lbs = item.Lbs,
                         Rate = item.Rate,
                         Amount = item.Amount,
+                        EntryAttribute1 = item.GstPer?.ToString(), // GST %
+                        TaxAmount = item.GstAmt, // GST Amount
+                        EntryAttribute3 = item.NetAmount?.ToString(),
                         UcpId = activeUcpId,
                         CreationOn = DateTime.Now
                     });
@@ -279,6 +366,7 @@ namespace YIS.Pages.Sales
                        x.e.Qty,
                        x.e.Lbs,
                        x.e.Rate,
+                       x.e.EntryAttribute2,
                        x.i.ItemName
                    })
                    .ToListAsync();
@@ -339,7 +427,8 @@ namespace YIS.Pages.Sales
                                 OriginalQty = pi.Qty ?? 0,
                                 RemainingQty = rem,
                                 Rate = pi.Rate ?? 0,
-                                Lbs = pi.Lbs ?? 0
+                                Lbs = pi.Lbs ?? 0,
+                                GstPer = double.TryParse(pi.EntryAttribute2, out double g) ? g : 0
                             });
                             totalRemaining += rem;
                         }

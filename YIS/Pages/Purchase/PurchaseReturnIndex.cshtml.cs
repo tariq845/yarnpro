@@ -150,9 +150,10 @@ namespace YIS.Pages.Purchase
             }
 
             long? supplierAccountId = null;
+            SupplierMaster? supplier = null;
             if (long.TryParse(parentEntry.EntryAttribute1, out long supplierId))
             {
-                var supplier = await _context.SupplierMasters.FindAsync(supplierId);
+                supplier = await _context.SupplierMasters.FindAsync(supplierId);
                 supplierAccountId = supplier?.AccountId;
             }
 
@@ -181,7 +182,7 @@ namespace YIS.Pages.Purchase
                     TransId = 0,
                     TransNo = newTransNo,
                     TransType = "DN",
-                    AccountId = supplierAccountId,
+                    AccountId = supplierAccountId.Value,
                     Debit = parentEntry.Amount ?? 0,
                     Credit = 0,
                     Remarks = $"Debit Note DN-{parentEntry.EntryNumber} (Purchase Return)",
@@ -190,8 +191,25 @@ namespace YIS.Pages.Purchase
                 };
                 _context.Transactions.Add(debitTrans);
 
-                var purchaseAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("Purchase") && a.UcpId == activeUcpId);
-                var gstAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("GST") && a.UcpId == activeUcpId);
+                AccountMaster? purchaseAccount = null;
+                if (supplier?.PurchaseAccountId.HasValue == true)
+                {
+                    purchaseAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountId == supplier.PurchaseAccountId.Value && a.UcpId == activeUcpId);
+                }
+                if (purchaseAccount == null)
+                {
+                    purchaseAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("Purchase") && a.UcpId == activeUcpId);
+                }
+
+                AccountMaster? gstAccount = null;
+                if (supplier?.TaxAccountId.HasValue == true)
+                {
+                    gstAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountId == supplier.TaxAccountId.Value && a.UcpId == activeUcpId);
+                }
+                if (gstAccount == null)
+                {
+                    gstAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("GST") && a.UcpId == activeUcpId);
+                }
 
                 foreach (var line in lineItems)
                 {
