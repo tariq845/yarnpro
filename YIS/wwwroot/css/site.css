@@ -1,0 +1,82 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+/* Custom delete icon button with hover effect */
+.btn-icon-delete {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    padding: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.btn-icon-delete:hover {
+    color: #bb2d3b;
+    transform: scale(1.2);
+}
+
+/* Animated Delete Button */
+.btn-animated-delete {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    padding: 0;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-animated-delete:hover {
+    color: #c82333;
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+    transform: scale(1.1);
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0) scale(1.1);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0) scale(1.1);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0) scale(1.1);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0) scale(1.1);
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}

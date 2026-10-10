@@ -1,0 +1,548 @@
+@page "{id:long}"
+@model YIS.Pages.Sales.InvoiceViewModel
+@{
+    ViewData["Title"] = "Invoice View";
+    Layout = null; // Standalone Page
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice @Model.Invoice.InvoiceNo - YIS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #525659;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .actions-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            /* background: #323639; */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            /* box-shadow: 0 2px 5px rgba(0,0,0,0.2); */
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #ddd;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-link:hover { color: #fff; }
+
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-print { background: #555; color: white; }
+        .btn-print:hover { background: #666; }
+        .btn-download { background: #3498db; color: white; margin-left: 10px; }
+        .btn-download:hover { background: #2980b9; }
+
+        /* A4 Portrait Page Container */
+        .page-container {
+            width: 210mm; /* A4 Portrait Width */
+            height: auto;
+            min-height: auto;
+            background: white;
+            margin: 0 auto;
+            padding: 10mm;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* Invoice Header - Clean Layout */
+        .inv-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10mm;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 5mm;
+        }
+        
+        .header-left {
+            flex: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .header-middle {
+            flex: 0 0 auto;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .header-right {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        /* UCP Logo Style */
+        .ucp-logo-img {
+            height: 75px; /* Match QR Code */
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* FBR Logo Style */
+        .fbr-logo-img {
+            height: 75px; /* Match QR Code */
+            width: auto;
+            object-fit: contain;
+        }
+
+        .inv-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .meta-group {
+            text-align: center;
+        }
+        
+        .meta-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        
+        .meta-label {
+            font-size: 10px;
+            color: #333;
+            font-weight: 600;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+        
+        .meta-value {
+            font-size: 11px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 75px;
+        }
+
+        .fbr-di-no {
+            font-size: 7.5px;
+            color: #000;
+            margin-top: 2px;
+            text-align: center;
+            width: auto;
+            white-space: nowrap;
+        }
+
+
+        /* Info Section - Clean Columns */
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10mm;
+            gap: 20mm;
+        }
+        .info-col {
+            flex: 1;
+        }
+        .info-col h3 {
+            font-size: 10px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+            margin: 0 0 8px 0;
+        }
+        
+        .info-content {
+            font-size: 11px;
+            line-height: 1.4;
+            color: #34495e;
+        }
+        .info-content strong {
+            display: block;
+            font-size: 13px;
+            color: #2c3e50;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+        .info-detail {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 3px;
+        }
+        .detail-label {
+            width: 90px;
+            flex-shrink: 0;
+            color: #7f8c8d;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+        .detail-value {
+            flex: 1;
+            font-size: 11px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        /* Modern Table */
+        .table-container {
+            margin-bottom: 15mm;
+        }
+        .inv-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px; /* Slightly larger for Landscape */
+        }
+        
+        .inv-table th {
+            text-align: center;
+            background: #fff;
+            color: #333;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 10px;
+            padding: 8px 4px;
+            border-bottom: 2px solid #333;
+            border-top: 1px solid #333;
+        }
+        
+        .inv-table td {
+            padding: 8px 4px;
+            border-bottom: 1px solid #eee;
+            color: #000;
+            vertical-align: middle;
+        }
+        
+        /* Interactive Row Hover */
+        .inv-table tbody tr:hover td {
+            background-color: transparent;
+        }
+
+        /* Column Specifics */
+        .col-sr { width: 40px; text-align: center; color: #bdc3c7; }
+        .col-desc { text-align: left !important; font-weight: 600; }
+        .col-money { text-align: right !important; font-variant-numeric: tabular-nums; }
+        
+        /* Totals Footer */
+        .totals-row td {
+            background-color: transparent;
+            border-top: 2px solid #333;
+            font-weight: 700;
+            color: #000;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+        .totals-label {
+            text-align: right; 
+            padding-right: 10px;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        /* Document Footer */
+        .doc-footer {
+            margin-top: auto; /* Push to bottom if flex container */
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .terms {
+            flex: 1;
+            font-size: 10px;
+            color: #7f8c8d;
+            max-width: 60%;
+        }
+        .terms h4 { margin: 0 0 5px; font-size: 11px; color: #34495e; }
+        
+        .auth-sign {
+            text-align: center;
+            width: 200px;
+        }
+        .sign-line {
+            border-bottom: 1px solid #bdc3c7;
+            margin-bottom: 5px;
+            height: 30px;
+        }
+        .sign-label {
+            font-size: 10px;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Helpers */
+        .text-right { text-align: right !important; }
+        .text-center { text-align: center !important; }
+
+        @@media print {
+            body { background: white; padding: 0; margin: 0; }
+            .actions-bar { display: none; }
+            .page-container {
+                margin: 0;
+                box-shadow: none;
+                width: 100%; 
+                max-width: none;
+                height: 100%;
+                padding: 10mm;
+                border: none;
+            }
+            @@page { 
+                size: A4 portrait; 
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="actions-bar">
+        <a href="/Sales/Index" class="back-link">
+            <span>&larr;</span> Back to List
+        </a>
+        <div>
+            <button class="btn btn-print" onclick="window.print()">Print</button>
+            <button class="btn btn-download" id="btnDownload" onclick="downloadPdf()">Download PDF</button>
+        </div>
+    </div>
+
+    <div class="page-container" id="printableArea">
+        
+        <!-- Header -->
+        <div class="inv-header">
+            <div class="header-left">
+                @if (!string.IsNullOrEmpty(Model.Invoice.SellerLogo))
+                {
+                    <img src="@Model.Invoice.SellerLogo" alt="Company Logo" class="ucp-logo-img" />
+                }
+            </div>
+            <div class="header-middle text-center">
+                <div class="inv-title">Sales Tax Invoice</div>
+                <div class="meta-group">
+                    <div class="meta-row">
+                        <span class="meta-label">Invoice No:</span>
+                        <span class="meta-value">@Model.Invoice.InvoiceNo.Replace("SAL-","")</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Date:</span>
+                        <span class="meta-value">@Model.Invoice.Date</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- <div style="display: flex; flex-direction: column; align-items: center;">
+                    <img src="/img/fbrlogo.jpg" alt="FBR Logo" class="fbr-logo-img" />
+                    <div style="font-size: 9px; color: #000; margin-top: 2px; font-weight: 700;">FBR DI #</div>
+                </div> -->
+                @if (!string.IsNullOrEmpty(Model.Invoice.FbrDiNo))
+                {
+                    <div class="qr-container">
+                        <div id="qrcode" title="FBR DI No: @Model.Invoice.FbrDiNo"></div>
+                        <div class="fbr-di-no">@Model.Invoice.FbrDiNo</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <!-- Left: Seller -->
+            <div class="info-col">
+                <h3>Seller Information</h3>
+                <div class="info-content">
+                    <strong>@Model.Invoice.SellerName</strong>
+                    <div class="info-detail"><span class="detail-label">NTN/CNIC:</span> <span class="detail-value">@Model.Invoice.SellerNtn</span></div>
+                    <div class="info-detail"><span class="detail-label">Address:</span> <span class="detail-value">@Model.Invoice.SellerAddress</span></div>
+                    @if(!string.IsNullOrEmpty(Model.Invoice.SellerProvince)) {
+                        <div class="info-detail"><span class="detail-label">Province:</span> <span class="detail-value">@Model.Invoice.SellerProvince</span></div>
+                    }
+                </div>
+            </div>
+
+            <!-- Right: Buyer -->
+             <div class="info-col">
+                <h3>Bill To</h3>
+                <div class="info-content">
+                    <strong>@Model.Invoice.BuyerName</strong>
+                    <div class="info-detail"><span class="detail-label">NTN/CNIC:</span> <span class="detail-value">@Model.Invoice.BuyerNtn</span></div>
+                    <div class="info-detail"><span class="detail-label">Address:</span> <span class="detail-value">@Model.Invoice.BuyerAddress</span></div>
+                    @if(!string.IsNullOrEmpty(Model.Invoice.BuyerProvince)) {
+                        <div class="info-detail"><span class="detail-label">Province:</span> <span class="detail-value">@Model.Invoice.BuyerProvince</span></div>
+                    }
+                     <div class="info-detail"><span class="detail-label">Type:</span> <span class="detail-value">Registered</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table class="inv-table">
+                <thead>
+                    <tr>
+                        <th class="col-sr">#</th>
+                        <th class="col-desc">Product / Description</th>
+                        <th>HS Code</th>
+                        <th>Bags</th>
+                        <th>Lbs</th>
+                        <th>Kgs</th>
+                        <th class="col-money">Rate / Lbs</th>
+                        <th class="col-money">Excl. Value</th>
+                        <th class="col-money">ST%</th>
+                         <th class="col-money">Sales Tax</th>
+                         <!-- Condensed Extra Columns -->
+                        @* <th class="col-money" title="Extra Tax">Ex. Tax</th>
+                        <th class="col-money" title="Further Tax">Fur. Tax</th>
+                        <th class="col-money">FED</th>
+                        <th class="col-money">WHT</th>
+                        <th class="col-money">Disc.</th>*@
+                        <th class="col-money">Total</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 1; }
+                    @foreach(var item in Model.Invoice.Items)
+                    {
+                        <tr>
+                            <td class="col-sr">@(i++)</td>
+                            <td class="col-desc">
+                                @item.ItemName
+                                <!-- Optional: Description below -->
+                            </td>
+                            <td class="text-center">@item.HsCode</td>
+                            <td class="text-center">@item.Qty.ToString("N0")</td>
+                            <td class="text-center">@item.Lbs.ToString("N0")</td>
+                            <td class="text-center">@item.Kgs.ToString("N2")</td>
+                            <td class="col-money">@item.Rate.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            <td class="col-money">@item.ValueExcl.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            <td class="col-money">@(item.TaxPer.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))%</td>
+                            <td class="col-money">@item.TaxAmt.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            @*  <td class="col-money" style="color:#bdc3c7;">@item.ExtraTax.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            <td class="col-money" style="color:#bdc3c7;">@item.FurtherTax.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            <td class="col-money" style="color:#bdc3c7;">@item.Fed.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            <td class="col-money" style="color:#bdc3c7;">@item.StWht.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                            <td class="col-money" style="color:#bdc3c7;">@item.Discount.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td> *@
+                            <td class="col-money" style="font-weight:700;">@item.ValueIncl.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                        </tr>
+                    }
+                    
+                    <!-- Min Height Spacer -->
+                     @if(Model.Invoice.Items.Count < 3)
+                    {
+                        for(int k=0; k< (Model.Invoice.Items.Count); k++)
+                        {
+                            <tr>
+                                <td colspan="10" style="height: 30px;"></td>
+                            </tr>
+                        }
+                    }
+
+                </tbody>
+                <tfoot>
+                    <tr class="totals-row">
+                        <td colspan="7" class="totals-label">Total</td>
+                        <td class="col-money">@Model.Invoice.Items.Sum(x => x.ValueExcl).ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                        <td></td>
+                        <td class="col-money">@Model.Invoice.Items.Sum(x => x.TaxAmt).ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                       
+                        <td class="col-money">@Model.Invoice.Items.Sum(x => x.ValueIncl).ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+@*         <!-- Footer -->
+        <div class="doc-footer">
+            <div class="terms">
+                <h4>Terms & Conditions</h4>
+                <p>1. Please pay the bill within 15 days.</p>
+                <p>2. Goods once sold will not be returned.</p>
+                <p>3. This is a computer generated invoice and requires no signature.</p>
+            </div>
+            <div class="auth-sign">
+                <div class="sign-line"></div>
+                <div class="sign-label">Authorized Signature</div>
+            </div>
+        </div> *@
+
+    </div>
+
+    <script>
+        function downloadPdf() {
+            var element = document.getElementById('printableArea');
+            var opt = {
+                margin:       0, 
+                filename:     '@Model.Invoice.InvoiceNo' + '.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        @if (!string.IsNullOrEmpty(Model.Invoice.FbrDiNo))
+        {
+            <text>
+            var qrcode = new QRCode(document.getElementById("qrcode"), {
+                text: "@Model.Invoice.FbrDiNo",
+                width: 75,
+                height: 75,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+            </text>
+        }
+    </script>
+</body>
+</html>

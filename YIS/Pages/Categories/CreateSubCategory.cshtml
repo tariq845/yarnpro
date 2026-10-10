@@ -1,0 +1,58 @@
+@page
+@model YIS.Pages.Categories.CreateSubCategoryModel
+@{
+    ViewData["Title"] = "Create Sub Category";
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+        <!-- Matches other page button styling/layout -->
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+        <!-- Future buttons -->
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="SubCategory.SCategoryId" />
+            
+            <h5 class="card-title mb-4">@(Model.Id.HasValue ? "Edit Sub Category" : "Create Sub Category")</h5>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <label asp-for="SubCategory.SCategoryName" class="form-label">Sub Category Name <span class="text-danger">*</span></label>
+                    <input asp-for="SubCategory.SCategoryName" class="form-control" placeholder="Enter sub category name" required data-val="true" data-val-required="Sub Category Name is required" />
+                    <span asp-validation-for="SubCategory.SCategoryName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="SubCategory.MCategoryId" class="form-label">Main Category <span class="text-danger">*</span></label>
+                    <select asp-for="SubCategory.MCategoryId" class="form-select" asp-items="Model.MainCategories" required data-val="true" data-val-required="Main Category is required">
+                        <option value="">-- Select Main Category --</option>
+                    </select>
+                    <span asp-validation-for="SubCategory.MCategoryId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Categories/SubCategories" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

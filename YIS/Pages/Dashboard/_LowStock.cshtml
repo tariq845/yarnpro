@@ -1,0 +1,21 @@
+@model List<YIS.Pages.Dashboard.DashboardModel.StockItemInfo>
+
+@foreach (var item in Model)
+{
+    <div style="padding: 16px; border-bottom: 1px solid var(--border-color);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div style="font-weight: 600;">@item.ItemName</div>
+                <div style="font-size: 13px; color: var(--text-secondary);">SKU: @item.ItemCode</div>
+            </div>
+            <span class="status-badge @(item.Quantity <= 5 ? "danger" : "warning")">@item.Quantity left</span>
+        </div>
+    </div>
+}
+@if (!Model.Any())
+{
+    <div style="padding: 32px; text-align: center; color: var(--text-secondary);">
+        <i class="bi bi-check2-circle" style="font-size: 32px; display: block; margin-bottom: 8px; color: var(--success-color);"></i>
+        All stock levels are healthy
+    </div>
+}

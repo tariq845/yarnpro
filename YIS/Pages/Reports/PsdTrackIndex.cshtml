@@ -1,0 +1,145 @@
+@page
+@model YIS.Pages.Reports.PsdTrackIndexModel
+@{
+    ViewData["Title"] = "Contract Purchase Movement";
+}
+
+<div class="container-fluid px-4 py-3">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-arrow-left-right text-primary me-2"></i>Contract Purchase Movement
+            </h4>
+            <small class="text-muted">Purchase soda contracts, purchase receipts, and sales realization movement</small>
+        </div>
+    </div>
+
+    <!-- Search / Filter Bar -->
+    <div class="card shadow-sm border-0 mb-3 bg-light">
+        <div class="card-body py-2 px-3">
+            <form method="get" class="row g-2 align-items-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text"
+                               name="SearchTerm"
+                               class="form-control border-start-0 ps-0"
+                               placeholder="Search PSD # or Supplier Name..."
+                               value="@Model.SearchTerm" />
+                        <button class="btn btn-primary btn-sm px-3" type="submit">Search</button>
+                        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                        {
+                            <a href="/Reports/PsdTrackIndex" class="btn btn-outline-secondary btn-sm">Clear</a>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-7 text-md-end text-muted small">
+                    Total Contracts: <strong class="text-dark">@Model.Entries.Count</strong>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Data Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                    <thead class="table-light text-nowrap">
+                        <tr class="text-muted" style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <th class="text-center" style="width: 50px;">#</th>
+                            <th>Contract / PSD #</th>
+                            <th>Date</th>
+                            <th>Supplier Name</th>
+                            <th class="text-end bg-light">Contract Qty (Bags)</th>
+                            <th class="text-end bg-light">Contract Lbs</th>
+                            <th class="text-end bg-light">Contract Amount</th>
+                            <th class="text-end text-primary">Received Qty</th>
+                            <th class="text-end text-danger">Pending Qty</th>
+                            <th class="text-end text-success">Sold Qty</th>
+                            <th class="text-center" style="width: 90px;">Status</th>
+                            <th class="text-center" style="width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Entries.Any())
+                        {
+                            int rowIdx = 1;
+                            double sumContractQty = 0, sumContractLbs = 0, sumContractAmt = 0;
+                            double sumPurQty = 0, sumPendingQty = 0, sumSoldQty = 0;
+
+                            foreach (var item in Model.Entries)
+                            {
+                                sumContractQty += item.ContractQty;
+                                sumContractLbs += item.ContractLbs;
+                                sumContractAmt += item.ContractAmount;
+                                sumPurQty += item.PurchasedQty;
+                                sumPendingQty += item.PendingQty;
+                                sumSoldQty += item.SoldQty;
+
+                                <tr>
+                                    <td class="text-center text-muted small">@rowIdx</td>
+                                    <td>
+                                        <a href="/Reports/PsdRecordTrack/@item.EntryId" class="fw-bold text-decoration-none text-primary">
+                                            PSD-@item.EntryNumber
+                                        </a>
+                                    </td>
+                                    <td>@item.EntryDate?.ToString("dd-MMM-yyyy")</td>
+                                    <td class="fw-semibold text-dark">@item.SupplierName</td>
+                                    <td class="text-end fw-bold">@item.ContractQty.ToString("N2")</td>
+                                    <td class="text-end text-muted">@item.ContractLbs.ToString("N2")</td>
+                                    <td class="text-end fw-semibold">@item.ContractAmount.ToString("N2")</td>
+                                    <td class="text-end text-primary fw-bold">@item.PurchasedQty.ToString("N2")</td>
+                                    <td class="text-end text-danger fw-bold">@item.PendingQty.ToString("N2")</td>
+                                    <td class="text-end text-success fw-bold">@item.SoldQty.ToString("N2")</td>
+                                    <td class="text-center">
+                                        @if (item.Status == "Completed")
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Completed</span>
+                                        }
+                                        else if (item.Status == "Partial")
+                                        {
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">Partial</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Pending</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="/Reports/PsdRecordTrack/@item.EntryId" class="btn btn-sm btn-outline-primary py-0 px-2" title="View Movement Ledger">
+                                            <i class="bi bi-journal-text me-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+                                rowIdx++;
+                            }
+                            <tr class="table-light fw-bold border-top border-2">
+                                <td colspan="4" class="text-center text-uppercase">Total</td>
+                                <td class="text-end">@sumContractQty.ToString("N2")</td>
+                                <td class="text-end">@sumContractLbs.ToString("N2")</td>
+                                <td class="text-end">@sumContractAmt.ToString("N2")</td>
+                                <td class="text-end text-primary">@sumPurQty.ToString("N2")</td>
+                                <td class="text-end text-danger">@sumPendingQty.ToString("N2")</td>
+                                <td class="text-end text-success">@sumSoldQty.ToString("N2")</td>
+                                <td colspan="2"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="12" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+                                    No purchase contract movement records found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

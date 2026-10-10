@@ -1,0 +1,252 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using YIS.Data;
+using YIS.Models;
+using YIS.Helpers;
+
+namespace YIS.Pages.Reports
+{
+    public class SsdTrackRecordModel : PageModel
+    {
+        private readonly ApplicationDbContext _context;
+
+        public SsdTrackRecordModel(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public Entry? SsdHeader { get; set; }
+        public string CustomerName { get; set; } = "Unknown";
+        public string CompanyName { get; set; } = "YARN PRO";
+
+        // Parent PSD Contract Info (if linked)
+        public LinkedPsdViewModel? ParentPsd { get; set; }
+
+        // 1. Contract Booked Lines (SSDL)
+        public List<SsdContractItemViewModel> ContractItems { get; set; } = new();
+
+        // 2. Sales Invoices Delivered (SAL & SALL)
+        public List<SalesDeliveryItemViewModel> DeliveryItems { get; set; } = new();
+
+        // Totals & Movement Summary
+        public SsdMovementSummaryViewModel Summary { get; set; } = new();
+
+        public class LinkedPsdViewModel
+        {
+            public long PsdId { get; set; }
+            public long? PsdNumber { get; set; }
+            public DateTime? PsdDate { get; set; }
+            public string SupplierName { get; set; } = "Unknown";
+            public double? Qty { get; set; }
+            public double? Lbs { get; set; }
+            public double? Rate { get; set; }
+            public double? Amount { get; set; }
+        }
+
+        public class SsdContractItemViewModel
+        {
+            public long EntryId { get; set; }
+            public long? ItemId { get; set; }
+            public string ItemName { get; set; } = "Unknown Item";
+            public double Qty { get; set; }
+            public double Lbs { get; set; }
+            public double Rate { get; set; }
+            public double Amount { get; set; }
+            public double TaxAmount { get; set; }
+            public double NetAmount { get; set; }
+        }
+
+        public class SalesDeliveryItemViewModel
+        {
+            public long SalId { get; set; }
+            public long? SalNumber { get; set; }
+            public DateTime? SalDate { get; set; }
+            public string? Remarks { get; set; }
+            public long? ItemId { get; set; }
+            public string ItemName { get; set; } = "Unknown Item";
+            public double Qty { get; set; }
+            public double Lbs { get; set; }
+            public double Rate { get; set; }
+            public double Amount { get; set; }
+            public double TaxAmount { get; set; }
+            public double NetAmount { get; set; }
+        }
+
+        public class SsdMovementSummaryViewModel
+        {
+            // Sales Soda Contract (SSD)
+            public double ContractQty { get; set; }
+            public double ContractLbs { get; set; }
+            public double ContractAmount { get; set; }
+            public double ContractAvgRate => (ContractLbs > 0) ? (ContractAmount / (ContractLbs / 10.0)) : (ContractQty > 0 ? (ContractAmount / ContractQty) : 0);
+
+            // Invoices Delivered (SAL)
+            public double DeliveredQty { get; set; }
+            public double DeliveredLbs { get; set; }
+            public double DeliveredAmount { get; set; }
+            public double DeliveredAvgRate => (DeliveredLbs > 0) ? (DeliveredAmount / (DeliveredLbs / 10.0)) : (DeliveredQty > 0 ? (DeliveredAmount / DeliveredQty) : 0);
+
+            // Pending Delivery to Customer (SSD - SAL)
+            public double PendingDeliveryQty => Math.Max(0, ContractQty - DeliveredQty);
+            public double PendingDeliveryLbs => Math.Max(0, ContractLbs - DeliveredLbs);
+            public double PendingDeliveryAmount => Math.Max(0, ContractAmount - DeliveredAmount);
+
+            // Linked PSD Info
+            public double LinkedPsdQty { get; set; }
+            public double LinkedPsdLbs { get; set; }
+            public double LinkedPsdAmount { get; set; }
+        }
+
+        public async Task<IActionResult> OnGetAsync(long id)
+        {
+            if (_context.Entries == null)
+            {
+                return NotFound();
+            }
+
+            var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+            if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
+
+            var company = await _context.UserCompanyProfiles.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
+            if (company != null && !string.IsNullOrWhiteSpace(company.UcpCompanyName))
+            {
+                CompanyName = company.UcpCompanyName;
+            }
+
+            // Load SSD Header
+            SsdHeader = await _context.Entries
+                .FirstOrDefaultAsync(e => e.EntryId == id && e.EntryType == "SSD" && e.UcpId == activeUcpId);
+
+            if (SsdHeader == null)
+            {
+                return NotFound();
+            }
+
+            // Customer Name
+            if (!string.IsNullOrEmpty(SsdHeader.EntryAttribute1) &&
+                long.TryParse(SsdHeader.EntryAttribute1, out long customerId))
+            {
+                var customer = await _context.CustomerMasters
+                    .FirstOrDefaultAsync(c => c.CustomerId == customerId && c.UcpId == activeUcpId);
+                CustomerName = customer?.CustomerName ?? "Unknown";
+            }
+
+            // Parent PSD Information
+            if (SsdHeader.EntryRefId.HasValue && SsdHeader.EntryRefId > 0)
+            {
+                var psd = await _context.Entries
+                    .FirstOrDefaultAsync(e => e.EntryId == SsdHeader.EntryRefId.Value && e.EntryType == "PSD" && e.UcpId == activeUcpId);
+
+                if (psd != null)
+                {
+                    string supplierName = "Unknown";
+                    if (!string.IsNullOrEmpty(psd.EntryAttribute1) && long.TryParse(psd.EntryAttribute1, out long suppId))
+                    {
+                        var supp = await _context.SupplierMasters.FirstOrDefaultAsync(s => s.SupplierId == suppId && s.UcpId == activeUcpId);
+                        if (supp != null) supplierName = supp.SupplierName ?? "Unknown";
+                    }
+
+                    ParentPsd = new LinkedPsdViewModel
+                    {
+                        PsdId = psd.EntryId,
+                        PsdNumber = psd.EntryNumber,
+                        PsdDate = psd.EntryDate,
+                        SupplierName = supplierName,
+                        Qty = psd.Qty,
+                        Lbs = psd.Lbs,
+                        Rate = psd.Rate,
+                        Amount = psd.Amount
+                    };
+                }
+            }
+
+            // 1. SSD Contract Items
+            var ssdlRaw = await (from ssdl in _context.Entries
+                                 join item in _context.ItemMasters.Where(im => im.UcpId == activeUcpId)
+                                 on ssdl.ItemId equals item.ItemId into itemJoin
+                                 from item in itemJoin.DefaultIfEmpty()
+                                 where ssdl.EntryRefId == id && ssdl.EntryType == "SSDL" && ssdl.UcpId == activeUcpId
+                                 orderby ssdl.EntryId
+                                 select new SsdContractItemViewModel
+                                 {
+                                     EntryId = ssdl.EntryId,
+                                     ItemId = ssdl.ItemId,
+                                     ItemName = item != null ? item.ItemName : "Unknown Item",
+                                     Qty = ssdl.Qty ?? 0,
+                                     Lbs = ssdl.Lbs ?? 0,
+                                     Rate = ssdl.Rate ?? 0,
+                                     Amount = ssdl.Amount ?? 0,
+                                     TaxAmount = ssdl.TaxAmount ?? 0,
+                                     NetAmount = (ssdl.Amount ?? 0) + (ssdl.TaxAmount ?? 0)
+                                 }).ToListAsync();
+
+            if (ssdlRaw.Count == 0 && (SsdHeader.Qty.HasValue || SsdHeader.Amount.HasValue))
+            {
+                string itemName = "Standard Yarn";
+                if (SsdHeader.ItemId.HasValue)
+                {
+                    var it = await _context.ItemMasters.FirstOrDefaultAsync(i => i.ItemId == SsdHeader.ItemId.Value && i.UcpId == activeUcpId);
+                    if (it != null) itemName = it.ItemName;
+                }
+                ssdlRaw.Add(new SsdContractItemViewModel
+                {
+                    EntryId = SsdHeader.EntryId,
+                    ItemId = SsdHeader.ItemId,
+                    ItemName = itemName,
+                    Qty = SsdHeader.Qty ?? 0,
+                    Lbs = SsdHeader.Lbs ?? 0,
+                    Rate = SsdHeader.Rate ?? 0,
+                    Amount = SsdHeader.Amount ?? 0,
+                    TaxAmount = SsdHeader.TaxAmount ?? 0,
+                    NetAmount = (SsdHeader.Amount ?? 0) + (SsdHeader.TaxAmount ?? 0)
+                });
+            }
+
+            ContractItems = ssdlRaw;
+
+            // 2. Sales Invoices Delivered against this SSD (SAL & SALL)
+            DeliveryItems = await (from sal in _context.Entries
+                                   join sall in _context.Entries on sal.EntryId equals sall.EntryRefId
+                                   join item in _context.ItemMasters.Where(im => im.UcpId == activeUcpId) on sall.ItemId equals item.ItemId into itemJoin
+                                   from item in itemJoin.DefaultIfEmpty()
+                                   where sal.EntryType == "SAL" && sall.EntryType == "SALL" &&
+                                         sal.UcpId == activeUcpId && sall.UcpId == activeUcpId &&
+                                         sal.EntryRefId == id
+                                   orderby sal.EntryDate, sal.EntryNumber, sall.EntryId
+                                   select new SalesDeliveryItemViewModel
+                                   {
+                                       SalId = sal.EntryId,
+                                       SalNumber = sal.EntryNumber,
+                                       SalDate = sal.EntryDate,
+                                       Remarks = sal.EntryRemarks,
+                                       ItemId = sall.ItemId,
+                                       ItemName = item != null ? item.ItemName : "Unknown Item",
+                                       Qty = sall.Qty ?? 0,
+                                       Lbs = sall.Lbs ?? 0,
+                                       Rate = sall.Rate ?? 0,
+                                       Amount = sall.Amount ?? 0,
+                                       TaxAmount = sall.TaxAmount ?? 0,
+                                       NetAmount = (sall.Amount ?? 0) + (sall.TaxAmount ?? 0)
+                                   }).ToListAsync();
+
+            // 3. Populate Movement Summary
+            Summary = new SsdMovementSummaryViewModel
+            {
+                ContractQty = ContractItems.Sum(x => x.Qty),
+                ContractLbs = ContractItems.Sum(x => x.Lbs),
+                ContractAmount = ContractItems.Sum(x => x.Amount),
+
+                DeliveredQty = DeliveryItems.Sum(x => x.Qty),
+                DeliveredLbs = DeliveryItems.Sum(x => x.Lbs),
+                DeliveredAmount = DeliveryItems.Sum(x => x.Amount),
+
+                LinkedPsdQty = ParentPsd?.Qty ?? 0,
+                LinkedPsdLbs = ParentPsd?.Lbs ?? 0,
+                LinkedPsdAmount = ParentPsd?.Amount ?? 0
+            };
+
+            return Page();
+        }
+    }
+}

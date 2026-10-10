@@ -1,0 +1,221 @@
+@page
+@model YIS.Pages.Vouchers.JournalVoucherModel
+@{
+    ViewData["Title"] = "Journal Voucher";
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-4 text-end"></div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title mb-4">
+            Journal Voucher
+            <span class="badge bg-light text-dark fs-6 float-end">@Model.DisplayEntryNumber</span>
+            @if(Model.IsPosted)
+            {
+                 <span class="badge bg-success bg-opacity-10 text-success border border-success me-2 float-end fs-6">
+                    <i class="bi bi-check-circle-fill me-1"></i> Posted
+                </span>
+            }
+        </h5>
+        
+        @if(Model.IsPosted)
+        {
+            <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                <i class="bi bi-lock-fill flex-shrink-0 me-2 fs-4"></i>
+                <div>
+                    <strong>Locked:</strong> This voucher has been posted to the ledger and cannot be edited.
+                </div>
+            </div>
+        }
+        
+        <form method="post">
+            <input type="hidden" asp-for="Entry.EntryId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label asp-for="Entry.EntryDate" class="form-label">Date <span class="text-danger">*</span></label>
+                    <input asp-for="Entry.EntryDate" type="date" class="form-control" required disabled="@Model.IsPosted" />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h6 class="mb-3 text-muted border-bottom pb-2">Journal Entries</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle shadow-sm">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th style="width: 30%;">Account <span class="text-danger">*</span></th>
+                                <th style="width: 30%;">Description</th>
+                                <th style="width: 15%;">Debit</th>
+                                <th style="width: 15%;">Credit</th>
+                                <th style="width: 5%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="pBody">
+                            @for(int i=0; i< Model.LineItems.Count; i++)
+                            {
+                                <tr class="p-row">
+                                    <input type="hidden" name="LineItems[@i].EntryId" value="@Model.LineItems[i].EntryId" />
+                                    <td>
+                                        <select name="LineItems[@i].LinkedAccountId" class="form-select form-select-sm" required disabled="@Model.IsPosted">
+                                            <option value="">-- Select Account --</option>
+                                            @foreach(var acc in Model.AccountList) {
+                                                if(Model.LineItems[i].LinkedAccountId?.ToString() == acc.Value) { <option value="@acc.Value" selected>@acc.Text</option> }
+                                                else { <option value="@acc.Value">@acc.Text</option> }
+                                            }
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="LineItems[@i].Description" value="@Model.LineItems[i].Description" class="form-control form-control-sm" disabled="@Model.IsPosted" /></td>
+                                    <td><input type="number" step="0.01" name="LineItems[@i].Debit" value="@Model.LineItems[i].Debit" class="form-control form-control-sm debit-input text-end" disabled="@Model.IsPosted" /></td>
+                                    <td><input type="number" step="0.01" name="LineItems[@i].Credit" value="@Model.LineItems[i].Credit" class="form-control form-control-sm credit-input text-end" disabled="@Model.IsPosted" /></td>
+                                    <td class="text-center">
+                                        @if(!Model.IsPosted) {
+                                        <button type="button" class="btn btn-link p-0 text-danger remove-row"><i class="bi bi-trash"></i></button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-light fw-bold">
+                                <td colspan="2" class="text-end py-2 align-middle text-uppercase text-muted small">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        @if(!Model.IsPosted) {
+                                        <button type="button" class="btn btn-primary px-3 shadow-sm border-0" id="btnAddRow">
+                                            Add +
+                                        </button>
+                                        } else { <span></span> }
+                                        <span>Total: <span id="balanceMsg" class="text-danger fw-bold ms-2"></span></span>
+                                    </div>
+                                </td>
+                                <td><input type="text" id="totalDebit" class="form-control form-control-sm fw-bold text-end border-0 bg-transparent fs-6" readonly /></td>
+                                <td><input type="text" id="totalCredit" class="form-control form-control-sm fw-bold text-end border-0 bg-transparent fs-6" readonly /></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
+                    <a href="/Vouchers/JournalVoucherIndex" class="btn btn-outline-secondary px-4">Cancel</a>
+                    @if(!Model.IsPosted) {
+                    <button type="submit" class="btn btn-outline-success px-5">Save</button>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<template id="rowTemplate">
+    <tr class="p-row">
+        <input type="hidden" name="LineItems[__INDEX__].EntryId" value="0" />
+        <td>
+            <select name="LineItems[__INDEX__].LinkedAccountId" class="form-select form-select-sm" required>
+                <option value="">-- Select Account --</option>
+                @if(Model.AccountList != null)
+                {
+                    foreach(var acc in Model.AccountList) {
+                        <option value="@acc.Value">@acc.Text</option>
+                    }
+                }
+            </select>
+        </td>
+        <td><input type="text" name="LineItems[__INDEX__].Description" class="form-control form-control-sm" /></td>
+         <td><input type="number" step="0.01" name="LineItems[__INDEX__].Debit" class="form-control form-control-sm debit-input text-end" /></td>
+         <td><input type="number" step="0.01" name="LineItems[__INDEX__].Credit" class="form-control form-control-sm credit-input text-end" /></td>
+        <td class="text-center"><button type="button" class="btn btn-link p-0 text-danger remove-row"><i class="bi bi-trash"></i></button></td>
+    </tr>
+</template>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.getElementById('pBody');
+            const btn = document.getElementById('btnAddRow');
+            const template = document.getElementById('rowTemplate');
+            const balanceMsg = document.getElementById('balanceMsg');
+
+            function calcTotal() {
+                let dTotal = 0;
+                let cTotal = 0;
+                
+                document.querySelectorAll('.debit-input').forEach(i => {
+                    dTotal += parseFloat(i.value) || 0;
+                });
+                document.querySelectorAll('.credit-input').forEach(i => {
+                     cTotal += parseFloat(i.value) || 0;
+                });
+
+                const dDisplay = document.getElementById('totalDebit');
+                const cDisplay = document.getElementById('totalCredit');
+                
+                if(dDisplay) dDisplay.value = dTotal.toFixed(2);
+                if(cDisplay) cDisplay.value = cTotal.toFixed(2);
+                
+                const diff = dTotal - cTotal;
+                const balanceMsg = document.getElementById('balanceMsg');
+                if (balanceMsg) {
+                    if (Math.abs(diff) > 0.01) {
+                         balanceMsg.textContent = ` (Diff: ${diff.toFixed(2)})`;
+                    } else {
+                         balanceMsg.textContent = "";
+                    }
+                }
+            }
+
+            function reindex() {
+                Array.from(body.children).forEach((row, idx) => {
+                    row.querySelectorAll('input, select').forEach(i => {
+                        const name = i.getAttribute('name');
+                        if(name) i.setAttribute('name', name.replace(/LineItems\[\d+\]/, `LineItems[${idx}]`));
+                    });
+                });
+            }
+
+            // Remove Event
+            body.addEventListener('click', function(e) {
+                const removeBtn = e.target.closest('.remove-row');
+                if(removeBtn) {
+                    const row = removeBtn.closest('tr');
+                    if(body.children.length > 1) {
+                         row.remove();
+                         reindex();
+                         calcTotal();
+                    } else {
+                        alert("At least one row required");
+                    }
+                }
+            });
+
+            // Input Event
+            body.addEventListener('input', function(e) {
+                if(e.target.classList.contains('debit-input') || e.target.classList.contains('credit-input')) {
+                    calcTotal();
+                }
+            });
+
+            // Add Event
+            if(btn) {
+                btn.onclick = function() {
+                    const idx = body.children.length;
+                    const clone = template.content.cloneNode(true);
+                    clone.querySelectorAll('input, select').forEach(i => {
+                         const name = i.getAttribute('name');
+                         if(name) i.setAttribute('name', name.replace('__INDEX__', idx));
+                    });
+                    body.appendChild(clone);
+                };
+            }
+
+            calcTotal();
+        });
+    </script>
+}

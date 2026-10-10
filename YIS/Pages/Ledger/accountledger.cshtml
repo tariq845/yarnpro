@@ -1,0 +1,128 @@
+@page
+@model YIS.Pages.Ledger.AccountLedgerModel
+@{
+    ViewData["Title"] = "Account Ledger";
+}
+
+@section Styles {
+                            <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+                            <style>
+                                .ts-control {
+                                    border-radius: 0.375rem !important;
+                                }
+                            </style>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">Account (Optional)</label>
+                    <select asp-for="AccountId" id="account-select" class="form-select"
+                        asp-items="@(new SelectList(Model.Accounts, "AccountId", "AccountName"))">
+                        <option value="">-- All Accounts --</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="StartDate" class="form-control"
+                        value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="EndDate" class="form-control"
+                        value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
+                    <a asp-page-handler="DownloadExcel" asp-route-AccountId="@Model.AccountId"
+                        asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                        asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")" class="btn btn-success border-0"
+                        title="Export to Excel">
+                        <i class="bi bi-file-earmark-excel"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Transc #</th>
+                        <th>Type</th>
+                        <th>Account</th>
+                        <th>Remarks</th>
+                        <th class="text-end">Debit</th>
+                        <th class="text-end">Credit</th>
+                        <th class="text-end">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.LedgerRows.Count == 0)
+                    {
+                                                <tr>
+                                                    <td colspan="8" class="text-center text-muted py-3">
+                                @if (!Model.AccountId.HasValue)
+                                {
+                                                                                <span>Please select an account and click <strong>Filter</strong> to view ledger entries.</span>
+                                }
+                                else
+                                {
+                                                                                <span>No transactions found for the selected criteria.</span>
+                                }
+                                                    </td>
+                                                </tr>
+                    }
+                    else
+                    {
+                        @foreach (var row in Model.LedgerRows)
+                        {
+                                                                            <tr class="@(row.TransNo == "" ? "table-secondary fw-bold" : "")">
+                                                                                <td>@(row.Date.HasValue ? row.Date.Value.ToString("dd/MM/yyyy") : "")</td>
+                                                                                <td>@row.TransNo</td>
+                                                                                <td>@row.Type</td>
+                                                                                <td>@row.AccountName</td>
+                                                                                <td>@row.Remarks</td>
+                                                                                <td class="text-end">@row.Debit.ToString("N2")</td>
+                                                                                <td class="text-end">@row.Credit.ToString("N2")</td>
+                                                                                <td class="text-end fw-bold">@row.Balance.ToString("N2")</td>
+                                                                            </tr>
+                        }
+                    }
+                </tbody>
+                <tfoot class="table-light fw-bold">
+                    <tr>
+                        <td colspan="5" class="text-end">Totals</td>
+                        <td class="text-end">@Model.TotalDebit.ToString("N2")</td>
+                        <td class="text-end">@Model.TotalCredit.ToString("N2")</td>
+                        <td class="text-end">@Model.ClosingBalance.ToString("N2")</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+                            <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    new TomSelect("#account-select", {
+                                        create: false,
+                                        sortField: {
+                                            field: "text",
+                                            direction: "asc"
+                                        },
+                                        placeholder: "-- All Accounts --",
+                                        allowEmptyOption: true
+                                    });
+                                });
+                            </script>
+}

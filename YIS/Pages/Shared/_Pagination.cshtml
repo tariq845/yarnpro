@@ -1,0 +1,141 @@
+@model YIS.Models.PaginationViewModel
+
+@{
+    string GetPageUrl(int pageNum)
+    {
+        var query = new Dictionary<string, string>();
+        foreach (var key in Context.Request.Query.Keys)
+        {
+            query[key] = Context.Request.Query[key]!;
+        }
+        query["currentPage"] = pageNum.ToString();
+        return "?" + string.Join("&", query.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
+    }
+}
+
+@if (Model.TotalPages > 1)
+{
+    <style>
+        .pagination-container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .page-link-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            padding: 0 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all var(--transition-normal, 0.3s ease);
+            border: 1px solid var(--border-color, #e2e8f0) !important;
+            color: var(--text-secondary, #64748b);
+            background-color: var(--card-bg, #ffffff);
+            text-decoration: none;
+        }
+
+        .page-link-box:hover:not(.disabled-link) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1)) !important;
+            background-color: var(--primary-color, #4f46e5) !important;
+            border-color: var(--primary-color, #4f46e5) !important;
+            color: white !important;
+        }
+
+        .page-link-box.active-page {
+            background-color: var(--primary-color, #4f46e5) !important;
+            border-color: var(--primary-color, #4f46e5) !important;
+            color: white !important;
+            box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1)) !important;
+        }
+
+        .page-link-box.disabled-link {
+            opacity: 0.5;
+            background-color: var(--body-bg, #f1f5f9) !important;
+            color: var(--text-secondary, #64748b) !important;
+            border-color: var(--border-color, #e2e8f0) !important;
+            pointer-events: none;
+        }
+
+        .page-ellipsis {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 36px;
+            height: 36px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary, #64748b);
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+
+    <nav aria-label="Page navigation" class="mt-4 mb-4 px-4 overflow-hidden pagination-container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 border-top">
+            <div class="text-muted small">
+                Showing <strong>@((Model.CurrentPage - 1) * Model.PageSize + 1)</strong> to 
+                <strong>@Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalItems)</strong> of 
+                <strong>@Model.TotalItems</strong> entries
+            </div>
+            
+            <div class="d-flex align-items-center gap-1">
+                @* Previous Button *@
+                <a class="page-link-box @(!Model.HasPreviousPage ? "disabled-link" : "")" 
+                   href="@GetPageUrl(Model.CurrentPage - 1)">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+
+                @* Page Numbers *@
+                @if (Model.TotalPages <= 5)
+                {
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <a class="page-link-box @(i == Model.CurrentPage ? "active-page" : "")" 
+                           href="@GetPageUrl(i)">@i</a>
+                    }
+                }
+                else
+                {
+                    @* First Page *@
+                    <a class="page-link-box @(Model.CurrentPage == 1 ? "active-page" : "")" 
+                       href="@GetPageUrl(1)">1</a>
+
+                    @if (Model.CurrentPage > 3)
+                    {
+                        <span class="page-ellipsis">...</span>
+                    }
+
+                    @* Middle Pages *@
+                    @for (int i = Math.Max(2, Model.CurrentPage - 1); i <= Math.Min(Model.TotalPages - 1, Model.CurrentPage + 1); i++)
+                    {
+                        <a class="page-link-box @(i == Model.CurrentPage ? "active-page" : "")" 
+                           href="@GetPageUrl(i)">@i</a>
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPages - 2)
+                    {
+                        <span class="page-ellipsis">...</span>
+                    }
+
+                    @* Last Page *@
+                    <a class="page-link-box @(Model.CurrentPage == Model.TotalPages ? "active-page" : "")" 
+                       href="@GetPageUrl(Model.TotalPages)">@Model.TotalPages</a>
+                }
+
+                @* Next Button *@
+                <a class="page-link-box @(!Model.HasNextPage ? "disabled-link" : "")" 
+                   href="@GetPageUrl(Model.CurrentPage + 1)">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+}

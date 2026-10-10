@@ -1,0 +1,2009 @@
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\appsettings.json
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.exe
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssets.props
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.build.YIS.props
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.YIS.props
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.YIS.props
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.pack.json
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.dll
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\VA projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\YIS.exe
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\YIS.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\h\Desktop\new copy\another copy\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\h\Desktop\yarn pro\final-copy-with-authentication\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\h\Desktop\yarn pro\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.build.YIS.props
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.YIS.props
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.YIS.props
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\Shehryar Tariq\Desktop\hassan work\YIS 2026-01-06\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\appsettings.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\libman.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.exe
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+E:\OFFICE WORK\yarn pro\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\h\Desktop\New folder\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\libman.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\appsettings.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.exe
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+E:\OFFICE WORK\yarn pro\New folder\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\h\Desktop\yarn-pro\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\libman.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\appsettings.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.exe
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\swae.build.ex.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+E:\OFFICE WORK\yarn pro - clean\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\appsettings.json
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\libman.json
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssets.props
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.build.YIS.props
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.YIS.props
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.YIS.props
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\staticwebassets.pack.json
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.dll
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+E:\VA_PROJECTS\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\VA projects\YIS\YIS\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ClosedXML.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\RBush.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\OFFICE WORK\yarn pro\YIS\YIS\bin\Debug\net8.0\System.IO.Packaging.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\appsettings.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\libman.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\YIS.exe
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\YIS.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ClosedXML.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ClosedXML.Parser.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ExcelNumberFormat.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\RBush.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\SixLabors.Fonts.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.IO.Packaging.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.build.YIS.props
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.YIS.props
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.YIS.props
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+C:\Users\LENOVO\OneDrive\Desktop\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ClosedXML.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ClosedXML.Parser.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\ExcelNumberFormat.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\RBush.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\SixLabors.Fonts.dll
+E:\VA_PROJECTS\YIS\YIS\bin\Debug\net8.0\System.IO.Packaging.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\appsettings.Development.json
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\libman.json
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\appsettings.json
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\YIS.exe
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\YIS.deps.json
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\YIS.runtimeconfig.json
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\YIS.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\YIS.pdb
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Azure.Core.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Azure.Identity.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\BCrypt.Net-Next.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ClosedXML.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ClosedXML.Parser.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ExcelNumberFormat.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Humanizer.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Mono.TextTemplating.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\Newtonsoft.Json.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\RBush.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\SixLabors.Fonts.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.CodeDom.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Composition.Convention.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Composition.Hosting.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Composition.Runtime.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Composition.TypedParts.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Drawing.Common.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.IO.Packaging.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Memory.Data.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Runtime.Caching.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Security.Permissions.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\System.Windows.Extensions.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+G:\VA_Projects\YIS\YIS\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.build.json
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.development.json
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.YIS.Microsoft.AspNetCore.StaticWebAssets.props
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.build.YIS.props
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.YIS.props
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.YIS.props
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\staticwebassets.pack.json
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.csproj.Up2Date
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.dll
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\refint\YIS.dll
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.pdb
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+G:\VA_Projects\YIS\YIS\obj\Debug\net8.0\ref\YIS.dll
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.csproj.AssemblyReference.cache
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\rpswa.dswa.cache.json
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.GeneratedMSBuildEditorConfig.editorconfig
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.AssemblyInfoInputs.cache
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.AssemblyInfo.cs
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.csproj.CoreCompileInputs.cache
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.MvcApplicationPartsAssemblyInfo.cache
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cache
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.RazorAssemblyInfo.cs
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.sourcelink.json
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.dll
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\refint\YIS.dll
+I:\CODE\OFFICE\yarnpro\YIS\obj\Debug\net8.0\YIS.pdb
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\appsettings.Development.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\appsettings.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\libman.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.staticwebassets.runtime.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.staticwebassets.endpoints.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.exe
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.deps.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.runtimeconfig.json
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\YIS.pdb
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Azure.Core.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Azure.Identity.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\BCrypt.Net-Next.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ClosedXML.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ClosedXML.Parser.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\DocumentFormat.OpenXml.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\DocumentFormat.OpenXml.Framework.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ExcelNumberFormat.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Humanizer.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.Data.SqlClient.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.SqlServer.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.Identity.Client.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.Identity.Client.Extensions.Msal.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Mono.TextTemplating.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\Newtonsoft.Json.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\RBush.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\SixLabors.Fonts.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.CodeDom.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Composition.Convention.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Composition.Hosting.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Composition.Runtime.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Composition.TypedParts.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Drawing.Common.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.IO.Packaging.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Memory.Data.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Runtime.Caching.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Security.Permissions.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\System.Windows.Extensions.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\unix\lib\net6.0\Microsoft.Data.SqlClient.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Data.SqlClient.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
+I:\CODE\OFFICE\yarnpro\yis\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\rjimswa.dswa.cache.json
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\scopedcss\bundle\YIS.styles.css
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\scopedcss\projectbundle\YIS.bundle.scp.css
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\staticwebassets.build.json
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\staticwebassets.build.json.cache
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\staticwebassets.development.json
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\swae.build.ex.cache
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\YIS.csproj.Up2Date
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\YIS.genruntimeconfig.cache
+I:\CODE\OFFICE\yarnpro\yis\obj\Debug\net8.0\ref\YIS.dll

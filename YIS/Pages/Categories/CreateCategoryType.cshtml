@@ -1,0 +1,55 @@
+@page
+@model YIS.Pages.Categories.CreateCategoryTypeModel
+@{
+    ViewData["Title"] = "Create Category Type";
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+        <!-- Placeholder for future buttons if needed -->
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+        <!-- Placeholder for future buttons if needed -->
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <h5 class="card-title mb-4">@(!string.IsNullOrEmpty(Model.Id) ? "Edit Category Type" : "Create Category Type")</h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <label asp-for="CategoryType.CategoryTypeId" class="form-label">Category Type ID <span class="text-danger">*</span></label>
+                    <input asp-for="CategoryType.CategoryTypeId" class="form-control" placeholder="Enter ID (e.g. TYPE001)" required data-val="true" data-val-required="Category Type ID is required" readonly="@(!string.IsNullOrEmpty(Model.Id) ? "readonly" : null)" />
+                    <span asp-validation-for="CategoryType.CategoryTypeId" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="CategoryType.CategoryTypeName" class="form-label">Category Type Name <span class="text-danger">*</span></label>
+                    <input asp-for="CategoryType.CategoryTypeName" class="form-control" placeholder="Enter type name" required data-val="true" data-val-required="Category Type Name is required" />
+                    <span asp-validation-for="CategoryType.CategoryTypeName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Categories/CategoryTypes" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

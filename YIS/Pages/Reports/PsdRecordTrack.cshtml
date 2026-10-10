@@ -1,0 +1,543 @@
+@page "{id:long}"
+@model YIS.Pages.Reports.PsdRecordTrackModel
+@{
+    ViewData["Title"] = "Contract Purchase Movement - PSD-" + Model.PsdHeader?.EntryNumber;
+}
+
+<style>
+    /* Clean, Professional Report Styling - No KPI Cards */
+    .movement-report {
+        background-color: #ffffff;
+        color: #212529;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .report-sheet {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 24px;
+        margin-bottom: 25px;
+    }
+
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.86rem;
+    }
+
+    .report-table th {
+        background-color: #f1f3f5;
+        color: #343a40;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.76rem;
+        letter-spacing: 0.5px;
+        padding: 8px 10px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    .report-table td {
+        padding: 7px 10px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+    }
+
+    .report-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .section-heading {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #0d6efd;
+        border-bottom: 2px solid #0d6efd;
+        padding-bottom: 4px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .info-table {
+        width: 100%;
+        margin-bottom: 15px;
+        font-size: 0.88rem;
+        border-collapse: collapse;
+    }
+
+    .info-table td {
+        padding: 6px 12px;
+        border: 1px solid #e9ecef;
+    }
+
+    .info-table .label {
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa;
+        width: 15%;
+    }
+
+    .info-table .value {
+        width: 35%;
+        color: #111827;
+    }
+
+    .summary-matrix th {
+        background-color: #e9ecef;
+        font-size: 0.8rem;
+    }
+
+    .summary-matrix td {
+        font-size: 0.88rem;
+    }
+
+    .text-num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+    }
+
+    @@media print {
+        body {
+            background-color: #ffffff !important;
+        }
+        .no-print {
+            display: none !important;
+        }
+        .report-sheet {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .report-table th {
+            background-color: #f1f3f5 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .info-table .label {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+    }
+</style>
+
+<div class="container-fluid px-4 py-3 movement-report">
+    <!-- Top Action Bar (No-Print) -->
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <div>
+            <a href="/Reports/PsdTrackIndex" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Contract List
+            </a>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary btn-sm" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i>Print Movement Statement
+            </button>
+        </div>
+    </div>
+
+    <!-- Printable Statement Container -->
+    <div class="report-sheet shadow-sm" id="printableReport">
+        <!-- Header -->
+        <div class="border-bottom pb-3 mb-3">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="fw-bold mb-0 text-dark">@Model.CompanyName</h3>
+                    <h5 class="text-primary fw-semibold mb-0 mt-1">CONTRACT PURCHASE MOVEMENT</h5>
+                    <small class="text-muted">Lifecycle Tracking & Inventory Realization Statement</small>
+                </div>
+                <div class="col-4 text-end">
+                    <div class="fs-5 fw-bold text-dark">PSD-@Model.PsdHeader?.EntryNumber</div>
+                    <div class="text-muted small">Date: @Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</div>
+                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MMM-yyyy hh:mm tt")</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. Contract Header Info -->
+        <table class="info-table">
+            <tr>
+                <td class="label">Contract (PSD) #:</td>
+                <td class="value fw-bold text-primary">PSD-@Model.PsdHeader?.EntryNumber</td>
+                <td class="label">Contract Date:</td>
+                <td class="value">@Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
+            </tr>
+            <tr>
+                <td class="label">Supplier Name:</td>
+                <td class="value fw-bold">@Model.SupplierName</td>
+                <td class="label">System Ref ID:</td>
+                <td class="value">#@Model.PsdHeader?.EntryId</td>
+            </tr>
+            @if (!string.IsNullOrEmpty(Model.PsdHeader?.EntryRemarks))
+            {
+                <tr>
+                    <td class="label">Remarks / Terms:</td>
+                    <td colspan="3" class="value">@Model.PsdHeader?.EntryRemarks</td>
+                </tr>
+            }
+        </table>
+
+        <!-- 2. PSD Contract Booked Items -->
+        <div class="section-heading">
+            <span>1. CONTRACT DETAILS (PSD BOOKING)</span>
+            <span class="fs-6 text-muted">Total Items: @Model.ContractItems.Count</span>
+        </div>
+        <table class="report-table mb-3">
+            <thead>
+                <tr>
+                    <th class="text-center" style="width: 40px;">#</th>
+                    <th>Item Description</th>
+                    <th class="text-num" style="width: 120px;">Contract Qty (Bags)</th>
+                    <th class="text-num" style="width: 120px;">Total LBS</th>
+                    <th class="text-num" style="width: 110px;">Rate</th>
+                    <th class="text-num" style="width: 130px;">Amount</th>
+                    <th class="text-num" style="width: 110px;">Sales Tax</th>
+                    <th class="text-num" style="width: 140px;">Net Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int cIdx = 1;
+                    double sumCQty = 0, sumCLbs = 0, sumCAmt = 0, sumCTax = 0, sumCNet = 0;
+                }
+                @foreach (var c in Model.ContractItems)
+                {
+                    sumCQty += c.Qty;
+                    sumCLbs += c.Lbs;
+                    sumCAmt += c.Amount;
+                    sumCTax += c.TaxAmount;
+                    sumCNet += c.NetAmount;
+
+                    <tr>
+                        <td class="text-center text-muted">@cIdx</td>
+                        <td class="fw-semibold">@c.ItemName</td>
+                        <td class="text-num fw-bold">@c.Qty.ToString("N2")</td>
+                        <td class="text-num">@c.Lbs.ToString("N2")</td>
+                        <td class="text-num">@c.Rate.ToString("F4")</td>
+                        <td class="text-num">@c.Amount.ToString("N2")</td>
+                        <td class="text-num text-muted">@c.TaxAmount.ToString("N2")</td>
+                        <td class="text-num fw-bold text-dark">@c.NetAmount.ToString("N2")</td>
+                    </tr>
+                    cIdx++;
+                }
+                <tr class="table-light fw-bold border-top border-2">
+                    <td colspan="2" class="text-uppercase text-center">Total Contract</td>
+                    <td class="text-num">@sumCQty.ToString("N2")</td>
+                    <td class="text-num">@sumCLbs.ToString("N2")</td>
+                    <td class="text-num">@((sumCLbs > 0 ? (sumCAmt / (sumCLbs / 10.0)) : (sumCQty > 0 ? sumCAmt / sumCQty : 0)).ToString("F4"))</td>
+                    <td class="text-num">@sumCAmt.ToString("N2")</td>
+                    <td class="text-num">@sumCTax.ToString("N2")</td>
+                    <td class="text-num text-primary">@sumCNet.ToString("N2")</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 3. Purchases Realized against this PSD -->
+        <div class="section-heading">
+            <span>2. PURCHASES RECEIVED AGAINST CONTRACT (PUR RECEIPTS)</span>
+            <span class="fs-6 text-muted">Receipts Count: @Model.PurchaseItems.Count</span>
+        </div>
+        @if (Model.PurchaseItems.Any())
+        {
+            <table class="report-table mb-3">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">PUR #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th>Item Description</th>
+                        <th>Remarks / DC Ref</th>
+                        <th class="text-num" style="width: 110px;">Received Qty</th>
+                        <th class="text-num" style="width: 110px;">Received LBS</th>
+                        <th class="text-num" style="width: 100px;">Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int pIdx = 1;
+                        double sumPQty = 0, sumPLbs = 0, sumPAmt = 0, sumPTax = 0, sumPNet = 0;
+                    }
+                    @foreach (var p in Model.PurchaseItems)
+                    {
+                        sumPQty += p.Qty;
+                        sumPLbs += p.Lbs;
+                        sumPAmt += p.Amount;
+                        sumPTax += p.TaxAmount;
+                        sumPNet += p.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@pIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Purchase/Entry?id=@p.PurId" class="text-decoration-none text-primary" target="_blank">
+                                    PUR-@p.PurNumber
+                                </a>
+                            </td>
+                            <td>@p.PurDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="fw-semibold">@p.ItemName</td>
+                            <td class="text-muted small">@(string.IsNullOrEmpty(p.Remarks) ? "-" : p.Remarks)</td>
+                            <td class="text-num fw-bold text-primary">@p.Qty.ToString("N2")</td>
+                            <td class="text-num">@p.Lbs.ToString("N2")</td>
+                            <td class="text-num">@p.Rate.ToString("F4")</td>
+                            <td class="text-num">@p.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@p.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@p.NetAmount.ToString("N2")</td>
+                        </tr>
+                        pIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="5" class="text-uppercase text-center">Total Received</td>
+                        <td class="text-num text-primary">@sumPQty.ToString("N2")</td>
+                        <td class="text-num">@sumPLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumPLbs > 0 ? (sumPAmt / (sumPLbs / 10.0)) : (sumPQty > 0 ? sumPAmt / sumPQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumPAmt.ToString("N2")</td>
+                        <td class="text-num">@sumPTax.ToString("N2")</td>
+                        <td class="text-num text-primary">@sumPNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No purchases received yet against this contract.
+            </div>
+        }
+
+        <!-- 4. Sales Soda (SSD) Booked against this PSD -->
+        <div class="section-heading">
+            <span>3. SALES SODA (SSD) BOOKED AGAINST CONTRACT</span>
+            <span class="fs-6 text-muted">Soda Count: @Model.SalesSodaItems.Count</span>
+        </div>
+        @if (Model.SalesSodaItems.Any())
+        {
+            <table class="report-table mb-3">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">SSD #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th>Customer Name</th>
+                        <th>Item Description</th>
+                        <th class="text-num" style="width: 110px;">Soda Qty</th>
+                        <th class="text-num" style="width: 110px;">Soda LBS</th>
+                        <th class="text-num" style="width: 100px;">Sale Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int sIdx = 1;
+                        double sumSQty = 0, sumSLbs = 0, sumSAmt = 0, sumSTax = 0, sumSNet = 0;
+                    }
+                    @foreach (var s in Model.SalesSodaItems)
+                    {
+                        sumSQty += s.Qty;
+                        sumSLbs += s.Lbs;
+                        sumSAmt += s.Amount;
+                        sumSTax += s.TaxAmount;
+                        sumSNet += s.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@sIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Sales/Soda?id=@s.SsdId" class="text-decoration-none text-success" target="_blank">
+                                    SSD-@s.SsdNumber
+                                </a>
+                            </td>
+                            <td>@s.SsdDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="fw-semibold">@s.CustomerName</td>
+                            <td>@s.ItemName</td>
+                            <td class="text-num fw-bold text-success">@s.Qty.ToString("N2")</td>
+                            <td class="text-num">@s.Lbs.ToString("N2")</td>
+                            <td class="text-num">@s.Rate.ToString("F4")</td>
+                            <td class="text-num">@s.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@s.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@s.NetAmount.ToString("N2")</td>
+                        </tr>
+                        sIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="5" class="text-uppercase text-center">Total Sales Soda</td>
+                        <td class="text-num text-success">@sumSQty.ToString("N2")</td>
+                        <td class="text-num">@sumSLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumSLbs > 0 ? (sumSAmt / (sumSLbs / 10.0)) : (sumSQty > 0 ? sumSAmt / sumSQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumSAmt.ToString("N2")</td>
+                        <td class="text-num">@sumSTax.ToString("N2")</td>
+                        <td class="text-num text-success">@sumSNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No sales sodas booked against this contract yet.
+            </div>
+        }
+
+        <!-- 5. Sales Invoices Delivered (SAL) -->
+        <div class="section-heading">
+            <span>4. SALES INVOICES DELIVERED (SAL)</span>
+            <span class="fs-6 text-muted">Invoices Count: @Model.SalesInvoiceItems.Count</span>
+        </div>
+        @if (Model.SalesInvoiceItems.Any())
+        {
+            <table class="report-table mb-3">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">SAL #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th style="width: 90px;">SSD Ref</th>
+                        <th>Customer Name</th>
+                        <th>Item Description</th>
+                        <th class="text-num" style="width: 110px;">Delivered Qty</th>
+                        <th class="text-num" style="width: 110px;">Delivered LBS</th>
+                        <th class="text-num" style="width: 100px;">Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int salIdx = 1;
+                        double sumSalQty = 0, sumSalLbs = 0, sumSalAmt = 0, sumSalTax = 0, sumSalNet = 0;
+                    }
+                    @foreach (var sal in Model.SalesInvoiceItems)
+                    {
+                        sumSalQty += sal.Qty;
+                        sumSalLbs += sal.Lbs;
+                        sumSalAmt += sal.Amount;
+                        sumSalTax += sal.TaxAmount;
+                        sumSalNet += sal.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@salIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Sales/Entry?id=@sal.SalId" class="text-decoration-none text-dark" target="_blank">
+                                    SAL-@sal.SalNumber
+                                </a>
+                            </td>
+                            <td>@sal.SalDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="text-muted">@(sal.RefSsdNumber.HasValue ? $"SSD-{sal.RefSsdNumber}" : "-")</td>
+                            <td class="fw-semibold">@sal.CustomerName</td>
+                            <td>@sal.ItemName</td>
+                            <td class="text-num fw-bold">@sal.Qty.ToString("N2")</td>
+                            <td class="text-num">@sal.Lbs.ToString("N2")</td>
+                            <td class="text-num">@sal.Rate.ToString("F4")</td>
+                            <td class="text-num">@sal.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@sal.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@sal.NetAmount.ToString("N2")</td>
+                        </tr>
+                        salIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="6" class="text-uppercase text-center">Total Delivered</td>
+                        <td class="text-num">@sumSalQty.ToString("N2")</td>
+                        <td class="text-num">@sumSalLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumSalLbs > 0 ? (sumSalAmt / (sumSalLbs / 10.0)) : (sumSalQty > 0 ? sumSalAmt / sumSalQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumSalAmt.ToString("N2")</td>
+                        <td class="text-num">@sumSalTax.ToString("N2")</td>
+                        <td class="text-num">@sumSalNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No sales invoices delivered against this contract yet.
+            </div>
+        }
+
+        <!-- 6. Movement & Balance Summary Ledger (Clean Tabular Matrix, No Cards) -->
+        <div class="section-heading">
+            <span>5. MOVEMENT & BALANCE SUMMARY LEDGER</span>
+            <span class="fs-6 text-muted">Realization & Stock Position</span>
+        </div>
+        <table class="report-table summary-matrix mb-4">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Movement Stage / Description</th>
+                    <th class="text-num" style="width: 15%;">Quantity (Bags)</th>
+                    <th class="text-num" style="width: 15%;">Weight (LBS)</th>
+                    <th class="text-num" style="width: 15%;">Avg Rate / Unit</th>
+                    <th class="text-num" style="width: 20%;">Total Amount (PKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-dark">A. Contract Booked (PSD)</td>
+                    <td class="text-num fw-bold">@Model.Summary.ContractQty.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.ContractLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.ContractAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold">@Model.Summary.ContractAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-primary">B. Purchases Received (PUR)</td>
+                    <td class="text-num fw-bold text-primary">@Model.Summary.PurchasedQty.ToString("N2")</td>
+                    <td class="text-num text-primary">@Model.Summary.PurchasedLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.PurchasedAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold text-primary">@Model.Summary.PurchasedAmount.ToString("N2")</td>
+                </tr>
+                <tr class="table-warning">
+                    <td class="fw-bold text-danger">C. Contract Pending Balance (A - B)</td>
+                    <td class="text-num fw-bold text-danger">@Model.Summary.PendingContractQty.ToString("N2")</td>
+                    <td class="text-num text-danger">@Model.Summary.PendingContractLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num fw-bold text-danger">@Model.Summary.PendingContractAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-success">D. Sales Soda Booked (SSD)</td>
+                    <td class="text-num fw-bold text-success">@Model.Summary.SsdQty.ToString("N2")</td>
+                    <td class="text-num text-success">@Model.Summary.SsdLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.SsdAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold text-success">@Model.Summary.SsdAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-dark">E. Sales Invoices Delivered (SAL)</td>
+                    <td class="text-num fw-bold">@Model.Summary.SalQty.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.SalLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.SalAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold">@Model.Summary.SalAmount.ToString("N2")</td>
+                </tr>
+                <tr class="table-light border-top border-2">
+                    <td class="fw-bold text-dark">F. Physical Stock in Hand (B - E)</td>
+                    <td class="text-num fw-bold text-dark">@Model.Summary.StockQty.ToString("N2")</td>
+                    <td class="text-num text-dark">@Model.Summary.StockLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num text-muted">-</td>
+                </tr>
+                <tr class="table-light">
+                    <td class="fw-bold text-dark">G. Uncommitted Contract Balance (A - D)</td>
+                    <td class="text-num fw-bold text-dark">@Model.Summary.UnsoldContractQty.ToString("N2")</td>
+                    <td class="text-num text-dark">@Model.Summary.UnsoldContractLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num text-muted">-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Signatures for Official Movement Statement -->
+        <div class="row pt-5 mt-4 text-center">
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Prepared By</div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Checked By</div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Authorized Signature</div>
+            </div>
+        </div>
+    </div>
+</div>

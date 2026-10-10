@@ -1,0 +1,114 @@
+@page
+@model YIS.Pages.Sales.SalesModel
+@{
+    ViewData["Title"] = "Sales";
+}
+
+<div id="main-content">
+    <!-- Page Actions -->
+    <div class="page-header" style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 24px;">
+        <div class="page-header-actions">
+            <button class="btn btn-secondary">
+                <i class="bi bi-funnel"></i>
+                Filter
+            </button>
+            <button class="btn btn-secondary">
+                <i class="bi bi-download"></i>
+                Export
+            </button>
+            <a href="/Sales/Create" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i>
+                New Sale
+            </a>
+        </div>
+    </div>
+    
+    <!-- Filters Card -->
+    <div class="card" style="margin-bottom: 24px;">
+        <div class="card-body" style="padding: 16px 24px;">
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1; min-width: 200px;">
+                    <input type="text" 
+                           placeholder="Search sales..." 
+                           style="width: 100%; padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px;"
+                           hx-get="/Sales/Search"
+                           hx-trigger="keyup changed delay:300ms"
+                           hx-target="#sales-table-body"
+                           name="query">
+                </div>
+                <div>
+                    <select style="padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px; min-width: 150px;"
+                            hx-get="/Sales/Filter"
+                            hx-trigger="change"
+                            hx-target="#sales-table-body"
+                            name="status">
+                        <option value="">All Status</option>
+                        <option value="paid">Paid</option>
+                        <option value="pending">Pending</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                </div>
+                <div>
+                    <input type="date" 
+                           style="padding: 10px 16px; border: 1px solid var(--border-color); border-radius: 8px;"
+                           hx-get="/Sales/Filter"
+                           hx-trigger="change"
+                           hx-target="#sales-table-body"
+                           name="date">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sales Table -->
+    <div class="card">
+        <div class="card-body" style="padding: 0;">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox" id="select-all">
+                            </th>
+                            <th>Invoice #</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th style="width: 120px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sales-table-body" hx-get="/Sales/List" hx-trigger="load">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 20px;">
+                                <i class="bi bi-hourglass-split"></i> Loading...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="card-body" style="border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 14px; color: var(--text-secondary);">
+                Showing 1 to 10 of 156 entries
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" style="padding: 8px 12px;" disabled>
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="btn btn-primary" style="padding: 8px 16px;">1</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px;">2</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px;">3</button>
+                <button class="btn btn-secondary" style="padding: 8px 12px;">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Container -->
+<div id="modal-content"></div>

@@ -1,0 +1,193 @@
+@page
+@model YIS.Pages.Configuration.Users.CreateUserModel
+@{
+    ViewData["Title"] = (Model.User?.UmId > 0 ? "Edit User" : "Create User");
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="card-title mb-4">@(Model.User?.UmId > 0 ? "Edit User" : "Create User")</h5>
+
+            <!-- Hidden ID for edit mode -->
+            @if (Model.User?.UmId > 0)
+            {
+                <input type="hidden" asp-for="User.UmId" />
+            }
+
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label asp-for="User.UmName" class="form-label">Name <span class="text-danger">*</span></label>
+                    <input asp-for="User.UmName" class="form-control" placeholder="Enter user name" required data-val="true" data-val-required="User Name is required" />
+                    <span asp-validation-for="User.UmName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label asp-for="User.UmUsername" class="form-label">Username <span class="text-danger">*</span></label>
+                    <input asp-for="User.UmUsername" class="form-control" placeholder="Enter username" required data-val="true" data-val-required="Username is required" />
+                    <span asp-validation-for="User.UmUsername" class="text-danger"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label asp-for="User.UmContact" class="form-label">Contact</label>
+                    <input asp-for="User.UmContact" class="form-control" placeholder="Enter contact number" />
+                    <span asp-validation-for="User.UmContact" class="text-danger"></span>
+                </div>
+
+                <!-- Hidden User Role field set to -1 -->
+                <input type="hidden" asp-for="User.UmUrId" value="-1" />
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label asp-for="User.UmActiveOn" class="form-label">Active On (Date)</label>
+                    <input asp-for="User.UmActiveOn" class="form-control" type="date" />
+                    <span asp-validation-for="User.UmActiveOn" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label asp-for="User.UmDeactiveOn" class="form-label">Deactive On (Date)</label>
+                    <input asp-for="User.UmDeactiveOn" class="form-control" type="date" />
+                    <div class="form-text">Leave blank if the user is active.</div>
+                    <span asp-validation-for="User.UmDeactiveOn" class="text-danger"></span>
+                </div>
+                @if (Model.User?.UmId == 0)
+                {
+
+                    <div class="col-md-6 mb-3">
+                        <label for="UserPassword" class="form-label">Password <span class="text-danger">*</span></label>
+                        <div class="position-relative">
+                            <input type="password" id="UserPassword" name="UserPassword" class="form-control pe-5" placeholder="Enter password" />
+                            <button type="button" id="togglePassword" class="position-absolute top-50 end-0 translate-middle-y border-0 bg-transparent pe-3" tabindex="-1">
+                                <i class="bi bi-eye text-muted" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Password will be securely hashed</div>
+                    </div>
+
+                }
+            </div>
+
+            <div class="row mt-4 mb-4">
+                <div class="col-12">
+                    <h6 class="fw-bold border-bottom pb-2">Assigned Companies</h6>
+                    <div class="row pt-2">
+                        @foreach (var company in Model.AvailableCompanies)
+                        {
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="SelectedCompanyIds" value="@company.UcpId" 
+                                           id="company_@company.UcpId" @(Model.SelectedCompanyIds.Contains(company.UcpId) ? "checked" : "")>
+                                    <label class="form-check-label" for="company_@company.UcpId">
+                                        @company.UcpCompanyName
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                        @if (!Model.AvailableCompanies.Any())
+                        {
+                            <div class="col-12">
+                                <p class="text-muted small">No active companies found. Please create a company profile first.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                @* <label class="form-label fw-bold">User Permissions</label> *@
+                @* <div class="col-md-3 mb-3">
+                  
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="User.CanCreate" id="canCreate">
+                            <label class="form-check-label" for="canCreate">
+                                Can Create
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="User.CanRead" id="canRead">
+                            <label class="form-check-label" for="canRead">
+                                Can Read
+                            </label>
+                        </div>
+                    
+                </div> *@
+                @* <div class="col-md-3 mb-3">
+                    
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="User.CanUpdate" id="canUpdate">
+                            <label class="form-check-label" for="canUpdate">
+                                Can Update
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="User.CanDelete" id="canDelete">
+                            <label class="form-check-label" for="canDelete">
+                                Can Delete
+                            </label>
+                        </div>
+                                       
+                </div> *@
+                <div class="col-md-6 text-end">
+                    
+                    <a href="/Configuration/Users/Index" class="btn btn-outline-secondary ">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success ">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+           
+
+            
+
+
+
+            @* <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Configuration/Users/Index" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div> *@
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Password visibility toggle
+        document.getElementById('togglePassword')?.addEventListener('click', function () {
+            const passwordInput = document.getElementById('UserPassword');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        });
+    </script>
+    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

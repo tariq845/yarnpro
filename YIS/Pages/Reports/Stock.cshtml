@@ -1,0 +1,156 @@
+@page
+@model YIS.Pages.Reports.StockModel
+@{
+    ViewData["Title"] = "Stock Report";
+    ViewData["BreadcrumbParent"] = "Reports";
+}
+
+<link rel="stylesheet" href="~/css/categories.css" />
+
+<div>
+    <!-- Search and Filter Bar -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="position-relative">
+                        <i class="bi bi-search yis-cat-search-icon"></i>
+                        <input type="text" 
+                               class="form-control yis-cat-search-input" 
+                               id="stockSearch" 
+                               placeholder="Search items..."
+                               onkeyup="filterStockTable()">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    @if (Model.StockList != null && Model.StockList.Any())
+                    {
+                        <div class="row justify-content-end pe-4">
+                            <div class="col-auto">
+                                <h6 class="text-muted text-uppercase mb-0 text-center"
+                                    style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                    Total Stock in Hand :
+                                    <span class="fw-bold fs-6 text-dark">
+                                        @Model.TotalStockItems.ToString("N0")
+                                    </span>
+                                </h6>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="stockTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0 px-4 py-3">Item Name</th>
+                            <th class="border-0 px-4 py-3">HS Code</th>
+                            <th class="border-0 px-4 py-3 text-end">Net Purchase</th>
+                            <th class="border-0 px-4 py-3 text-end">Net Sale</th>
+                            <th class="border-0 px-4 py-3 text-end">Stock In Hand</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.StockList != null && Model.StockList.Any())
+                        {
+                            foreach (var item in Model.StockList)
+                            {
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex flex-column">
+                                            <a href="/Reports/ItemLedger?SelectedItemId=@item.ItemId" class="fw-medium text-primary text-decoration-none">
+                                                @item.ItemName
+                                            </a>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="text-muted">@item.ItemCode</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-medium">@item.NetPurchase.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-medium">@item.NetSale.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        @if (item.Quantity <= 0)
+                                        {
+                                            <span class="badge bg-danger">
+                                                @item.Quantity.ToString("N0")
+                                            </span>
+                                        }
+                                        else if (item.Quantity < 10)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                @item.Quantity.ToString("N0")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                             <span class="badge bg-success">
+                                                @item.Quantity.ToString("N0")
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="py-4">
+                                        <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+                                        <h5 class="mt-3 text-muted">No stock items found</h5>
+                                        <p class="text-muted">Transactions will appear here once recorded.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterStockTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("stockSearch");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("stockTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0]; // Item Name column
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        // Check HS Code as fallback
+                        var tdCode = tr[i].getElementsByTagName("td")[1];
+                        if (tdCode) {
+                            var codeValue = tdCode.textContent || tdCode.innerText;
+                            if (codeValue.toUpperCase().indexOf(filter) > -1) {
+                                tr[i].style.display = "";
+                            } else {
+                                tr[i].style.display = "none";
+                            }
+                        } else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+}

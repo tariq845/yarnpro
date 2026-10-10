@@ -1,0 +1,211 @@
+@page
+@model YIS.Pages.Customers.CreateCustomerModel
+@{
+    ViewData["Title"] = (Model.Customer?.CustomerId > 0 ? "Edit Customer" : "Create Customer");
+}
+
+<div class="row mb-3">
+    <div class="col-sm-8">&nbsp;</div>
+    <div class="col-md-2 col-sm-2 text-end">
+    </div>
+    <div class=" col-md-2 col-sm-2 text-end">
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" novalidate id="customerForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <h5 class="card-title mb-4">@(Model.Customer?.CustomerId > 0 ? "Edit Customer" : "Create Customer")</h5>
+
+            <!-- Hidden ID for edit mode -->
+            @if(Model.Customer?.CustomerId > 0)
+            {
+                <input type="hidden" asp-for="Customer.CustomerId" />
+            }
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.CustomerName" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                    <input asp-for="Customer.CustomerName" class="form-control" placeholder="Enter customer name" required data-val="true" data-val-required="Customer Name is required" />
+                    <span asp-validation-for="Customer.CustomerName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.Province" class="form-label">Province</label>
+                    <input asp-for="Customer.Province" class="form-control" placeholder="Enter province" />
+                    <span asp-validation-for="Customer.Province" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label asp-for="Customer.CustomerAddress" class="form-label">Address</label>
+                    <textarea asp-for="Customer.CustomerAddress" class="form-control" rows="2" placeholder="Enter address"></textarea>
+                    <span asp-validation-for="Customer.CustomerAddress" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.CustomerContact" class="form-label">Contact Number</label>
+                    <input asp-for="Customer.CustomerContact" class="form-control" placeholder="Enter contact number" />
+                    <span asp-validation-for="Customer.CustomerContact" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.CustomerEmail" class="form-label">Email Address</label>
+                    <input asp-for="Customer.CustomerEmail" class="form-control" placeholder="Enter email" type="email" />
+                    <span asp-validation-for="Customer.CustomerEmail" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- GL ACCOUNTS MAPPING (5 ACCOUNTS) -->
+            <h6 class="mt-4 mb-3 text-muted border-bottom pb-2"><i class="bi bi-journal-bookmark me-1"></i> GL / Ledger Account Settings</h6>
+
+            <div class="row">
+                <!-- 1. Customer Receivable / Debtor Account -->
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.AccountId" class="form-label fw-semibold">Customer Receivable Account (Debtor)</label>
+                    <select asp-for="Customer.AccountId" class="form-select" asp-items="Model.AccountList">
+                        <option value="">-- Select Customer Ledger / Debtor Account --</option>
+                    </select>
+                    <div class="form-text">Customer debit amount on sale will post to this account.</div>
+                    <span asp-validation-for="Customer.AccountId" class="text-danger"></span>
+                </div>
+
+                <!-- 2. Sales / Revenue Account -->
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.SalesAccountId" class="form-label fw-semibold">Default Sales Account (Revenue)</label>
+                    <select asp-for="Customer.SalesAccountId" class="form-select" asp-items="Model.AccountList">
+                        <option value="">-- Default (Sales Revenue) --</option>
+                    </select>
+                    <div class="form-text">Credit entry for yarn/goods sales revenue will go here.</div>
+                    <span asp-validation-for="Customer.SalesAccountId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- 3. Tax Account -->
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Customer.TaxAccountId" class="form-label fw-semibold">Output Tax Account (GST)</label>
+                    <select asp-for="Customer.TaxAccountId" class="form-select" asp-items="Model.AccountList">
+                        <option value="">-- Default (Output Sales Tax) --</option>
+                    </select>
+                    <div class="form-text">Credit entry for output tax will go here.</div>
+                    <span asp-validation-for="Customer.TaxAccountId" class="text-danger"></span>
+                </div>
+
+                <!-- 4. Commission Expense Account -->
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Customer.CommExpenseAccountId" class="form-label fw-semibold">Commission Expense Account</label>
+                    <select asp-for="Customer.CommExpenseAccountId" class="form-select" asp-items="Model.AccountList">
+                        <option value="">-- Default (Commission Expense) --</option>
+                    </select>
+                    <div class="form-text">Debit entry for broker/agent commission.</div>
+                    <span asp-validation-for="Customer.CommExpenseAccountId" class="text-danger"></span>
+                </div>
+
+                <!-- 5. Commission Payable Account -->
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Customer.CommPayableAccountId" class="form-label fw-semibold">Commission Payable Account</label>
+                    <select asp-for="Customer.CommPayableAccountId" class="form-select" asp-items="Model.AccountList">
+                        <option value="">-- Default (Commission Payable) --</option>
+                    </select>
+                    <div class="form-text">Credit entry for agent commission payable.</div>
+                    <span asp-validation-for="Customer.CommPayableAccountId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <h6 class="mt-4 mb-3 text-muted border-bottom pb-2">Tax & Identity Information</h6>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Customer.CustomerNtnNo" class="form-label">NTN No</label>
+                    <input asp-for="Customer.CustomerNtnNo" class="form-control" placeholder="1234567-8" maxlength="9" />
+                    <span asp-validation-for="Customer.CustomerNtnNo" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Customer.CustomerStrNo" class="form-label">STRN No</label>
+                    <input asp-for="Customer.CustomerStrNo" class="form-control" placeholder="Enter STRN" />
+                    <span asp-validation-for="Customer.CustomerStrNo" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Customer.CustomerCnic" class="form-label">CNIC <span class="text-muted small">(Format: 35401-2342361-9)</span></label>
+                    <input asp-for="Customer.CustomerCnic" class="form-control" placeholder="00000-0000000-0" maxlength="15" />
+                    <span asp-validation-for="Customer.CustomerCnic" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.RegistrationType" class="form-label">Registration Type</label>
+                    <input asp-for="Customer.RegistrationType" class="form-control" placeholder="Enter registration type" />
+                    <span asp-validation-for="Customer.RegistrationType" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Customer.CustomerDeactiveOn" class="form-label">Deactive On (Date)</label>
+                    <input asp-for="Customer.CustomerDeactiveOn" class="form-control" type="date" />
+                    <div class="form-text">Leave blank if the customer is active.</div>
+                    <span asp-validation-for="Customer.CustomerDeactiveOn" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a href="/Customers/Index" class="btn btn-outline-secondary px-4">
+                        Cancel
+                    </a>
+                    <button type="submit" class="btn btn-outline-success px-4">
+                        Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ntnInput = document.getElementById('Customer_CustomerNtnNo');
+            const cnicInput = document.getElementById('Customer_CustomerCnic');
+
+            // CNIC Mask: 35401-2342361-9
+            if (cnicInput) {
+                cnicInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 13) value = value.substring(0, 13);
+
+                    let formattedValue = '';
+                    if (value.length > 0) formattedValue = value.substring(0, 5);
+                    if (value.length > 5) formattedValue += '-' + value.substring(5, 12);
+                    if (value.length > 12) formattedValue += '-' + value.substring(12, 13);
+                    
+                    e.target.value = formattedValue;
+                });
+            }
+
+            // NTN Mask: 1234567-8
+            if (ntnInput) {
+                ntnInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/[^a-zA-Z0-9]/g, '');
+                    if (value.length > 8) value = value.substring(0, 8);
+
+                    let formattedValue = '';
+                    if (value.length > 0) formattedValue = value.substring(0, 7);
+                    if (value.length > 7) formattedValue += '-' + value.substring(7, 8);
+                    
+                    e.target.value = formattedValue;
+                });
+            }
+        });
+    </script>
+}
