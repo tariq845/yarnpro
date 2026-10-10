@@ -52,7 +52,7 @@ jobs:
           </html>
           EOF
 
-      - name: Deploy to SmarterASP.NET via FTPS
+      - name: Deploy to SmarterASP.NET
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.SMARTERASP_FTP_SERVER }}
@@ -60,7 +60,7 @@ jobs:
           password: ${{ secrets.SMARTERASP_FTP_PASSWORD }}
           local-dir: ./publish/
           server-dir: ${{ secrets.SMARTERASP_FTP_REMOTE_PATH || 'ys/' }}
-          protocol: ftps
+          protocol: ${{ secrets.SMARTERASP_FTP_PROTOCOL || 'ftp' }}
           port: 21
           security: loose
           dangerous-clean-slate: false
@@ -75,28 +75,43 @@ jobs:
           python3 -c "
           import ftplib, ssl, os
 
-          server = os.environ.get('FTP_SERVER')
-          user = os.environ.get('FTP_USER')
-          passwd = os.environ.get('FTP_PASS')
+          server = os.environ.get('FTP_SERVER', '').strip()
+          user = os.environ.get('FTP_USER', '').strip()
+          passwd = os.environ.get('FTP_PASS', '').strip()
           remote_dir = (os.environ.get('FTP_DIR') or 'ys').strip('/')
 
           if server and user and passwd:
-              try:
-                  context = ssl.create_default_context()
-                  context.check_hostname = False
-                  context.verify_mode = ssl.CERT_NONE
+              # Try plain FTP first, fallback to FTPS
+              client = None
+              for use_tls in [False, True]:
+                  try:
+                      if use_tls:
+                          context = ssl.create_default_context()
+                          context.check_hostname = False
+                          context.verify_mode = ssl.CERT_NONE
+                          client = ftplib.FTP_TLS(context=context)
+                          client.connect(server, 21, timeout=30)
+                          client.login(user, passwd)
+                          client.prot_p()
+                      else:
+                          client = ftplib.FTP()
+                          client.connect(server, 21, timeout=30)
+                          client.login(user, passwd)
 
-                  ftps = ftplib.FTP_TLS(context=context)
-                  ftps.connect(server, 21, timeout=30)
-                  ftps.login(user, passwd)
-                  ftps.prot_p()
-                  if remote_dir:
-                      ftps.cwd(remote_dir)
-                  ftps.delete('app_offline.htm')
-                  print('Successfully removed app_offline.htm. Application is live!')
-                  ftps.quit()
-              except Exception as e:
-                  print(f'Note on app_offline removal (already clean or non-fatal): {e}')
+                      if remote_dir:
+                          client.cwd(remote_dir)
+                      client.delete('app_offline.htm')
+                      print('Successfully removed app_offline.htm. Application is live!')
+                      client.quit()
+                      break
+                  except Exception as e:
+                      if client:
+                          try:
+                              client.close()
+                          except:
+                              pass
+                      if use_tls:
+                          print(f'Note on app_offline removal (non-fatal): {e}')
           "
         env:
           FTP_SERVER: ${{ secrets.SMARTERASP_FTP_SERVER }}
