@@ -312,8 +312,8 @@
         </div>
     </div>
     
-    <!-- Enhanced Stats Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px;">
+    <!-- Enhanced Stats Grid (Operations & Sales) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 20px;">
         <div class="enhanced-stat-card primary animate-up delay-1" style="--gradient-start: #4f46e5; --gradient-end: #7c3aed;">
             <div class="stat-header">
                 <div>
@@ -321,7 +321,7 @@
                     <div class="stat-label-enhanced">Monthly Sales</div>
                 </div>
                 <div class="stat-icon-enhanced">
-                    <i class="bi bi-wallet2"></i>
+                    <i class="bi bi-graph-up-arrow"></i>
                 </div>
             </div>
             <div class="stat-trend">
@@ -332,15 +332,34 @@
                 <span class="trend-text">from last month</span>
             </div>
         </div>
+
+        <div class="enhanced-stat-card animate-up delay-2" style="--gradient-start: #ea580c; --gradient-end: #c2410c;">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value-enhanced">PKR @Model.TotalPurchasesCurrentMonth.ToString("N0")</div>
+                    <div class="stat-label-enhanced">Monthly Purchases</div>
+                </div>
+                <div class="stat-icon-enhanced">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+            </div>
+            <div class="stat-trend">
+                <span class="trend-badge @(Model.PurchaseTrend >= 0 ? "up" : "down")">
+                    <i class="bi bi-arrow-@(Model.PurchaseTrend >= 0 ? "up" : "down")"></i>
+                    @Math.Abs(Model.PurchaseTrend)%
+                </span>
+                <span class="trend-text">from last month</span>
+            </div>
+        </div>
         
-        <div class="enhanced-stat-card success animate-up delay-2" style="--gradient-start: #10b981; --gradient-end: #059669;">
+        <div class="enhanced-stat-card success animate-up delay-3" style="--gradient-start: #10b981; --gradient-end: #059669;">
             <div class="stat-header">
                 <div>
                     <div class="stat-value-enhanced">@Model.TotalOrdersCurrentMonth</div>
-                    <div class="stat-label-enhanced">Monthly Orders</div>
+                    <div class="stat-label-enhanced">Monthly Invoices</div>
                 </div>
                 <div class="stat-icon-enhanced">
-                    <i class="bi bi-bag-check"></i>
+                    <i class="bi bi-receipt"></i>
                 </div>
             </div>
             <div class="stat-trend">
@@ -352,11 +371,11 @@
             </div>
         </div>
         
-        <div class="enhanced-stat-card warning animate-up delay-3" style="--gradient-start: #f59e0b; --gradient-end: #d97706;">
+        <div class="enhanced-stat-card warning animate-up delay-4" style="--gradient-start: #f59e0b; --gradient-end: #d97706;">
             <div class="stat-header">
                 <div>
                     <div class="stat-value-enhanced">@Model.TotalStockItems.ToString("N0")</div>
-                    <div class="stat-label-enhanced">Total Stock Units</div>
+                    <div class="stat-label-enhanced">Stock In-Hand (Units)</div>
                 </div>
                 <div class="stat-icon-enhanced">
                     <i class="bi bi-box-seam"></i>
@@ -364,29 +383,85 @@
             </div>
             <div class="stat-trend">
                 <span class="trend-badge up">
-                    <i class="bi bi-arrow-up"></i>
-                    @Model.StockTrend%
+                    <i class="bi bi-check-circle-fill"></i>
+                    Real-time
                 </span>
-                <span class="trend-text">real-time update</span>
+                <span class="trend-text"><a href="/Reports/Stock" class="text-decoration-none text-muted">View Stock &rarr;</a></span>
             </div>
         </div>
-        
-        <div class="enhanced-stat-card info animate-up delay-4" style="--gradient-start: #3b82f6; --gradient-end: #2563eb;">
+    </div>
+
+    <!-- Enhanced Stats Grid (Financials & Working Capital) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 32px;">
+        <a href="/Reports/CustomerAging" class="enhanced-stat-card animate-up delay-2 text-decoration-none" style="--gradient-start: #0284c7; --gradient-end: #0369a1; display: block; color: inherit;">
             <div class="stat-header">
                 <div>
-                    <div class="stat-value-enhanced">@Model.ActiveCustomersCount</div>
-                    <div class="stat-label-enhanced">Active Customers</div>
+                    <div class="stat-value-enhanced text-info" style="color: #0284c7 !important;">PKR @Model.TotalReceivables.ToString("N0")</div>
+                    <div class="stat-label-enhanced">Customer Receivables (AR)</div>
                 </div>
                 <div class="stat-icon-enhanced">
-                    <i class="bi bi-people"></i>
+                    <i class="bi bi-cash-coin"></i>
+                </div>
+            </div>
+            <div class="stat-trend">
+                <span class="trend-badge" style="background: #e0f2fe; color: #0369a1;">
+                    <i class="bi bi-people-fill"></i> @Model.ActiveCustomersCount Customers
+                </span>
+                <span class="trend-text text-primary fw-semibold">View Aging &rarr;</span>
+            </div>
+        </a>
+
+        <a href="/Reports/SupplierAging" class="enhanced-stat-card animate-up delay-3 text-decoration-none" style="--gradient-start: #e11d48; --gradient-end: #be123c; display: block; color: inherit;">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value-enhanced" style="color: #e11d48 !important;">PKR @Model.TotalPayables.ToString("N0")</div>
+                    <div class="stat-label-enhanced">Supplier Payables (AP)</div>
+                </div>
+                <div class="stat-icon-enhanced">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+            </div>
+            <div class="stat-trend">
+                <span class="trend-badge" style="background: #ffe4e6; color: #be123c;">
+                    <i class="bi bi-truck"></i> @Model.ActiveSuppliersCount Suppliers
+                </span>
+                <span class="trend-text text-danger fw-semibold">View Aging &rarr;</span>
+            </div>
+        </a>
+
+        <div class="enhanced-stat-card animate-up delay-4" style="--gradient-start: #059669; --gradient-end: #047857;">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value-enhanced text-success">PKR @Model.TotalReceiptsCurrentMonth.ToString("N0")</div>
+                    <div class="stat-label-enhanced">Month Collections (RV)</div>
+                </div>
+                <div class="stat-icon-enhanced">
+                    <i class="bi bi-arrow-down-left-circle"></i>
                 </div>
             </div>
             <div class="stat-trend">
                 <span class="trend-badge up">
-                    <i class="bi bi-arrow-up"></i>
-                    @Model.CustomerTrend%
+                    <i class="bi bi-arrow-down-left"></i> Inflow
                 </span>
-                <span class="trend-text">growth rate</span>
+                <span class="trend-text">Receipt Vouchers</span>
+            </div>
+        </div>
+
+        <div class="enhanced-stat-card animate-up delay-5" style="--gradient-start: #6366f1; --gradient-end: #4338ca;">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-value-enhanced" style="color: #4338ca !important;">PKR @Model.TotalPaymentsCurrentMonth.ToString("N0")</div>
+                    <div class="stat-label-enhanced">Month Payments (PV)</div>
+                </div>
+                <div class="stat-icon-enhanced">
+                    <i class="bi bi-arrow-up-right-circle"></i>
+                </div>
+            </div>
+            <div class="stat-trend">
+                <span class="trend-badge" style="background: #eef2ff; color: #4338ca;">
+                    <i class="bi bi-arrow-up-right"></i> Outflow
+                </span>
+                <span class="trend-text">Payment Vouchers</span>
             </div>
         </div>
     </div>

@@ -150,9 +150,10 @@ namespace YIS.Pages.Sales
             }
 
             long? customerAccountId = null;
+            CustomerMaster? customer = null;
             if (long.TryParse(parentEntry.EntryAttribute1, out long customerId))
             {
-                var customer = await _context.CustomerMasters.FindAsync(customerId);
+                customer = await _context.CustomerMasters.FindAsync(customerId);
                 customerAccountId = customer?.AccountId;
             }
 
@@ -176,8 +177,25 @@ namespace YIS.Pages.Sales
             try
             {
                 // CN is Sales Return: Debit Sales/GST, Credit Customer
-                var salesAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("Sales") && !a.AccountName.Contains("GST") && a.UcpId == activeUcpId);
-                var gstAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("GST") && a.UcpId == activeUcpId);
+                AccountMaster? salesAccount = null;
+                if (customer?.SalesAccountId.HasValue == true)
+                {
+                    salesAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountId == customer.SalesAccountId.Value && a.UcpId == activeUcpId);
+                }
+                if (salesAccount == null)
+                {
+                    salesAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("Sales") && !a.AccountName.Contains("GST") && a.UcpId == activeUcpId);
+                }
+
+                AccountMaster? gstAccount = null;
+                if (customer?.TaxAccountId.HasValue == true)
+                {
+                    gstAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountId == customer.TaxAccountId.Value && a.UcpId == activeUcpId);
+                }
+                if (gstAccount == null)
+                {
+                    gstAccount = await _context.AccountMasters.FirstOrDefaultAsync(a => a.AccountName.Contains("GST") && a.UcpId == activeUcpId);
+                }
 
                 foreach (var line in lineItems)
                 {

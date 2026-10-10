@@ -1,0 +1,321 @@
+@page
+@model YIS.Pages.Reports.CustomerPendingBagsModel
+@{
+    ViewData["Title"] = "Customer Pending Bags";
+    ViewData["BreadcrumbParent"] = "Reports";
+}
+
+<link rel="stylesheet" href="~/css/categories.css" />
+
+<div>
+    <!-- Search and Filter Bar -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <!-- Search & Summary Row -->
+            <div class="row align-items-center mb-3">
+                <div class="col-md-5">
+                    <div class="position-relative">
+                        <i class="bi bi-search yis-cat-search-icon"></i>
+                        <input type="text" 
+                               class="form-control yis-cat-search-input" 
+                               id="pendingSearch" 
+                               placeholder="Search items..."
+                               onkeyup="filterPendingTable()">
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    @if (Model.ItemSummaries.Any())
+                    {
+                        <div class="row justify-content-end text-end pe-2 g-3">
+                            <div class="col-auto border-end pe-3">
+                                <h6 class="text-muted text-uppercase mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                    Total Dispatched :
+                                    <span class="fw-bold fs-6 text-dark ms-1">
+                                        @Model.TotalDispatched.ToString("N0")
+                                    </span>
+                                </h6>
+                            </div>
+                            <div class="col-auto border-end pe-3">
+                                <h6 class="text-muted text-uppercase mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                    Total Invoiced :
+                                    <span class="fw-bold fs-6 text-success ms-1">
+                                        @Model.TotalInvoiced.ToString("N0")
+                                    </span>
+                                </h6>
+                            </div>
+                            <div class="col-auto">
+                                <h6 class="text-muted text-uppercase mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                                    Pending Bags :
+                                    <span class="fw-bold fs-6 text-danger ms-1">
+                                        @Model.TotalPending.ToString("N0")
+                                    </span>
+                                </h6>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Date & Customer Filter Toolbar -->
+            <div class="pt-3 border-top">
+                <form method="get">
+                    <div class="row align-items-end g-2">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">From Date</label>
+                            <input type="date" name="FromDate" class="form-control form-control-sm"
+                                   value="@Model.FromDate?.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">To Date</label>
+                            <input type="date" name="ToDate" class="form-control form-control-sm"
+                                   value="@Model.ToDate?.ToString("yyyy-MM-dd")" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted small text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Customer</label>
+                            <select name="CustomerId" class="form-select form-select-sm">
+                                <option value="">-- All Customers --</option>
+                                @foreach (var c in Model.Customers)
+                                {
+                                    if (Model.CustomerId == c.CustomerId)
+                                    {
+                                        <option value="@c.CustomerId" selected>@c.CustomerName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@c.CustomerId">@c.CustomerName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary flex-fill">
+                                <i class="bi bi-funnel me-1"></i> Filter
+                            </button>
+                            @if (Model.FromDate.HasValue || Model.ToDate.HasValue || Model.CustomerId.HasValue)
+                            {
+                                <a href="/Reports/CustomerPendingBags" class="btn btn-sm btn-outline-secondary" title="Reset Filters">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="pendingTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0 px-4 py-3">Item Name</th>
+                            <th class="border-0 px-4 py-3 text-end">Total Dispatched (SSD)</th>
+                            <th class="border-0 px-4 py-3 text-end">Invoiced (SAL)</th>
+                            <th class="border-0 px-4 py-3 text-end">Pending Bags</th>
+                            <th class="border-0 px-4 py-3 text-center" style="width: 100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ItemSummaries.Any())
+                        {
+                            int itemIndex = 0;
+                            foreach (var item in Model.ItemSummaries)
+                            {
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <a href="javascript:void(0)"
+                                               onclick="openItemModal(@itemIndex)"
+                                               class="fw-medium text-primary text-decoration-none">
+                                                @item.ItemName
+                                            </a>
+                                            <span class="badge bg-light text-secondary border ms-2" style="font-size: 0.7rem;">
+                                                @item.SsdLines.Count SSD(s)
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-medium">@item.TotalDispatched.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-medium">@item.TotalInvoiced.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        @if (item.Balance <= 0)
+                                        {
+                                            <span class="badge bg-success">
+                                                @item.Balance.ToString("N0")
+                                            </span>
+                                        }
+                                        else if (item.Balance < 10)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                @item.Balance.ToString("N0")
+                                            </span>
+                                        }
+                                       else
+                                        {
+                                            <span class="badge bg-danger">
+                                                @item.Balance.ToString("N0")
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        <button class="btn btn-sm text-primary border-0 p-1"
+                                                onclick="openItemModal(@itemIndex)"
+                                                title="View SSD Detail for @item.ItemName">
+                                            <i class="bi bi-eye fs-5"></i> 
+                                        </button>
+                                    </td>
+                                </tr>
+                                itemIndex++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="py-4">
+                                        <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+                                        <h5 class="mt-3 text-muted">No Pending Bags Found</h5>
+                                        <p class="text-muted">All dispatched bags have been invoiced — or adjust the filters above.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    @if (Model.ItemSummaries.Any())
+                    {
+                        <tfoot class="table-light fw-bold">
+                            <tr>
+                                <td class="px-4 py-3">TOTAL</td>
+                                <td class="px-4 py-3 text-end text-dark">@Model.TotalDispatched.ToString("N0")</td>
+                                <td class="px-4 py-3 text-end text-dark">@Model.TotalInvoiced.ToString("N0")</td>
+                                <td class="px-4 py-3 text-end text-danger">@Model.TotalPending.ToString("N0")</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SSD Detail Modal -->
+<div class="modal fade" id="itemDetailModal" tabindex="-1" aria-labelledby="itemDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+            <div class="card-header bg-white py-3 border-bottom">
+                <div class="row justify-content-between align-items-center g-2">
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <h5 class="mb-0 text-primary fw-bold" id="modal-item-name">Item Name</h5>
+                            <span class="badge bg-light text-muted border" style="font-size:0.75rem;">SSD Detail</span>
+                        </div>
+                        <small class="text-muted">Bags dispatched to customers but sale invoice not yet created</small>
+                    </div>
+                    <div class="col-auto d-flex align-items-center gap-4">
+                        <h6 class="text-uppercase text-muted mb-0" style="font-size: 0.8rem; letter-spacing: 0.5px;">
+                            Total Pending :
+                            <span class="fs-5 fw-bold ms-1 text-danger" id="modal-item-pending">0</span>
+                        </h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 px-4 py-3" style="width:5%;">#</th>
+                                <th class="border-0 px-4 py-3" style="width:14%;">SSD No</th>
+                                <th class="border-0 px-4 py-3" style="width:14%;">SSD Date</th>
+                                <th class="border-0 px-4 py-3">Customer</th>
+                                <th class="border-0 px-4 py-3 text-end text-dark" style="width:14%;">Total (From SSD)</th>
+                                <th class="border-0 px-4 py-3 text-end text-success" style="width:14%;">Invoiced (From SAL)</th>
+                                <th class="border-0 px-4 py-3 text-end fw-bold text-danger" style="width:14%;">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modal-item-lines"></tbody>
+                        <tfoot class="table-light fw-bold" id="modal-item-totals"></tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer py-2 bg-light">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const itemsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ItemSummaries));
+
+function openItemModal(index) {
+    const item = itemsData[index];
+    if (!item) return;
+
+    document.getElementById('modal-item-name').textContent = item.ItemName;
+    document.getElementById('modal-item-pending').textContent = Number(item.Balance).toLocaleString();
+
+    const tbody = document.getElementById('modal-item-lines');
+    tbody.innerHTML = item.SsdLines.map((l, i) => `
+        <tr>
+            <td class="px-4 py-3 text-muted">${i + 1}</td>
+            <td class="px-4 py-3">
+                <a href="/Reports/SsdTrackRecord/${l.SsdId}" class="fw-medium text-danger text-decoration-none">
+                    SSD-${l.SsdNumber}
+                    <i class="bi bi-box-arrow-up-right ms-1" style="font-size:0.75rem;"></i>
+                </a>
+            </td>
+            <td class="px-4 py-3 text-nowrap text-muted">
+                ${l.SsdDate ? new Date(l.SsdDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '-'}
+            </td>
+            <td class="px-4 py-3">${l.CustomerName}</td>
+            <td class="px-4 py-3 text-end text-dark fw-medium">${Number(l.DispatchedQty).toLocaleString()}</td>
+            <td class="px-4 py-3 text-end text-success fw-medium">${Number(l.InvoicedQty).toLocaleString()}</td>
+            <td class="px-4 py-3 text-end fw-bold text-danger">${Number(l.PendingQty).toLocaleString()}</td>
+        </tr>
+    `).join('');
+
+    document.getElementById('modal-item-totals').innerHTML = `
+        <tr>
+            <td colspan="4" class="px-4 py-3 text-end">TOTAL</td>
+            <td class="px-4 py-3 text-end text-dark">${Number(item.TotalDispatched).toLocaleString()}</td>
+            <td class="px-4 py-3 text-end text-success">${Number(item.TotalInvoiced).toLocaleString()}</td>
+            <td class="px-4 py-3 text-end text-danger">${Number(item.Balance).toLocaleString()}</td>
+        </tr>
+    `;
+
+    const modal = new bootstrap.Modal(document.getElementById('itemDetailModal'));
+    modal.show();
+}
+
+function filterPendingTable() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("pendingSearch");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("pendingTable");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        if (tr[i].parentElement.tagName.toLowerCase() === 'tfoot') continue;
+        td = tr[i].getElementsByTagName("td")[0]; // Item Name column
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+</script>
+}

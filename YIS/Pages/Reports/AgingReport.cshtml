@@ -1,0 +1,430 @@
+@page
+@model YIS.Pages.Reports.AgingReportModel
+@{
+    ViewData["Title"] = "Aging Analysis Report";
+    ViewData["BreadcrumbParent"] = "Reports";
+}
+
+<style>
+    /* Screen Styles */
+    .aging-card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        transition: all 0.2s ease-in-out;
+    }
+    .aging-card:hover {
+        transform: translateY(-2px);
+    }
+    .kpi-title {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        font-weight: 700;
+        color: #858796;
+    }
+    .kpi-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+    }
+    
+    /* Table Styling matching Standard ERP / Accounting report */
+    .aging-report-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 11px;
+    }
+    .aging-report-table th {
+        background-color: #f8f9fa;
+        color: #333;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 0.3px;
+        padding: 6px 4px;
+        border: 1px solid #000;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .aging-report-table td {
+        padding: 4px;
+        border: 1px solid #ccc;
+        vertical-align: middle;
+    }
+    
+    .broker-header-row {
+        background-color: #f0f4f8;
+        font-weight: 700;
+        font-size: 12px;
+        color: #0b3c5d;
+        border-top: 1px solid #000 !important;
+        border-bottom: 1px solid #000 !important;
+    }
+    .buyer-header-row {
+        background-color: #fff;
+        font-weight: 700;
+        font-size: 11px;
+        color: #b30000; /* Red party title matching PDF */
+        border-top: 1px dashed #999;
+    }
+    .seller-header-text {
+        color: #551a8b;
+        font-weight: 700;
+        font-size: 11px;
+    }
+    .buyer-subtotal-row {
+        background-color: #fafafa;
+        font-weight: 700;
+        border-top: 1px solid #000 !important;
+        border-bottom: 1px solid #000 !important;
+    }
+    .broker-subtotal-row {
+        background-color: #f4f4f4;
+        font-weight: 700;
+        border-top: 1px solid #000 !important;
+        border-bottom: 2px solid #000 !important;
+    }
+    .grand-total-box {
+        font-weight: 800;
+        font-size: 13px;
+        border-top: 1px solid #000;
+        border-bottom: 3px double #000;
+        padding: 4px 10px;
+        display: inline-block;
+    }
+
+    /* Print Specific Layout identical to User PDF */
+    @@media print {
+        body {
+            background-color: #fff !important;
+            font-size: 9pt !important;
+            color: #000 !important;
+        }
+        .no-print, nav, .navbar, .sidebar, .yis-sidebar, footer, .btn, .breadcrumb, #toast-data {
+            display: none !important;
+        }
+        .container-fluid, .content, main {
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        .aging-report-table {
+            font-size: 8pt !important;
+            page-break-inside: auto;
+        }
+        .aging-report-table tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        .aging-report-table th, .aging-report-table td {
+            border: 1px solid #000 !important;
+            padding: 2px 3px !important;
+        }
+        .buyer-header-row {
+            color: #b30000 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        @@page {
+            size: A4 landscape;
+            margin: 8mm 6mm;
+        }
+    }
+</style>
+
+<div class="container-fluid py-2">
+    <!-- Non-print Control & Filter Card -->
+    <div class="card shadow-sm mb-3 no-print">
+        <div class="card-body p-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="bi bi-clock-history text-primary me-2"></i>Aging Analysis Report
+                    </h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="?AgingType=Receivables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly" 
+                           class="btn @(Model.AgingType == "Receivables" ? "btn-primary" : "btn-outline-primary") px-3 fw-bold">
+                            <i class="bi bi-arrow-down-left-circle me-1"></i> Receivables (Customer)
+                        </a>
+                        <a href="?AgingType=Payables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly" 
+                           class="btn @(Model.AgingType == "Payables" ? "btn-primary" : "btn-outline-primary") px-3 fw-bold">
+                            <i class="bi bi-arrow-up-right-circle me-1"></i> Payables (Supplier)
+                        </a>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-dark fw-bold px-3" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i> PRINT REPORT
+                    </button>
+                    <a asp-page-handler="ExportExcel" 
+                       asp-route-AgingType="@Model.AgingType"
+                       asp-route-AsOfDate="@Model.AsOfDate?.ToString("yyyy-MM-dd")"
+                       asp-route-PartyId="@Model.PartyId"
+                       asp-route-BrokerFilter="@Model.BrokerFilter"
+                       asp-route-UnClearedOnly="@Model.UnClearedOnly"
+                       asp-route-SearchTerm="@Model.SearchTerm"
+                       class="btn btn-sm btn-success fw-bold px-3">
+                        <i class="bi bi-file-earmark-excel me-1"></i> EXCEL (XLSX)
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter Controls Form -->
+            <form method="get" id="filterForm">
+                <input type="hidden" name="AgingType" value="@Model.AgingType" />
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted fw-bold mb-1">As Of Date</label>
+                        <input type="date" name="AsOfDate" class="form-control form-control-sm" 
+                               value="@Model.AsOfDate?.ToString("yyyy-MM-dd")" onchange="this.form.submit()" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted fw-bold mb-1">
+                            @(Model.AgingType == "Receivables" ? "Customer" : "Supplier") Filter
+                        </label>
+                        <select name="PartyId" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">-- All Parties --</option>
+                            @foreach (var p in Model.PartyDropdown)
+                            {
+                                <option value="@p.Value" selected="@(Model.PartyId?.ToString() == p.Value)">@p.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted fw-bold mb-1">Broker / Sale Group</label>
+                        <select name="BrokerFilter" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="">-- All Brokers / Groups --</option>
+                            @foreach (var b in Model.BrokerDropdown)
+                            {
+                                <option value="@b.Value" selected="@(Model.BrokerFilter == b.Value)">@b.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted fw-bold mb-1">Quick Search</label>
+                        <input type="text" name="SearchTerm" class="form-control form-control-sm" 
+                               placeholder="Inv#, Party, Item..." value="@Model.SearchTerm" />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-center gap-3 pb-1">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" name="UnClearedOnly" value="true" id="chkUnCleared" 
+                                   checked="@Model.UnClearedOnly" onchange="this.form.submit()" />
+                            <label class="form-check-label small fw-bold text-danger" for="chkUnCleared">UnCleared Only</label>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary px-3">
+                            <i class="bi bi-funnel-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- KPI Summary Slabs (Screen Only) -->
+    <div class="row g-2 mb-3 no-print">
+        <div class="col-md-3">
+            <div class="card aging-card bg-white p-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="kpi-title text-primary">Total Outstanding</div>
+                        <div class="kpi-value text-primary">₨ @Model.GrandTotalBalance.ToString("N0")</div>
+                    </div>
+                    <div class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
+                        <i class="bi bi-wallet2 fs-5"></i>
+                    </div>
+                </div>
+                <div class="small text-muted mt-1">@Model.TotalInvoicesCount Invoices Pending</div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card aging-card bg-white p-2">
+                <div class="kpi-title text-success">0 - 30 Days</div>
+                <div class="kpi-value text-success">₨ @Model.Slab_0_30.ToString("N0")</div>
+                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar bg-success" style="width: @(Model.GrandTotalBalance > 0 ? (Model.Slab_0_30 / Model.GrandTotalBalance * 100) : 0)%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card aging-card bg-white p-2">
+                <div class="kpi-title text-info">31 - 60 Days</div>
+                <div class="kpi-value text-info">₨ @Model.Slab_31_60.ToString("N0")</div>
+                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar bg-info" style="width: @(Model.GrandTotalBalance > 0 ? (Model.Slab_31_60 / Model.GrandTotalBalance * 100) : 0)%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card aging-card bg-white p-2">
+                <div class="kpi-title text-warning">61 - 90 Days</div>
+                <div class="kpi-value text-warning">₨ @Model.Slab_61_90.ToString("N0")</div>
+                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar bg-warning" style="width: @(Model.GrandTotalBalance > 0 ? (Model.Slab_61_90 / Model.GrandTotalBalance * 100) : 0)%"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card aging-card bg-white p-2">
+                <div class="kpi-title text-danger">90+ Days (High Risk)</div>
+                <div class="kpi-value text-danger">₨ @((Model.Slab_91_120 + Model.Slab_120_Plus).ToString("N0"))</div>
+                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar bg-danger" style="width: @(Model.GrandTotalBalance > 0 ? ((Model.Slab_91_120 + Model.Slab_120_Plus) / Model.GrandTotalBalance * 100) : 0)%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Report Body (Print & Screen Standard Layout) -->
+    <div class="card shadow-sm border-0 bg-white">
+        <div class="card-body p-3">
+            
+            <!-- Standard Header matching PDF -->
+            <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-2">
+                <div style="font-size: 11px; font-weight: 600;">
+                    @(Model.UnClearedOnly ? "UnCleared Bills Only" : "All Bills")
+                </div>
+                <div class="text-center flex-grow-1">
+                    <h5 class="fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">@Model.CompanyName</h5>
+                    <div class="fw-bold text-uppercase" style="font-size: 13px;">
+                        AGING REPORT {@(Model.AgingType == "Receivables" ? "(RECEIVABLES ONLY)" : "(PAYABLES ONLY)") UPTO @Model.AsOfDate?.ToString("dd/MM/yyyy")}
+                    </div>
+                </div>
+                <div class="text-end" style="font-size: 10px; line-height: 1.3;">
+                    <div><strong>Date & Time :</strong> @Model.GeneratedOn.ToString("dd/MM/yy hh:mm tt")</div>
+                    <div><strong>User :</strong> @Model.UserName</div>
+                    <div><strong>Page :</strong> 1 of 1</div>
+                </div>
+            </div>
+
+            <!-- Table Structure -->
+            <div class="table-responsive">
+                <table class="aging-report-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 7%;">TRANSACTION NUMBER</th>
+                            <th style="width: 6%;">DATE</th>
+                            <th style="width: 7%;">CONTRACT NUMBER</th>
+                            <th style="width: 6%;">INVOICE NUMBER</th>
+                            <th style="width: 5%;">QTY</th>
+                            <th style="width: 21%;">DESCRIPTION</th>
+                            <th style="width: 6%;">RATE</th>
+                            <th style="width: 8%;">AMOUNT</th>
+                            <th style="width: 8%;">RECEIVED / PAID</th>
+                            <th style="width: 8%;">BALANCE</th>
+                            <th style="width: 4%;">CONT. DAYS</th>
+                            <th style="width: 4%;">TOTAL DAYS</th>
+                            <th style="width: 6%;">PDC AMOUNT</th>
+                            <th style="width: 5%;">PDC DT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.GroupedReport.Any())
+                        {
+                            @foreach (var broker in Model.GroupedReport)
+                            {
+                                <!-- Broker Group Header -->
+                                <tr class="broker-header-row">
+                                    <td colspan="14" class="px-2 py-1">
+                                        <i class="bi bi-briefcase me-1 no-print"></i> @broker.BrokerName
+                                    </td>
+                                </tr>
+
+                                @foreach (var buyer in broker.Buyers)
+                                {
+                                    <!-- Buyer / Customer Header -->
+                                    <tr class="buyer-header-row">
+                                        <td colspan="14" class="px-2 py-1">
+                                            @buyer.BuyerName
+                                        </td>
+                                    </tr>
+
+                                    @foreach (var item in buyer.Items)
+                                    {
+                                        <tr>
+                                            <td class="text-center font-monospace">@item.TransactionNumber</td>
+                                            <td class="text-center">@item.Date?.ToString("dd/MM/yy")</td>
+                                            <td class="text-center font-monospace">@item.ContractNumber</td>
+                                            <td class="text-center fw-semibold">@item.InvoiceNumber</td>
+                                            <td class="text-end">@item.Qty.ToString("N2")</td>
+                                            <td class="text-start" style="font-size: 10px;">@item.Description</td>
+                                            <td class="text-end">@item.Rate.ToString("N2")</td>
+                                            <td class="text-end fw-semibold">@item.Amount.ToString("N2")</td>
+                                            <td class="text-end text-muted">
+                                                @(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "")
+                                            </td>
+                                            <td class="text-end fw-bold text-dark">@item.Balance.ToString("N2")</td>
+                                            <td class="text-center">@item.ContDays</td>
+                                            <td class="text-center @(item.TotalDays > 60 ? "text-danger fw-bold" : "")">@item.TotalDays</td>
+                                            <td class="text-end">@(item.PdcAmount > 0 ? item.PdcAmount.ToString("N2") : "")</td>
+                                            <td class="text-center">@item.PdcDate?.ToString("dd/MM/yy")</td>
+                                        </tr>
+                                    }
+
+                                    <!-- Buyer Subtotal -->
+                                    <tr class="buyer-subtotal-row">
+                                        <td colspan="7" class="text-end pe-2">
+                                            <strong>BUYER WISE SUB - TOTAL :</strong>
+                                        </td>
+                                        <td class="text-end fw-bold">@buyer.SubTotalAmount.ToString("N2")</td>
+                                        <td class="text-end fw-bold">
+                                            @(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00")
+                                        </td>
+                                        <td class="text-end fw-bold text-dark">@buyer.SubTotalBalance.ToString("N2")</td>
+                                        <td colspan="2"></td>
+                                        <td class="text-end fw-bold">@buyer.SubTotalPdc.ToString("N2")</td>
+                                        <td></td>
+                                    </tr>
+                                }
+
+                                <!-- Broker Subtotal -->
+                                <tr class="broker-subtotal-row">
+                                    <td colspan="7" class="text-end pe-2">
+                                        <strong>SUB - TOTAL OF SELLER / BROKER :</strong>
+                                    </td>
+                                    <td class="text-end fw-bold">@broker.SubTotalAmount.ToString("N2")</td>
+                                    <td class="text-end fw-bold">
+                                        @(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00")
+                                    </td>
+                                    <td class="text-end fw-bold text-dark">@broker.SubTotalBalance.ToString("N2")</td>
+                                    <td colspan="4"></td>
+                                </tr>
+                            }
+
+                            <!-- Final Grand Total -->
+                            <tr>
+                                <td colspan="9" class="text-end pe-3 py-3 border-0">
+                                    <strong style="font-size: 13px;">GRAND - TOTAL :</strong>
+                                </td>
+                                <td class="text-end py-3 border-0">
+                                    <div class="grand-total-box">
+                                        @Model.GrandTotalBalance.ToString("N2")
+                                    </div>
+                                </td>
+                                <td colspan="4" class="border-0"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="14" class="text-center py-5">
+                                    <div class="py-4 text-muted">
+                                        <i class="bi bi-clipboard-check fs-1 text-muted"></i>
+                                        <h6 class="mt-2 fw-bold">No Pending / Overdue Bills Found</h6>
+                                        <p class="small mb-0">Either all accounts are settled or no records match your filter criteria.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

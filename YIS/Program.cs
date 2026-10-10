@@ -9,8 +9,13 @@ builder.Services.AddRazorPages()
     {
         options.Filters.Add<YIS.Filters.RbacFilter>();
     });
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseSqlServer("Server=SQL5113.site4now.net; Database=db_ac35e5_admin;User Id=db_ac35e5_admin_admin;Password=zindagi123;TrustServerCertificate=True;"));
+
+//development 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer("Server=SQL5113.site4now.net; Database=db_ac35e5_admin;User Id=db_ac35e5_admin_admin;Password=zindagi123;TrustServerCertificate=True;"));
+    options.UseSqlServer("Server=144.91.78.205;Database=visacmec_YarnSYS;User Id=yarnsysmaster;Password=master@1yarnsys;TrustServerCertificate=True;",
+        sqlServerOptions => sqlServerOptions.UseCompatibilityLevel(120)));
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();

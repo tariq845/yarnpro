@@ -208,42 +208,87 @@
                  
 
         <!-- Reports Section -->
-         @if (HasAccess("/Reports/PsdTrackIndex")){
+        @if (HasAccess("/Reports/PsdTrackIndex") || HasAccess("/Reports/SsdTrackIndex") || HasAccess("/Reports/PurchaseRegister") || HasAccess("/Reports/SaleRegister") || HasAccess("/Reports/Stock") || HasAccess("/Reports/SupplierPendingBags") || HasAccess("/Reports/CustomerPendingBags") || HasAccess("/Reports/CustomerAging") || HasAccess("/Reports/SupplierAging"))
+        {
         <div class="nav-section">
             <div class="nav-section-title">Reports</div>
             <ul style="list-style: none; padding: 0; margin: 0;">
-                <li class="nav-item has-submenu">
+                <li class="nav-item has-submenu @(currentPage.StartsWith("/Reports") ? "open" : "")">
                     <a href="#" class="nav-link @(currentPage.StartsWith("/Reports") ? "active" : "")">
                         <i class="bi bi-file-earmark-bar-graph"></i>
                         <span class="nav-link-text">Tracking Reports</span>
                         <i class="bi bi-chevron-right submenu-arrow"></i>
                     </a>
                     <ul class="nav-submenu" style="list-style: none;">
-                        <li class="nav-item">
-                            <a href="/Reports/PsdTrackIndex" class="nav-link @(currentPage == "/Reports/PsdTrackIndex" ? "active" : "")">
-                                <span class="nav-link-text">PSD Tracking</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Reports/SsdTrackIndex" class="nav-link @(currentPage == "/Reports/SsdTrackIndex" ? "active" : "")">
-                                <span class="nav-link-text">SSD Tracking</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Reports/PurchaseRegister" class="nav-link @(currentPage == "/Reports/PurchaseRegister" ? "active" : "")">
-                                <span class="nav-link-text">Purchase Register</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Reports/SaleRegister" class="nav-link @(currentPage == "/Reports/SaleRegister" ? "active" : "")">
-                                <span class="nav-link-text">Sale Register</span>
-                            </a>
-                        </li>
+                        @if (HasAccess("/Reports/CustomerAging"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/CustomerAging" class="nav-link @(currentPage == "/Reports/CustomerAging" ? "active" : "")">
+                                    <span class="nav-link-text">Customer Aging (AR)</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/SupplierAging"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/SupplierAging" class="nav-link @(currentPage == "/Reports/SupplierAging" ? "active" : "")">
+                                    <span class="nav-link-text">Supplier Aging (AP)</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/PsdTrackIndex"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/PsdTrackIndex" class="nav-link @(currentPage == "/Reports/PsdTrackIndex" ? "active" : "")">
+                                    <span class="nav-link-text">Purchase Movement</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/SsdTrackIndex"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/SsdTrackIndex" class="nav-link @(currentPage == "/Reports/SsdTrackIndex" ? "active" : "")">
+                                    <span class="nav-link-text">Sales Movement</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/PurchaseRegister"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/PurchaseRegister" class="nav-link @(currentPage == "/Reports/PurchaseRegister" ? "active" : "")">
+                                    <span class="nav-link-text">Purchase Register</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/SaleRegister"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/SaleRegister" class="nav-link @(currentPage == "/Reports/SaleRegister" ? "active" : "")">
+                                    <span class="nav-link-text">Sale Register</span>
+                                </a>
+                            </li>
+                        }
                         @if (HasAccess("/Reports/Stock"))
                         {
                             <li class="nav-item">
-                                <a href="/Reports/Stock" class="nav-link">
+                                <a href="/Reports/Stock" class="nav-link @(currentPage == "/Reports/Stock" ? "active" : "")">
                                     <span class="nav-link-text">Stock Report</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/SupplierPendingBags"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/SupplierPendingBags" class="nav-link @(currentPage == "/Reports/SupplierPendingBags" ? "active" : "")">
+                                    <span class="nav-link-text">Supplier Pending Bags</span>
+                                </a>
+                            </li>
+                        }
+                        @if (HasAccess("/Reports/CustomerPendingBags"))
+                        {
+                            <li class="nav-item">
+                                <a href="/Reports/CustomerPendingBags" class="nav-link @(currentPage == "/Reports/CustomerPendingBags" ? "active" : "")">
+                                    <span class="nav-link-text">Customer Pending Bags</span>
                                 </a>
                             </li>
                         }
@@ -251,7 +296,7 @@
                 </li>
             </ul>
         </div>
-         }
+        }
         
         <!-- Finance Section -->
         @if (HasAccess("/Invoices") || HasAccess("/Accounts/") || HasAccess("/Categories/CategoriesMaster") || HasAccess("/Reports/Sales"))

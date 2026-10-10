@@ -174,10 +174,19 @@
                                                     <button class="btn btn-sm btn-outline-success" disabled title="FBR Posted">
                                                         <i class="bi bi-cloud-check-fill"></i>
                                                     </button>
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Locked (FBR Posted)">
+                                                        <i class="bi bi-lock-fill"></i>
+                                                    </button>
                                                 }
-                                                <button class="btn btn-sm btn-outline-secondary" disabled title="Posted">
-                                                    <i class="bi bi-lock-fill"></i>
-                                                </button>
+                                                else
+                                                {
+                                                    <form method="post" asp-page-handler="UnpostFromLedger" asp-route-id="@item.EntryId"
+                                                          onsubmit="return confirm('Unpost SAL-@item.EntryNumber from ledger?\n\nThis will delete the GL entries (Debit + Credit) from the TRANS table.\n\nThe invoice will remain but become editable again.')">
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning" title="Unpost from Ledger">
+                                                            <i class="bi bi-arrow-counterclockwise"></i>
+                                                        </button>
+                                                    </form>
+                                                }
                                             }
                                         </div>
                                     </td>
@@ -210,8 +219,11 @@
             const form = e.target;
             const btn = form.querySelector('button[type="submit"]');
 
-            if (btn && (btn.title === 'Post to Ledger' || btn.title === 'Post to FBR' || 
+            if (btn && (btn.title === 'Post to Ledger' || 
+                        btn.title === 'Unpost from Ledger' ||
+                        btn.title === 'Post to FBR' || 
                 form.getAttribute('asp-page-handler') === 'PostToLedger' || 
+                form.getAttribute('asp-page-handler') === 'UnpostFromLedger' || 
                 form.getAttribute('asp-page-handler') === 'PostToFbr')) {
                 
                 // Wait for the confirm dialog (if any) to finish

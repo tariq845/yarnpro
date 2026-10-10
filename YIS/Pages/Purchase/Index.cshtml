@@ -146,9 +146,12 @@
                                             }
                                             else
                                             {
-                                                <button class="btn btn-sm btn-outline-secondary" disabled title="Posted">
-                                                    <i class="bi bi-lock-fill"></i>
-                                                </button>
+                                                <form method="post" asp-page-handler="UnpostFromLedger" asp-route-id="@item.EntryId"
+                                                      onsubmit="return confirm('Unpost PUR-@item.EntryNumber from ledger?\n\nThis will delete the GL entries (Debit + Credit) from the TRANS table.\n\nThe purchase entry will remain but become editable again.')">
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning" title="Unpost from Ledger">
+                                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                                    </button>
+                                                </form>
                                             }
                                         </div>
                                     </td>
@@ -175,4 +178,25 @@
     </div>
 </div>
 
-@* Server-side search implemented *@
+@section Scripts {
+    <script>
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+
+            if (btn && (btn.title === 'Post to Ledger' || 
+                        btn.title === 'Unpost from Ledger' ||
+                form.getAttribute('asp-page-handler') === 'PostToLedger' || 
+                form.getAttribute('asp-page-handler') === 'UnpostFromLedger')) {
+                
+                // Wait for the confirm dialog (if any) to finish
+                setTimeout(() => {
+                    if (!e.defaultPrevented) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                    }
+                }, 10);
+            }
+        });
+    </script>
+}

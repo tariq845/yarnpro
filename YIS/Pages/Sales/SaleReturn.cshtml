@@ -406,10 +406,10 @@
                     const invId = ddlRef.value;
                     const infoSpan = row.querySelector('.item-balance-info');
 
-                    // Auto-fill GST default 18%
+                    // Auto-fill GST if empty
                     const gstInput = row.querySelector('.gstper-input');
-                    if (gstInput && (!gstInput.value || parseFloat(gstInput.value) === 0)) {
-                        gstInput.value = '18.00';
+                    if (gstInput && (gstInput.value === '' || gstInput.value === null)) {
+                        gstInput.value = '0.00';
                     }
                     
                     if(invId && invoiceData[invId] && itemId) {

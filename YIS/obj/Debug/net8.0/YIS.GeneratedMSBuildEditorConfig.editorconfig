@@ -1,335 +1,360 @@
 is_global = true
 build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = YIS
 build_property.RootNamespace = YIS
-build_property.ProjectDir = G:\VA_Projects\YIS\YIS\
+build_property.ProjectDir = I:\CODE\OFFICE\yarnpro\yis\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = G:\VA_Projects\YIS\YIS
+build_property.MSBuildProjectDirectory = I:\CODE\OFFICE\yarnpro\yis
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
 
-[G:/VA_Projects/YIS/YIS/Pages/AccessDenied.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/AccessDenied.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjZXNzRGVuaWVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Accounts/CreateAccount.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Accounts/CreateAccount.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudHNcQ3JlYXRlQWNjb3VudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Accounts/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Accounts/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjb3VudHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/CategoriesMaster.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/CategoriesMaster.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xDYXRlZ29yaWVzTWFzdGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/CategoryTypes.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/CategoryTypes.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xDYXRlZ29yeVR5cGVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/CreateCategoryMaster.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/CreateCategoryMaster.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xDcmVhdGVDYXRlZ29yeU1hc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/CreateCategoryType.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/CreateCategoryType.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xDcmVhdGVDYXRlZ29yeVR5cGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/CreateMainCategory.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/CreateMainCategory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xDcmVhdGVNYWluQ2F0ZWdvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/CreateSubCategory.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/CreateSubCategory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xDcmVhdGVTdWJDYXRlZ29yeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/MainCategories.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/MainCategories.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xNYWluQ2F0ZWdvcmllcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Categories/SubCategories.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Categories/SubCategories.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2F0ZWdvcmllc1xTdWJDYXRlZ29yaWVzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/CompanyProfile/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/CompanyProfile/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcGFueVByb2ZpbGVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/Menus/CreateMenu.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/Menus/CreateMenu.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxNZW51c1xDcmVhdGVNZW51LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/Menus/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/Menus/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxNZW51c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/UserRoleAssignments/CreateUserRoleAssignment.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/UserRoleAssignments/CreateUserRoleAssignment.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxVc2VyUm9sZUFzc2lnbm1lbnRzXENyZWF0ZVVzZXJSb2xlQXNzaWdubWVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/UserRoles/CreateUserRole.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/UserRoles/CreateUserRole.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxVc2VyUm9sZXNcQ3JlYXRlVXNlclJvbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/UserRoles/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/UserRoles/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxVc2VyUm9sZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/Users/CreateUser.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/Users/CreateUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxVc2Vyc1xDcmVhdGVVc2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Configuration/Users/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Configuration/Users/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhdGlvblxVc2Vyc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Customers/CreateCustomer.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Customers/CreateCustomer.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJzXENyZWF0ZUN1c3RvbWVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Customers/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Customers/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Dashboard/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Dashboard/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Dashboard/_LowStock.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Dashboard/_LowStock.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXF9Mb3dTdG9jay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Dashboard/_RecentOrders.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Dashboard/_RecentOrders.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXF9SZWNlbnRPcmRlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Dashboard/_Stats.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Dashboard/_Stats.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXF9TdGF0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Error.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Items/CreateItem.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Items/CreateItem.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcQ3JlYXRlSXRlbS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Items/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Items/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSXRlbXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Ledger/accountledger.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Ledger/accountledger.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVkZ2VyXGFjY291bnRsZWRnZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Ledger/customerledger.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Ledger/customerledger.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVkZ2VyXGN1c3RvbWVybGVkZ2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Ledger/supplierledger.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Ledger/supplierledger.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVkZ2VyXHN1cHBsaWVybGVkZ2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Ledger/_CustomerLedgerTableRows.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Ledger/_CustomerLedgerTableRows.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVkZ2VyXF9DdXN0b21lckxlZGdlclRhYmxlUm93cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Ledger/_SupplierLedgerTableRows.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Ledger/_SupplierLedgerTableRows.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVkZ2VyXF9TdXBwbGllckxlZGdlclRhYmxlUm93cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Login.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Logout.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Logout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9nb3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Privacy.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Profile.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Profile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Purchase/Entry.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Purchase/Entry.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VcRW50cnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Purchase/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Purchase/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Purchase/IndexSoda.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Purchase/IndexSoda.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VcSW5kZXhTb2RhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Purchase/PurchaseReturn.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Purchase/PurchaseReturn.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VcUHVyY2hhc2VSZXR1cm4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Purchase/PurchaseReturnIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Purchase/PurchaseReturnIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VcUHVyY2hhc2VSZXR1cm5JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Purchase/Soda.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Purchase/Soda.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHVyY2hhc2VcU29kYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/ItemLedger.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/AgingReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xBZ2luZ1JlcG9ydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/CustomerAging.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xDdXN0b21lckFnaW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/CustomerPendingBags.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xDdXN0b21lclBlbmRpbmdCYWdzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/ItemLedger.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xJdGVtTGVkZ2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/PsdRecordTrack.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/PsdRecordTrack.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xQc2RSZWNvcmRUcmFjay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/PsdTrackIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/PsdTrackIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xQc2RUcmFja0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/PurchaseRegister.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/PurchaseRegister.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xQdXJjaGFzZVJlZ2lzdGVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/SaleRegister.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/SaleRegister.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTYWxlUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/SsdTrackIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/SsdTrackIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTc2RUcmFja0luZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/SsdTrackRecord.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/SsdTrackRecord.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTc2RUcmFja1JlY29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Reports/Stock.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/Stock.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTdG9jay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/Entry.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/SupplierAging.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTdXBwbGllckFnaW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Reports/SupplierPendingBags.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVwb3J0c1xTdXBwbGllclBlbmRpbmdCYWdzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/Entry.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcRW50cnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/IndexSoda.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/IndexSoda.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcSW5kZXhTb2RhLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/InvoiceView.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/InvoiceView.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcSW52b2ljZVZpZXcuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/SaleReturn.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/SaleReturn.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcU2FsZVJldHVybi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/SaleReturnIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/SaleReturnIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcU2FsZVJldHVybkluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/Soda.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/Soda.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcU29kYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sales/_SalesTableRows.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sales/_SalesTableRows.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2FsZXNcX1NhbGVzVGFibGVSb3dzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/SelectCompany.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/SelectCompany.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VsZWN0Q29tcGFueS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sellers/Create.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sellers/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VsbGVyc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Sellers/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Sellers/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VsbGVyc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Shared/_LoginLayout.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Shared/_LoginLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9Mb2dpbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Shared/_Navbar.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Shared/_Navbar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9OYXZiYXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Shared/_Pagination.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Shared/_Pagination.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9QYWdpbmF0aW9uLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Shared/_Sidebar.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Shared/_Sidebar.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9TaWRlYmFyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Shared/_ValidationScriptsPartial.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Suppliers/CreateSupplier.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Suppliers/CreateSupplier.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VwcGxpZXJzXENyZWF0ZVN1cHBsaWVyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Suppliers/Index.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Suppliers/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VwcGxpZXJzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Vouchers/JournalVoucher.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Vouchers/JournalVoucher.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm91Y2hlcnNcSm91cm5hbFZvdWNoZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Vouchers/JournalVoucherIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Vouchers/JournalVoucherIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm91Y2hlcnNcSm91cm5hbFZvdWNoZXJJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Vouchers/PaymentVoucher.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Vouchers/PaymentVoucher.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm91Y2hlcnNcUGF5bWVudFZvdWNoZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Vouchers/PaymentVoucherIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Vouchers/PaymentVoucherIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm91Y2hlcnNcUGF5bWVudFZvdWNoZXJJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Vouchers/ReceiptVoucher.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Vouchers/ReceiptVoucher.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm91Y2hlcnNcUmVjZWlwdFZvdWNoZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Vouchers/ReceiptVoucherIndex.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Vouchers/ReceiptVoucherIndex.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVm91Y2hlcnNcUmVjZWlwdFZvdWNoZXJJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/_ViewImports.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/_ViewStart.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[G:/VA_Projects/YIS/YIS/Pages/Shared/_Layout.cshtml]
+[I:/CODE/OFFICE/yarnpro/yis/Pages/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-ua34k37e7x

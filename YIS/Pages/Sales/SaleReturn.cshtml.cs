@@ -155,10 +155,10 @@ namespace YIS.Pages.Sales
                     item.Rate = Math.Round(item.Rate.Value, 4);
                 }
 
-                // Default GST to 18% if not provided
-                if (!item.GstPer.HasValue || item.GstPer == 0)
+                // Default GST to 0% if not provided
+                if (!item.GstPer.HasValue)
                 {
-                    item.GstPer = 18;
+                    item.GstPer = 0;
                 }
 
                 if (item.Qty.HasValue && item.Rate.HasValue)

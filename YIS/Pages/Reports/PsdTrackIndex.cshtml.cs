@@ -16,20 +16,37 @@ namespace YIS.Pages.Reports
             _context = context;
         }
 
-        public IList<PsdTrackViewModel> Entries { get; set; } = new List<PsdTrackViewModel>();
+        public IList<ContractMovementSummaryViewModel> Entries { get; set; } = new List<ContractMovementSummaryViewModel>();
 
         [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
 
-        public class PsdTrackViewModel
+        public class ContractMovementSummaryViewModel
         {
             public long EntryId { get; set; }
             public long? EntryNumber { get; set; }
             public DateTime? EntryDate { get; set; }
             public string? SupplierName { get; set; }
-            public double? GrandTotal { get; set; }
             public int ItemCount { get; set; }
-            public double Progress { get; set; } // Realization progress (Purchased / Original)
+            public double ContractQty { get; set; }
+            public double ContractLbs { get; set; }
+            public double ContractAmount { get; set; }
+            public double PurchasedQty { get; set; }
+            public double PurchasedLbs { get; set; }
+            public double PurchasedAmount { get; set; }
+            public double PendingQty => Math.Max(0, ContractQty - PurchasedQty);
+            public double PendingLbs => Math.Max(0, ContractLbs - PurchasedLbs);
+            public double SoldQty { get; set; }
+            public double SoldLbs { get; set; }
+            public string Status
+            {
+                get
+                {
+                    if (PurchasedQty <= 0) return "Pending";
+                    if (PurchasedQty >= ContractQty) return "Completed";
+                    return "Partial";
+                }
+            }
         }
 
         public async Task OnGetAsync()
@@ -37,65 +54,105 @@ namespace YIS.Pages.Reports
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
             if (_context.Entries == null) return;
 
-            var query = _context.Entries
-                .Where(e => e.EntryType == "PSD" && e.UcpId == activeUcpId)
-                .Join(_context.SupplierMasters.Where(s => s.UcpId == activeUcpId),
-                      e => e.EntryAttribute1,
-                      s => s.SupplierId.ToString(),
-                      (e, s) => new { e, s.SupplierName });
+            var psdHeadersQuery = _context.Entries
+                .Where(e => e.EntryType == "PSD" && e.UcpId == activeUcpId);
+
+            var rawHeaders = await (from e in psdHeadersQuery
+                                    join s in _context.SupplierMasters.Where(sm => sm.UcpId == activeUcpId)
+                                    on e.EntryAttribute1 equals s.SupplierId.ToString() into suppJoin
+                                    from s in suppJoin.DefaultIfEmpty()
+                                    select new
+                                    {
+                                        e.EntryId,
+                                        e.EntryNumber,
+                                        e.EntryDate,
+                                        SupplierName = s != null ? s.SupplierName : "Unknown",
+                                        HeaderQty = e.Qty ?? 0,
+                                        HeaderLbs = e.Lbs ?? 0,
+                                        HeaderAmount = e.Amount ?? 0
+                                    })
+                                    .OrderByDescending(x => x.EntryDate)
+                                    .ThenByDescending(x => x.EntryNumber)
+                                    .ToListAsync();
 
             if (!string.IsNullOrEmpty(SearchTerm))
             {
-                query = query.Where(x => x.e.EntryNumber.ToString().Contains(SearchTerm) ||
-                                       x.SupplierName.Contains(SearchTerm));
+                var term = SearchTerm.Trim().ToLower();
+                rawHeaders = rawHeaders.Where(x =>
+                    (x.EntryNumber.HasValue && x.EntryNumber.Value.ToString().Contains(term)) ||
+                    (!string.IsNullOrEmpty(x.SupplierName) && x.SupplierName.ToLower().Contains(term))
+                ).ToList();
             }
 
-            var rawEntries = await query
-                .OrderByDescending(x => x.e.EntryDate)
-                .ThenByDescending(x => x.e.EntryNumber)
-                .ToListAsync();
+            var psdIds = rawHeaders.Select(x => x.EntryId).ToList();
 
-            // Get item counts for these PSDs specifically
-            var itemCountsResult = await (from e in _context.Entries
-                                          join q in query on e.EntryRefId equals q.e.EntryId
-                                          where e.EntryType == "PSDL" && e.UcpId == activeUcpId
-                                          group e by e.EntryRefId into g
-                                          select new { EntryId = g.Key ?? 0, Count = g.Count() })
-                                         .ToListAsync();
-            var itemCounts = itemCountsResult.ToDictionary(x => x.EntryId, x => x.Count);
+            // PSDL lines for these PSDs
+            var psdlAgg = await (from psdl in _context.Entries
+                                 where psdl.EntryType == "PSDL" && psdl.UcpId == activeUcpId && psdl.EntryRefId.HasValue && psdIds.Contains(psdl.EntryRefId.Value)
+                                 group psdl by psdl.EntryRefId!.Value into g
+                                 select new
+                                 {
+                                     PsdId = g.Key,
+                                     ItemCount = g.Count(),
+                                     TotalQty = g.Sum(x => x.Qty ?? 0),
+                                     TotalLbs = g.Sum(x => x.Lbs ?? 0),
+                                     TotalAmount = g.Sum(x => x.Amount ?? 0)
+                                 }).ToDictionaryAsync(x => x.PsdId, x => x);
 
-            // Calculate realization progress per PSD (PUR items linked to these PSDs)
-            var realizationResult = await (from pur in _context.Entries
-                                           join purl in _context.Entries on pur.EntryId equals purl.EntryRefId
-                                           join q in query on pur.EntryRefNo equals q.e.EntryId
-                                           where pur.EntryType == "PUR" && purl.EntryType == "PURL" && pur.UcpId == activeUcpId && purl.UcpId == activeUcpId
-                                           group purl by pur.EntryRefNo into g
-                                           select new
-                                           {
-                                               PsdId = g.Key,
-                                               TotalPurchased = g.Sum(p => p.Qty ?? 0)
-                                           }).ToListAsync();
+            // PUR lines linked to these PSDs (EntryRefNo == PSD.EntryId or EntryAttribute2 == PSD.EntryId)
+            var purLines = await (from pur in _context.Entries
+                                  join purl in _context.Entries on pur.EntryId equals purl.EntryRefId
+                                  where pur.EntryType == "PUR" && purl.EntryType == "PURL" &&
+                                        pur.UcpId == activeUcpId && purl.UcpId == activeUcpId &&
+                                        pur.EntryRefNo.HasValue && psdIds.Contains(pur.EntryRefNo.Value)
+                                  group purl by pur.EntryRefNo!.Value into g
+                                  select new
+                                  {
+                                      PsdId = g.Key,
+                                      PurchasedQty = g.Sum(x => x.Qty ?? 0),
+                                      PurchasedLbs = g.Sum(x => x.Lbs ?? 0),
+                                      PurchasedAmount = g.Sum(x => x.Amount ?? 0)
+                                  }).ToDictionaryAsync(x => x.PsdId, x => x);
 
-            var realizationMap = realizationResult
-                .Where(x => x.PsdId.HasValue)
-                .ToDictionary(x => x.PsdId!.Value, x => x.TotalPurchased);
+            // SSD lines linked to these PSDs (EntryRefId == PSD.EntryId)
+            var ssdLines = await (from ssd in _context.Entries
+                                  join ssdl in _context.Entries on ssd.EntryId equals ssdl.EntryRefId
+                                  where ssd.EntryType == "SSD" && ssdl.EntryType == "SSDL" &&
+                                        ssd.UcpId == activeUcpId && ssdl.UcpId == activeUcpId &&
+                                        ssd.EntryRefId.HasValue && psdIds.Contains(ssd.EntryRefId.Value)
+                                  group ssdl by ssd.EntryRefId!.Value into g
+                                  select new
+                                  {
+                                      PsdId = g.Key,
+                                      SoldQty = g.Sum(x => x.Qty ?? 0),
+                                      SoldLbs = g.Sum(x => x.Lbs ?? 0)
+                                  }).ToDictionaryAsync(x => x.PsdId, x => x);
 
-            Entries = rawEntries.Select(x =>
+            Entries = rawHeaders.Select(h =>
             {
-                double originalQty = x.e.Qty ?? 0;
-                double purchasedQty = realizationMap.TryGetValue(x.e.EntryId, out double p) ? p : 0;
-                double progress = originalQty > 0 ? (purchasedQty / originalQty) * 100 : 0;
-                if (progress > 100) progress = 100;
+                psdlAgg.TryGetValue(h.EntryId, out var psdl);
+                purLines.TryGetValue(h.EntryId, out var pur);
+                ssdLines.TryGetValue(h.EntryId, out var ssd);
 
-                return new PsdTrackViewModel
+                double cQty = (psdl != null && psdl.TotalQty > 0) ? psdl.TotalQty : h.HeaderQty;
+                double cLbs = (psdl != null && psdl.TotalLbs > 0) ? psdl.TotalLbs : h.HeaderLbs;
+                double cAmt = (psdl != null && psdl.TotalAmount > 0) ? psdl.TotalAmount : h.HeaderAmount;
+
+                return new ContractMovementSummaryViewModel
                 {
-                    EntryId = x.e.EntryId,
-                    EntryNumber = x.e.EntryNumber,
-                    EntryDate = x.e.EntryDate,
-                    SupplierName = x.SupplierName,
-                    GrandTotal = x.e.Amount,
-                    ItemCount = itemCounts.TryGetValue(x.e.EntryId, out int count) ? count : 0,
-                    Progress = progress
+                    EntryId = h.EntryId,
+                    EntryNumber = h.EntryNumber,
+                    EntryDate = h.EntryDate,
+                    SupplierName = h.SupplierName,
+                    ItemCount = psdl?.ItemCount ?? (cQty > 0 ? 1 : 0),
+                    ContractQty = cQty,
+                    ContractLbs = cLbs,
+                    ContractAmount = cAmt,
+                    PurchasedQty = pur?.PurchasedQty ?? 0,
+                    PurchasedLbs = pur?.PurchasedLbs ?? 0,
+                    PurchasedAmount = pur?.PurchasedAmount ?? 0,
+                    SoldQty = ssd?.SoldQty ?? 0,
+                    SoldLbs = ssd?.SoldLbs ?? 0
                 };
             }).ToList();
         }

@@ -25,19 +25,34 @@
 
             <!-- Row 1: Basic Info -->
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-3 mb-3">
                     <label asp-for="Entry.EntryDate" class="form-label">Entry Date <span
                             class="text-danger">*</span></label>
                     <input asp-for="Entry.EntryDate" class="form-control" type="date" required />
                     <span asp-validation-for="Entry.EntryDate" class="text-danger"></span>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-3 mb-3">
                     <label asp-for="Entry.EntryAttribute1" class="form-label">Supplier <span
                             class="text-danger">*</span></label>
                     <select asp-for="Entry.EntryAttribute1" class="form-select" asp-items="Model.SupplierList" required>
                         <option value="">-- Select Supplier --</option>
                     </select>
                     <span asp-validation-for="Entry.EntryAttribute1" class="text-danger"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label asp-for="Entry.EntryAttribute2" class="form-label">Payment Mode</label>
+                    <select asp-for="Entry.EntryAttribute2" class="form-select">
+                        <option value="Cash">Cash</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Credit" selected>Credit</option>
+                        <option value="L/C">L/C</option>
+                    </select>
+                    <span asp-validation-for="Entry.EntryAttribute2" class="text-danger"></span>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label asp-for="Entry.EntryTermsDays" class="form-label">Terms (Days)</label>
+                    <input asp-for="Entry.EntryTermsDays" type="number" class="form-control" min="0" placeholder="e.g. 30" />
+                    <span asp-validation-for="Entry.EntryTermsDays" class="text-danger"></span>
                 </div>
             </div>
 
@@ -48,11 +63,14 @@
                     <table class="table table-bordered table-hover align-middle shadow-sm" id="lineItemsTable">
                         <thead class="table-light text-center">
                             <tr>
-                                <th style="width: 30%;">Item <span class="text-danger">*</span></th>
-                                <th style="width: 15%;">Qty <span class="text-danger">*</span></th>
-                                <th style="width: 15%;">LBS</th>
-                                <th style="width: 15%;">Rate <span class="text-danger">*</span></th>
-                                <th style="width: 20%;">Amount</th>
+                                <th style="width: 24%;">Item <span class="text-danger">*</span></th>
+                                <th style="width: 10%;">Qty <span class="text-danger">*</span></th>
+                                <th style="width: 10%;">LBS</th>
+                                <th style="width: 11%;">Rate <span class="text-danger">*</span></th>
+                                <th style="width: 13%;">Amount</th>
+                                <th style="width: 9%;">GST %</th>
+                                <th style="width: 11%;">GST Amt</th>
+                                <th style="width: 12%;">Net Amount</th>
                                 <th style="width: 5%;"></th>
                             </tr>
                         </thead>
@@ -99,6 +117,21 @@
                                             value="@Model.LineItems[i].Amount"
                                             class="form-control form-control-sm text-end bg-light amount-input" readonly />
                                     </td>
+                                    <td>
+                                        <input type="number" step="0.01" min="0" name="LineItems[@i].GstPercent"
+                                            value="@(Model.LineItems[i].GstPercent ?? 0)"
+                                            class="form-control form-control-sm text-end gst-percent-input" />
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" name="LineItems[@i].TaxAmount"
+                                            value="@(Model.LineItems[i].TaxAmount?.ToString("F2"))"
+                                            class="form-control form-control-sm text-end bg-light gst-amount-input" readonly />
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" name="LineItems[@i].NetAmount"
+                                            value="@(Model.LineItems[i].NetAmount?.ToString("F2"))"
+                                            class="form-control form-control-sm text-end bg-light fw-semibold net-amount-input" readonly />
+                                    </td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-link p-0 text-danger remove-row-btn"
                                             title="Delete">
@@ -116,12 +149,23 @@
                                             id="addRowBtn" title="Add Item">
                                             Add +
                                         </button>
-                                        <span>Grand Total:</span>
+                                        <span>Totals:</span>
                                     </div>
                                 </td>
                                 <td>
-                                    <input type="text" id="grandTotal"
+                                    <input type="text" id="totalBasicAmount"
                                         class="form-control form-control-sm fw-bold text-end bg-white border-0" readonly
+                                        value="0.00" />
+                                </td>
+                                <td></td>
+                                <td>
+                                    <input type="text" id="totalGstAmount"
+                                        class="form-control form-control-sm fw-bold text-end bg-white border-0" readonly
+                                        value="0.00" />
+                                </td>
+                                <td>
+                                    <input type="text" id="grandTotal"
+                                        class="form-control form-control-sm fw-bold text-end bg-white border-0 text-success" readonly
                                         value="0.00" />
                                 </td>
                                 <td></td>
@@ -131,13 +175,67 @@
                 </div>
             </div>
 
-            <!-- Remarks -->
+            <!-- Remarks & Commission Details -->
             <div class="row">
-                <div class="col-md-12 mb-3">
+                <div class="col-md-7 mb-3">
                     <label asp-for="Entry.EntryRemarks" class="form-label">Remarks</label>
-                    <textarea asp-for="Entry.EntryRemarks" class="form-control" rows="2"
+                    <textarea asp-for="Entry.EntryRemarks" class="form-control" rows="6"
                         placeholder="Enter remarks"></textarea>
                     <span asp-validation-for="Entry.EntryRemarks" class="text-danger"></span>
+                </div>
+                <div class="col-md-5 mb-3">
+                    <div class="card bg-light border-0 shadow-sm">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold text-muted mb-3">Commission Details</h6>
+
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-6"><label class="small text-muted mb-0">Apply Commission?</label></div>
+                                <div class="col-6">
+                                    <select asp-for="Entry.EntryAttribute5" class="form-select form-select-sm"
+                                        id="ddlCommission">
+                                        <option value="No">No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-6"><label class="small text-muted mb-0">Agent</label></div>
+                                <div class="col-6">
+                                    <input asp-for="Entry.EntryAttribute4" class="form-control form-control-sm"
+                                        id="txtCommAgent" placeholder="Agent Name" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-6"><label class="small text-muted mb-0">Percentage (%)</label></div>
+                                <div class="col-6">
+                                    <input asp-for="Entry.EntryCommPer"
+                                        class="form-control form-control-sm text-end bg-light" id="txtCommPer"
+                                        type="number" step="0.01" min="0" value="@(Model.Entry?.EntryCommPer ?? 10)" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-6"><label class="small text-muted mb-0 fw-bold">Comm. Amount</label>
+                                </div>
+                                <div class="col-6">
+                                    <input asp-for="Entry.EntryCommAmt"
+                                        class="form-control form-control-sm text-end fw-bold bg-white" id="txtCommAmt"
+                                        readonly value="@(Model.Entry?.EntryCommAmt?.ToString("N2") ?? "0.00")" />
+                                </div>
+                            </div>
+
+                            <div class="row align-items-center">
+                                <div class="col-6"><label class="small text-muted mb-0">SUKRI</label></div>
+                                <div class="col-6">
+                                    <input asp-for="Entry.EntryCommSukri"
+                                        class="form-control form-control-sm text-end bg-white" id="txtSukri" readonly
+                                        value="@(Model.Entry?.EntryCommSukri?.ToString("N2") ?? "0.00")" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -158,7 +256,7 @@
     <tr class="line-item-row">
         <td>
             <input type="hidden" name="LineItems[__INDEX__].EntryId" value="0" />
-            <select name="LineItems[__INDEX__].ItemId" class="form-select item-select" required>
+            <select name="LineItems[__INDEX__].ItemId" class="form-select form-select-sm item-select" required>
                 <option value="">-- Select --</option>
                 @foreach (var item in Model.ItemList)
                 {
@@ -167,19 +265,31 @@
             </select>
         </td>
         <td>
-            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Qty" class="form-control qty-input"
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Qty" class="form-control form-control-sm qty-input"
                 required />
         </td>
         <td>
-            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Lbs" class="form-control lbs-input" />
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].Lbs" class="form-control form-control-sm lbs-input" />
         </td>
         <td>
-            <input type="number" step="0.0001" min="0" name="LineItems[__INDEX__].Rate" class="form-control rate-input"
+            <input type="number" step="0.0001" min="0" name="LineItems[__INDEX__].Rate" class="form-control form-control-sm rate-input"
                 required />
         </td>
         <td>
-            <input type="number" step="0.01" name="LineItems[__INDEX__].Amount" class="form-control amount-input"
+            <input type="number" step="0.01" name="LineItems[__INDEX__].Amount" class="form-control form-control-sm bg-light amount-input"
                 readonly />
+        </td>
+        <td>
+            <input type="number" step="0.01" min="0" name="LineItems[__INDEX__].GstPercent" value="18"
+                class="form-control form-control-sm text-end gst-percent-input" />
+        </td>
+        <td>
+            <input type="number" step="0.01" name="LineItems[__INDEX__].TaxAmount"
+                class="form-control form-control-sm text-end bg-light gst-amount-input" readonly />
+        </td>
+        <td>
+            <input type="number" step="0.01" name="LineItems[__INDEX__].NetAmount"
+                class="form-control form-control-sm text-end bg-light fw-semibold net-amount-input" readonly />
         </td>
         <td class="text-center">
             <button type="button" class="btn btn-link p-0 border-0 bg-transparent remove-row-btn" title="Delete">
@@ -198,29 +308,95 @@
         document.addEventListener('DOMContentLoaded', function () {
             const lineItemsBody = document.getElementById('lineItemsBody');
             const addRowBtn = document.getElementById('addRowBtn');
+            const totalBasicAmountInput = document.getElementById('totalBasicAmount');
+            const totalGstAmountInput = document.getElementById('totalGstAmount');
             const grandTotalInput = document.getElementById('grandTotal');
             const template = document.getElementById('lineItemRowTemplate');
 
-            // Calculate amount for a row
+            // Commission Elements
+            const commissionSelect = document.getElementById('ddlCommission');
+            const commAgentInput = document.getElementById('txtCommAgent');
+            const commPerInput = document.getElementById('txtCommPer');
+            const commAmtInput = document.getElementById('txtCommAmt');
+            const sukriInput = document.getElementById('txtSukri');
+
+            function calculateCommission(totalNet) {
+                if (commissionSelect && commissionSelect.value === 'Yes') {
+                    const commPer = parseFloat(commPerInput ? commPerInput.value : 0) || 0;
+                    const commAmt = totalNet * (commPer / 100);
+                    if (commAmtInput) commAmtInput.value = commAmt.toFixed(2);
+
+                    const sukriAmt = commAmt * 0.10;
+                    if (sukriInput) sukriInput.value = sukriAmt.toFixed(2);
+                } else {
+                    if (commAmtInput) commAmtInput.value = '0.00';
+                    if (sukriInput) sukriInput.value = '0.00';
+                }
+            }
+
+            function toggleCommissionFields() {
+                if (!commissionSelect) return;
+                const isCommission = commissionSelect.value === 'Yes';
+                if (commAgentInput) commAgentInput.disabled = !isCommission;
+                if (commPerInput) {
+                    commPerInput.disabled = !isCommission;
+                    commPerInput.classList.toggle('bg-light', !isCommission);
+                }
+                const net = parseFloat(grandTotalInput ? grandTotalInput.value : 0) || 0;
+                calculateCommission(net);
+            }
+
+            if (commissionSelect) commissionSelect.addEventListener('change', toggleCommissionFields);
+            if (commPerInput) {
+                commPerInput.addEventListener('input', function () {
+                    const net = parseFloat(grandTotalInput ? grandTotalInput.value : 0) || 0;
+                    calculateCommission(net);
+                });
+            }
+
+            // Calculate amount and GST for a row
             function calculateRowAmount(row) {
                 const lbsInput = row.querySelector('.lbs-input');
                 const rateInput = row.querySelector('.rate-input');
                 const amountInput = row.querySelector('.amount-input');
+                const gstPercentInput = row.querySelector('.gst-percent-input');
+                const gstAmountInput = row.querySelector('.gst-amount-input');
+                const netAmountInput = row.querySelector('.net-amount-input');
 
-                const lbs = parseFloat(lbsInput.value) || 0;
-                const rate = parseFloat(rateInput.value) || 0;
+                const lbs = parseFloat(lbsInput ? lbsInput.value : 0) || 0;
+                const rate = parseFloat(rateInput ? rateInput.value : 0) || 0;
                 const amount = lbs * rate;
-                amountInput.value = amount.toFixed(2);
+                if (amountInput) amountInput.value = amount.toFixed(2);
+
+                const gstPercent = parseFloat(gstPercentInput ? gstPercentInput.value : 0) || 0;
+                const gstAmount = amount * (gstPercent / 100);
+                if (gstAmountInput) gstAmountInput.value = gstAmount.toFixed(2);
+
+                const netAmount = amount + gstAmount;
+                if (netAmountInput) netAmountInput.value = netAmount.toFixed(2);
             }
 
             // Calculate grand total
             function calculateGrandTotal() {
-                const amountInputs = lineItemsBody.querySelectorAll('.amount-input');
-                let total = 0;
-                amountInputs.forEach(input => {
-                    total += parseFloat(input.value) || 0;
+                let totalBasic = 0;
+                let totalGst = 0;
+                let grandTotal = 0;
+
+                lineItemsBody.querySelectorAll('.line-item-row').forEach(row => {
+                    const amt = parseFloat(row.querySelector('.amount-input')?.value) || 0;
+                    const gst = parseFloat(row.querySelector('.gst-amount-input')?.value) || 0;
+                    const net = parseFloat(row.querySelector('.net-amount-input')?.value) || 0;
+
+                    totalBasic += amt;
+                    totalGst += gst;
+                    grandTotal += net;
                 });
-                grandTotalInput.value = total.toFixed(2);
+
+                if (totalBasicAmountInput) totalBasicAmountInput.value = totalBasic.toFixed(2);
+                if (totalGstAmountInput) totalGstAmountInput.value = totalGst.toFixed(2);
+                if (grandTotalInput) grandTotalInput.value = grandTotal.toFixed(2);
+
+                calculateCommission(grandTotal);
             }
 
             // Disable already selected items
@@ -286,6 +462,7 @@
                     const qtyInput = row.querySelector('.qty-input');
                     const lbsInput = row.querySelector('.lbs-input');
                     const rateInput = row.querySelector('.rate-input');
+                    const gstPercentInput = row.querySelector('.gst-percent-input');
                     const itemSelect = row.querySelector('.item-select');
                     const removeBtn = row.querySelector('.remove-row-btn');
 
@@ -294,12 +471,14 @@
                     qtyInput.removeEventListener('input', handleQtyChange);
                     lbsInput.removeEventListener('input', handleInputChange);
                     rateInput.removeEventListener('input', handleInputChange);
+                    if (gstPercentInput) gstPercentInput.removeEventListener('input', handleInputChange);
                     itemSelect.removeEventListener('change', handleItemChange);
 
                     qtyInput.addEventListener('input', handleQtyChange);
                     qtyInput.addEventListener('input', handleInputChange);
                     lbsInput.addEventListener('input', handleInputChange);
                     rateInput.addEventListener('input', handleInputChange);
+                    if (gstPercentInput) gstPercentInput.addEventListener('input', handleInputChange);
                     itemSelect.addEventListener('change', handleItemChange);
 
                     // Remove row
@@ -345,6 +524,7 @@
             });
             calculateGrandTotal();
             updateItemSelection();
+            toggleCommissionFields();
         });
     </script>
 }

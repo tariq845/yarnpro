@@ -1,931 +1,543 @@
 @page "{id:long}"
 @model YIS.Pages.Reports.PsdRecordTrackModel
 @{
-    ViewData["Title"] = "PSD Record Track";
+    ViewData["Title"] = "Contract Purchase Movement - PSD-" + Model.PsdHeader?.EntryNumber;
 }
 
 <style>
-    /* Base Styles matching the theme */
-    .psd-report-container {
-        background: #ffffff;
-        padding: 30px;
-        margin: 20px auto;
-        max-width: 1200px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        border-radius: 8px;
-        animation: fadeInUp 0.6s ease-out;
-    }
-
-    /* Animations */
-    @@keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @@keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @@keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.02); }
-    }
-
-    /* Header Section */
-    .report-header {
-        border-bottom: 3px solid #0d6efd;
-        padding-bottom: 15px;
-        margin-bottom: 25px;
-        animation: slideIn 0.5s ease-out;
-    }
-
-    .report-title {
-        font-size: 26px;
-        font-weight: 700;
-        color: #0d6efd;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .report-title i {
-        font-size: 28px;
-    }
-
-    .psd-badge {
-        background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 25px;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
-        animation: pulse 2s infinite;
-    }
-
-    /* Section styling */
-    .section-card {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 20px;
-        border: 1px solid #e9ecef;
-        animation: fadeInUp 0.6s ease-out;
-        animation-fill-mode: both;
-    }
-
-    .section-card:nth-child(2) { animation-delay: 0.1s; }
-    .section-card:nth-child(3) { animation-delay: 0.2s; }
-    .section-card:nth-child(4) { animation-delay: 0.3s; }
-
-    .section-title {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 15px;
+    /* Clean, Professional Report Styling - No KPI Cards */
+    .movement-report {
+        background-color: #ffffff;
         color: #212529;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    .section-title i {
-        color: #0d6efd;
-    }
-
-    /* Info Grid */
-    .info-grid {
-        background: white;
-        border-radius: 6px;
-        overflow: hidden;
-    }
-
-    .info-grid td {
-        padding: 10px 15px;
-        font-size: 14px;
+    .report-sheet {
+        background: #ffffff;
         border: 1px solid #dee2e6;
-        transition: background-color 0.2s;
+        border-radius: 4px;
+        padding: 24px;
+        margin-bottom: 25px;
     }
 
-    .info-grid tr:hover td {
-        background-color: #f8f9fa;
+    .report-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.86rem;
     }
 
-    .info-grid td:first-child,
-    .info-grid td:nth-child(3) {
+    .report-table th {
+        background-color: #f1f3f5;
+        color: #343a40;
         font-weight: 600;
-        color: #495057;
-        background: #f8f9fa;
-        width: 150px;
-    }
-
-    /* Tables */
-    .psd-table {
-        margin-bottom: 0;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .psd-table thead {
-        background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-        color: #ffffff;
-    }
-
-    .psd-table thead th {
-        border: none;
-        padding: 12px 15px;
-        font-weight: 600;
-        font-size: 13px;
         text-transform: uppercase;
+        font-size: 0.76rem;
         letter-spacing: 0.5px;
-    }
-
-    .psd-table tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    .psd-table tbody tr:hover {
-        background-color: rgba(13, 110, 253, 0.05);
-        transform: scale(1.005);
-    }
-
-    .psd-table tbody td {
-        padding: 12px 15px;
+        padding: 8px 10px;
+        border: 1px solid #dee2e6;
         vertical-align: middle;
     }
 
-    /* Balance Box */
-    .balance-box {
-        background: linear-gradient(135deg, #d1e7dd 0%, #badbcc 100%);
-        border-left: 5px solid #198754;
-        padding: 15px 20px;
-        font-size: 16px;
-        font-weight: 600;
-        border-radius: 0 6px 6px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        animation: fadeInUp 0.6s ease-out 0.4s;
-        animation-fill-mode: both;
+    .report-table td {
+        padding: 7px 10px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
     }
 
-    .balance-amount {
-        font-size: 22px;
-        color: #146c43;
+    .report-table tbody tr:hover {
+        background-color: #f8f9fa;
     }
 
-    /* Footer Actions */
-    .footer-actions {
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 2px solid #e9ecef;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        animation: fadeInUp 0.6s ease-out 0.5s;
-        animation-fill-mode: both;
-    }
-
-    .btn-pdf {
-        background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
-        border: none;
-        color: white;
-        padding: 10px 25px;
-        border-radius: 25px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
-    }
-
-    .btn-pdf:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
-        color: white;
-    }
-
-    .btn-back {
-        background: linear-gradient(135deg, #6c757d 0%, #5c636a 100%);
-        border: none;
-        color: white;
-        padding: 10px 25px;
-        border-radius: 25px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-back:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
-        color: white;
-    }
-
-    /* Status Badge */
-    .status-badge {
-        padding: 4px 12px;
-        border-radius: 15px;
-        font-size: 12px;
-        font-weight: 600;
-    }
-
-    .status-open {
-        background: #d1e7dd;
-        color: #146c43;
-    }
-
-    .status-closed {
-        background: #f8d7da;
-        color: #842029;
-    }
-
-    /* Item Badge */
-    .item-badge {
-        background: #e7f1ff;
+    .section-heading {
+        font-size: 0.95rem;
+        font-weight: 700;
         color: #0d6efd;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 12px;
+        border-bottom: 2px solid #0d6efd;
+        padding-bottom: 4px;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .psd-report-container {
-            padding: 15px;
-            margin: 10px;
-        }
-        
-        .report-title {
-            font-size: 20px;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .info-grid td {
-            display: block;
-            width: 100% !important;
-        }
-        
-        .footer-actions {
-            flex-direction: column;
-            gap: 10px;
-        }
+    .info-table {
+        width: 100%;
+        margin-bottom: 15px;
+        font-size: 0.88rem;
+        border-collapse: collapse;
     }
 
-    /* Print styles */
-    @@media print {
-        .footer-actions { display: none; }
-        .psd-report-container { box-shadow: none; }
+    .info-table td {
+        padding: 6px 12px;
+        border: 1px solid #e9ecef;
     }
-    /* Progress Bar Styles */
-    .stock-progress {
-        height: 6px;
+
+    .info-table .label {
+        font-weight: 600;
+        color: #495057;
+        background-color: #f8f9fa;
+        width: 15%;
+    }
+
+    .info-table .value {
+        width: 35%;
+        color: #111827;
+    }
+
+    .summary-matrix th {
         background-color: #e9ecef;
-        border-radius: 3px;
-        margin-top: 8px;
-        overflow: hidden;
+        font-size: 0.8rem;
     }
 
-    .stock-progress-bar {
-        height: 100%;
-        background-color: #0d6efd;
-        border-radius: 3px;
-        transition: width 1s ease-in-out;
+    .summary-matrix td {
+        font-size: 0.88rem;
     }
 
-    .stock-progress-bar.low-stock { background-color: #dc3545; }
-    .stock-progress-bar.mid-stock { background-color: #ffc107; }
-    .stock-progress-bar.high-stock { background-color: #198754; }
-
-    /* Staggered Animations */
-    .stagger-item {
-        opacity: 0;
-        animation: fadeInUp 0.5s ease-out forwards;
+    .text-num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
     }
 
-    .info-row:nth-child(1) { animation-delay: 0.1s; }
-    .info-row:nth-child(2) { animation-delay: 0.2s; }
-    .info-row:nth-child(3) { animation-delay: 0.3s; }
-
-    /* Sale Section Specifics */
-    .sale-row {
-        border-left: 4px solid #6f42c1;
+    @@media print {
+        body {
+            background-color: #ffffff !important;
+        }
+        .no-print {
+            display: none !important;
+        }
+        .report-sheet {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .report-table th {
+            background-color: #f1f3f5 !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .info-table .label {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
     }
-
-    .text-sold { color: #dc3545; font-weight: 600; }
-    .text-remaining { color: #198754; font-weight: 600; }
 </style>
 
-<div class="psd-report-container" id="reportContent">
-    <!-- HEADER SECTION -->
-    <div class="report-header d-flex justify-content-between align-items-center flex-wrap">
-        <div class="stagger-item">
-            <div class="report-title">
-                <i class="bi bi-file-earmark-medical-fill"></i>
-                PSD RECORD TRACK
-            </div>
-            <div class="text-muted mt-1">Lifecycle Tracking - Purchase Soda Record</div>
+<div class="container-fluid px-4 py-3 movement-report">
+    <!-- Top Action Bar (No-Print) -->
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <div>
+            <a href="/Reports/PsdTrackIndex" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Contract List
+            </a>
         </div>
-        <div class="text-end stagger-item">
-            <span class="psd-badge">
-                <i class="bi bi-hash"></i> PSD-@Model.PsdHeader?.EntryNumber
-            </span>
-            <div class="text-muted mt-2 small">
-                <i class="bi bi-calendar3"></i> Generated: <span id="reportDate"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- PSD HEADER DETAILS -->
-    <div class="section-card stagger-item">
-        <div class="section-title">
-            <i class="bi bi-info-circle-fill"></i>
-            PSD Header Details
-        </div>
-        <table class="table table-bordered info-grid mb-0">
-            <tr class="info-row">
-                <td>PSD Number</td>
-                <td><strong class="text-primary">PSD-@Model.PsdHeader?.EntryNumber</strong></td>
-                <td>PSD Date</td>
-                <td>@Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
-            </tr>
-            <tr class="info-row">
-                <td>Supplier</td>
-                <td>@Model.SupplierName</td>
-                <td>Status</td>
-                <td>
-                    <span class="status-badge status-open">
-                        <i class="bi bi-check-circle"></i> Active Track
-                    </span>
-                </td>
-            </tr>
-            <tr class="info-row">
-                <td>Total Items</td>
-                <td><span class="badge bg-secondary">@Model.LineItems.Count</span></td>
-                <td>Created On</td>
-                <td>@Model.PsdHeader?.CreationOn?.ToString("dd-MMM-yyyy hh:mm tt")</td>
-            </tr>
-            @if (!string.IsNullOrEmpty(Model.PsdHeader?.EntryRemarks))
-            {
-                <tr class="info-row">
-                    <td>Remarks</td>
-                    <td colspan="3">@Model.PsdHeader?.EntryRemarks</td>
-                </tr>
-            }
-        </table>
-    </div>
-
-    <!-- PSD LINE ITEMS TRACKING -->
-    <div class="section-card stagger-item">
-        <div class="section-title">
-            <i class="bi bi-bar-chart-fill"></i>
-            Inventory Tracking (Stock Balance)
-        </div>
-        <div class="table-responsive">
-            <table class="table table-bordered psd-table">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">#</th>
-                        <th style="width: 20%;">Item Description</th>
-                        <th class="text-end" style="width: 10%;">Original</th>
-                        <th class="text-end" style="width: 10%;">Purchased</th>
-                        <th class="text-end" style="width: 10%;">Sold</th>
-                        <th class="text-end" style="width: 10%;">Balance</th>
-                        <th style="width: 15%;">Progress</th>
-                        <th class="text-end" style="width: 15%;">PSD Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{ int lineNo = 1; }
-                    @foreach (var item in Model.LineItems)
-                    {
-                        double percent = (item.PurchasedQty > 0) ? (double)((item.RemainingQty ?? 0) / item.PurchasedQty * 100) : 0;
-                        string progressClass = percent > 50 ? "high-stock" : (percent > 20 ? "mid-stock" : "low-stock");
-                        
-                        <tr>
-                            <td class="text-center">@lineNo</td>
-                            <td>
-                                <span class="item-badge">@item.ItemName</span>
-                            </td>
-                            <td class="text-end">@item.Qty?.ToString("N2")</td>
-                            <td class="text-end fw-bold text-primary">@item.PurchasedQty?.ToString("N2")</td>
-                            <td class="text-end text-sold">@item.SoldQty?.ToString("N2")</td>
-                            <td class="text-end text-remaining">@item.RemainingQty?.ToString("N2")</td>
-                            <td>
-                                <div class="small text-muted d-flex justify-content-between mb-1">
-                                    <span>@percent.ToString("0")%</span>
-                                    <span>Stock</span>
-                                </div>
-                                <div class="stock-progress">
-                                    <div class="stock-progress-bar @progressClass" style="width: @percent%"></div>
-                                </div>
-                            </td>
-                            <td class="text-end fw-bold">@item.Amount?.ToString("N2")</td>
-                        </tr>
-                        lineNo++;
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="balance-box mt-3">
-            <span>
-                <i class="bi bi-cash-stack me-2"></i>
-                Total PSD Valuation
-            </span>
-            <span class="balance-amount">
-                PKR @Model.GrandTotal.ToString("N2")
-            </span>
-        </div>
-    </div>
-
-    <!-- RELATED TRANSACTIONS TABS -->
-    <div class="row stagger-item">
-        <!-- PURCHASES AGAINST PSD -->
-        <div class="col-md-6">
-            <div class="section-card h-100">
-                <div class="section-title">
-                    <i class="bi bi-cart-plus-fill"></i>
-                    Related Purchases
-                </div>
-                @if (Model.RelatedPurchases.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover psd-table">
-                            <thead>
-                                <tr class="table-primary">
-                                    <th>Ref #</th>
-                                    <th>Date</th>
-                                    <th class="text-end">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var purchase in Model.RelatedPurchases)
-                                {
-                                    <tr>
-                                        <td>
-                                            <a href="/Purchase/Entry?id=@purchase.EntryId" class="text-decoration-none fw-semibold">
-                                                PUR-@purchase.EntryNumber
-                                            </a>
-                                        </td>
-                                        <td class="small">@purchase.EntryDate?.ToString("dd-MMM-yy")</td>
-                                        <td class="text-end fw-bold">@purchase.Amount?.ToString("N2")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-info-circle"></i> No direct purchases yet.
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- SALES AGAINST PSD -->
-        <div class="col-md-6">
-            <div class="section-card h-100">
-                <div class="section-title" style="color: #6f42c1;">
-                    <i class="bi bi-shop-window" style="color: #6f42c1;"></i>
-                    Related Sales (SSD)
-                </div>
-                @if (Model.RelatedSales.Any())
-                {
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover psd-table">
-                            <thead>
-                                <tr style="background: #6f42c1; color: white;">
-                                    <th>SSD #</th>
-                                    <th>Customer</th>
-                                    <th class="text-end">Amount</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var sale in Model.RelatedSales)
-                                {
-                                    <tr class="sale-row">
-                                        <td>
-                                            <a href="/Sales/Soda?id=@sale.EntryId" class="text-decoration-none fw-semibold" style="color: #6f42c1;">
-                                                SSD-@sale.EntryNumber
-                                            </a>
-                                        </td>
-                                        <td class="small">@sale.CustomerName</td>
-                                        <td class="text-end fw-bold">@sale.Amount?.ToString("N2")</td>
-                                        <td class="text-center">
-                                            <a href="/Reports/SsdTrackRecord/@sale.EntryId" class="btn btn-sm btn-outline-secondary" style="border-color: #6f42c1; color: #6f42c1;">
-                                                View More
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-info-circle"></i> No sale entries found.
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-
-    <!-- FOOTER ACTIONS -->
-    <div class="footer-actions" id="footerActions">
-        <a href="/Reports/PsdTrackIndex" class="btn btn-back">
-            <i class="bi bi-arrow-left"></i>
-            Back to List
-        </a>
         <div class="d-flex gap-2">
-            <button class="btn btn-pdf shadow-sm hover-up" onclick="downloadPDF()">
-                <i class="bi bi-file-earmark-pdf"></i>
-                Download Report
+            <button class="btn btn-primary btn-sm" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i>Print Movement Statement
             </button>
         </div>
     </div>
-</div>
 
-<!-- HIDDEN PRINT TEMPLATE (Premium A4 Portrait Statement) -->
-<div id="printTemplate" style="display: none;">
-    <style>
-        .report-print-body {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 0mm 15mm 15mm 15mm;
-            margin: 0 auto;
-            background: #ffffff;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            color: #1a1a1a;
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        /* Branding Header */
-        .report-header-premium {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 2px solid #0d6efd;
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-            margin-top: 5mm;
-        }
-
-        .brand-section {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-logo-circle {
-            width: 45px;
-            height: 45px;
-            background: #0d6efd;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .brand-name {
-            font-size: 24px;
-            font-weight: 800;
-            color: #0d6efd;
-            margin: 0;
-            letter-spacing: -0.5px;
-        }
-
-        .brand-tagline {
-            font-size: 11px;
-            color: #6c757d;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .report-meta {
-            text-align: right;
-        }
-
-        .report-type-badge {
-            background execution: #0d6efd;
-            color: white;
-            padding: 4px 12px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 4px;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-
-        /* Information Grid */
-        .statement-box {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 6px;
-            padding: 15px;
-            margin-bottom: 25px;
-        }
-
-        .info-table-premium {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .info-table-premium td {
-            padding: 6px 10px;
-            font-size: 12px;
-            vertical-align: top;
-        }
-
-        .info-label {
-            font-weight: 700;
-            color: #495057;
-            width: 110px;
-        }
-
-        .info-value {
-            color: #212529;
-        }
-
-        /* Main Data Table */
-        .premium-data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        .premium-data-table th {
-            background: #f1f3f5;
-            color: #495057;
-            text-align: left;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 10px;
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .premium-data-table td {
-            padding: 10px;
-            font-size: 11px;
-            border-bottom: 1px solid #f1f3f5;
-            color: #333;
-        }
-
-        .premium-data-table tr:nth-child(even) {
-            background-color: #fafbfb;
-        }
-
-        .text-right { text-align: right; }
-
-        /* Valuation Box */
-        .valuation-summary {
-            margin-top: 10px;
-            padding: 15px;
-            background: #f1f9f6;
-            border: 1px solid #d1e7dd;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .valuation-label {
-            font-size: 14px;
-            font-weight: 700;
-            color: #146c43;
-        }
-
-        .valuation-amount {
-            font-size: 18px;
-            font-weight: 800;
-            color: #198754;
-        }
-
-        /* Approval Section */
-        .signature-section {
-            margin-top: 60px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .sig-box {
-            width: 200px;
-            text-align: center;
-        }
-
-        .sig-line {
-            border-top: 1px solid #333;
-            margin-bottom: 8px;
-        }
-
-        .sig-text {
-            font-size: 11px;
-            font-weight: 600;
-            color: #6c757d;
-        }
-
-        /* Footer */
-        .premium-footer {
-            position: absolute;
-            bottom: 15mm;
-            left: 15mm;
-            right: 15mm;
-            border-top: 1px solid #dee2e6;
-            padding-top: 10px;
-            font-size: 9px;
-            color: #adb5bd;
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
-
-    <div class="report-print-body">
-        <header class="report-header-premium">
-            <div class="brand-section">
-                <div class="brand-logo-circle">Y</div>
-                <div>
-                    <h1 class="brand-name">YARN PRO</h1>
-                    <p class="brand-tagline">Inventory Management Solutions</p>
+    <!-- Printable Statement Container -->
+    <div class="report-sheet shadow-sm" id="printableReport">
+        <!-- Header -->
+        <div class="border-bottom pb-3 mb-3">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h3 class="fw-bold mb-0 text-dark">@Model.CompanyName</h3>
+                    <h5 class="text-primary fw-semibold mb-0 mt-1">CONTRACT PURCHASE MOVEMENT</h5>
+                    <small class="text-muted">Lifecycle Tracking & Inventory Realization Statement</small>
+                </div>
+                <div class="col-4 text-end">
+                    <div class="fs-5 fw-bold text-dark">PSD-@Model.PsdHeader?.EntryNumber</div>
+                    <div class="text-muted small">Date: @Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</div>
+                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MMM-yyyy hh:mm tt")</div>
                 </div>
             </div>
-            <div class="report-meta">
-                <span class="report-type-badge">PURCHASE SODA STATEMENT</span>
-                <div style="font-size: 11px; color: #6c757d;">Generated On: @DateTime.Now.ToString("dd MMM yyyy, hh:mm tt")</div>
-            </div>
-        </header>
+        </div>
 
-        <section class="statement-box">
-            <table class="info-table-premium">
+        <!-- 1. Contract Header Info -->
+        <table class="info-table">
+            <tr>
+                <td class="label">Contract (PSD) #:</td>
+                <td class="value fw-bold text-primary">PSD-@Model.PsdHeader?.EntryNumber</td>
+                <td class="label">Contract Date:</td>
+                <td class="value">@Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
+            </tr>
+            <tr>
+                <td class="label">Supplier Name:</td>
+                <td class="value fw-bold">@Model.SupplierName</td>
+                <td class="label">System Ref ID:</td>
+                <td class="value">#@Model.PsdHeader?.EntryId</td>
+            </tr>
+            @if (!string.IsNullOrEmpty(Model.PsdHeader?.EntryRemarks))
+            {
                 <tr>
-                    <td class="info-label">Statement Ref:</td>
-                    <td class="info-value">PSD-@Model.PsdHeader?.EntryNumber</td>
-                    <td class="info-label">Supplier:</td>
-                    <td class="info-value">@Model.SupplierName</td>
+                    <td class="label">Remarks / Terms:</td>
+                    <td colspan="3" class="value">@Model.PsdHeader?.EntryRemarks</td>
                 </tr>
-                <tr>
-                    <td class="info-label">Entry Date:</td>
-                    <td class="info-value">@Model.PsdHeader?.EntryDate?.ToString("dd MMM yyyy")</td>
-                    <td class="info-label">Ref ID:</td>
-                    <td class="info-value">#@Model.PsdHeader?.EntryId</td>
-                </tr>
-                <tr>
-                    <td class="info-label">Remarks:</td>
-                    <td colspan="3" class="info-value">@(Model.PsdHeader?.EntryRemarks ?? "N/A")</td>
-                </tr>
-            </table>
-        </section>
+            }
+        </table>
 
-        <h3 style="font-size: 14px; margin-bottom: 12px; color: #0d6efd;">Inventory Realization Summary</h3>
-        <table class="premium-data-table">
+        <!-- 2. PSD Contract Booked Items -->
+        <div class="section-heading">
+            <span>1. CONTRACT DETAILS (PSD BOOKING)</span>
+            <span class="fs-6 text-muted">Total Items: @Model.ContractItems.Count</span>
+        </div>
+        <table class="report-table mb-3">
             <thead>
                 <tr>
-                    <th style="width: 30px;">SN</th>
+                    <th class="text-center" style="width: 40px;">#</th>
                     <th>Item Description</th>
-                    <th class="text-right">Original</th>
-                    <th class="text-right">Purchased</th>
-                    <th class="text-right">Sold</th>
-                    <th class="text-right">Stock</th>
-                    <th class="text-right">Valuation</th>
+                    <th class="text-num" style="width: 120px;">Contract Qty (Bags)</th>
+                    <th class="text-num" style="width: 120px;">Total LBS</th>
+                    <th class="text-num" style="width: 110px;">Rate</th>
+                    <th class="text-num" style="width: 130px;">Amount</th>
+                    <th class="text-num" style="width: 110px;">Sales Tax</th>
+                    <th class="text-num" style="width: 140px;">Net Amount</th>
                 </tr>
             </thead>
             <tbody>
-                @{ int pCount = 1; }
-                @foreach (var item in Model.LineItems)
-                {
-                    <tr>
-                        <td>@pCount</td>
-                        <td style="font-weight: 600;">@item.ItemName</td>
-                        <td class="text-right">@item.Qty?.ToString("N2")</td>
-                        <td class="text-right" style="color: #0d6efd; font-weight: 700;">@item.PurchasedQty?.ToString("N2")</td>
-                        <td class="text-right">@item.SoldQty?.ToString("N2")</td>
-                        <td class="text-right" style="color: #198754; font-weight: 700;">@item.RemainingQty?.ToString("N2")</td>
-                        <td class="text-right">@item.Amount?.ToString("N2")</td>
-                    </tr>
-                    pCount++;
+                @{
+                    int cIdx = 1;
+                    double sumCQty = 0, sumCLbs = 0, sumCAmt = 0, sumCTax = 0, sumCNet = 0;
                 }
+                @foreach (var c in Model.ContractItems)
+                {
+                    sumCQty += c.Qty;
+                    sumCLbs += c.Lbs;
+                    sumCAmt += c.Amount;
+                    sumCTax += c.TaxAmount;
+                    sumCNet += c.NetAmount;
+
+                    <tr>
+                        <td class="text-center text-muted">@cIdx</td>
+                        <td class="fw-semibold">@c.ItemName</td>
+                        <td class="text-num fw-bold">@c.Qty.ToString("N2")</td>
+                        <td class="text-num">@c.Lbs.ToString("N2")</td>
+                        <td class="text-num">@c.Rate.ToString("F4")</td>
+                        <td class="text-num">@c.Amount.ToString("N2")</td>
+                        <td class="text-num text-muted">@c.TaxAmount.ToString("N2")</td>
+                        <td class="text-num fw-bold text-dark">@c.NetAmount.ToString("N2")</td>
+                    </tr>
+                    cIdx++;
+                }
+                <tr class="table-light fw-bold border-top border-2">
+                    <td colspan="2" class="text-uppercase text-center">Total Contract</td>
+                    <td class="text-num">@sumCQty.ToString("N2")</td>
+                    <td class="text-num">@sumCLbs.ToString("N2")</td>
+                    <td class="text-num">@((sumCLbs > 0 ? (sumCAmt / (sumCLbs / 10.0)) : (sumCQty > 0 ? sumCAmt / sumCQty : 0)).ToString("F4"))</td>
+                    <td class="text-num">@sumCAmt.ToString("N2")</td>
+                    <td class="text-num">@sumCTax.ToString("N2")</td>
+                    <td class="text-num text-primary">@sumCNet.ToString("N2")</td>
+                </tr>
             </tbody>
         </table>
 
-        <div class="valuation-summary">
-            <span class="valuation-label">Total Document Valuation</span>
-            <span class="valuation-amount">PKR @Model.GrandTotal.ToString("N2")</span>
+        <!-- 3. Purchases Realized against this PSD -->
+        <div class="section-heading">
+            <span>2. PURCHASES RECEIVED AGAINST CONTRACT (PUR RECEIPTS)</span>
+            <span class="fs-6 text-muted">Receipts Count: @Model.PurchaseItems.Count</span>
         </div>
-
-        @if (Model.RelatedPurchases.Any())
+        @if (Model.PurchaseItems.Any())
         {
-            <h3 style="font-size: 13px; margin: 25px 0 10px 0; color: #495057;">Related Purchase Entries</h3>
-            <table class="premium-data-table">
+            <table class="report-table mb-3">
                 <thead>
                     <tr>
-                        <th>Entry Number</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th class="text-right">Amount (PKR)</th>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">PUR #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th>Item Description</th>
+                        <th>Remarks / DC Ref</th>
+                        <th class="text-num" style="width: 110px;">Received Qty</th>
+                        <th class="text-num" style="width: 110px;">Received LBS</th>
+                        <th class="text-num" style="width: 100px;">Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var pur in Model.RelatedPurchases)
-                    {
-                        <tr>
-                            <td>PUR-@pur.EntryNumber</td>
-                            <td>@pur.EntryDate?.ToString("dd MMM yyyy")</td>
-                            <td>@pur.Description</td>
-                            <td class="text-right" style="font-weight: 600;">@pur.Amount?.ToString("N2")</td>
-                        </tr>
+                    @{
+                        int pIdx = 1;
+                        double sumPQty = 0, sumPLbs = 0, sumPAmt = 0, sumPTax = 0, sumPNet = 0;
                     }
+                    @foreach (var p in Model.PurchaseItems)
+                    {
+                        sumPQty += p.Qty;
+                        sumPLbs += p.Lbs;
+                        sumPAmt += p.Amount;
+                        sumPTax += p.TaxAmount;
+                        sumPNet += p.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@pIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Purchase/Entry?id=@p.PurId" class="text-decoration-none text-primary" target="_blank">
+                                    PUR-@p.PurNumber
+                                </a>
+                            </td>
+                            <td>@p.PurDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="fw-semibold">@p.ItemName</td>
+                            <td class="text-muted small">@(string.IsNullOrEmpty(p.Remarks) ? "-" : p.Remarks)</td>
+                            <td class="text-num fw-bold text-primary">@p.Qty.ToString("N2")</td>
+                            <td class="text-num">@p.Lbs.ToString("N2")</td>
+                            <td class="text-num">@p.Rate.ToString("F4")</td>
+                            <td class="text-num">@p.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@p.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@p.NetAmount.ToString("N2")</td>
+                        </tr>
+                        pIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="5" class="text-uppercase text-center">Total Received</td>
+                        <td class="text-num text-primary">@sumPQty.ToString("N2")</td>
+                        <td class="text-num">@sumPLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumPLbs > 0 ? (sumPAmt / (sumPLbs / 10.0)) : (sumPQty > 0 ? sumPAmt / sumPQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumPAmt.ToString("N2")</td>
+                        <td class="text-num">@sumPTax.ToString("N2")</td>
+                        <td class="text-num text-primary">@sumPNet.ToString("N2")</td>
+                    </tr>
                 </tbody>
             </table>
         }
-
-        <div class="signature-section">
-            <div class="sig-box">
-                <div class="sig-line"></div>
-                <div class="sig-text">Prepared By</div>
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No purchases received yet against this contract.
             </div>
-            <div class="sig-box">
-                <div class="sig-line"></div>
-                <div class="sig-text">Authorized Signature</div>
+        }
+
+        <!-- 4. Sales Soda (SSD) Booked against this PSD -->
+        <div class="section-heading">
+            <span>3. SALES SODA (SSD) BOOKED AGAINST CONTRACT</span>
+            <span class="fs-6 text-muted">Soda Count: @Model.SalesSodaItems.Count</span>
+        </div>
+        @if (Model.SalesSodaItems.Any())
+        {
+            <table class="report-table mb-3">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">SSD #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th>Customer Name</th>
+                        <th>Item Description</th>
+                        <th class="text-num" style="width: 110px;">Soda Qty</th>
+                        <th class="text-num" style="width: 110px;">Soda LBS</th>
+                        <th class="text-num" style="width: 100px;">Sale Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int sIdx = 1;
+                        double sumSQty = 0, sumSLbs = 0, sumSAmt = 0, sumSTax = 0, sumSNet = 0;
+                    }
+                    @foreach (var s in Model.SalesSodaItems)
+                    {
+                        sumSQty += s.Qty;
+                        sumSLbs += s.Lbs;
+                        sumSAmt += s.Amount;
+                        sumSTax += s.TaxAmount;
+                        sumSNet += s.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@sIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Sales/Soda?id=@s.SsdId" class="text-decoration-none text-success" target="_blank">
+                                    SSD-@s.SsdNumber
+                                </a>
+                            </td>
+                            <td>@s.SsdDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="fw-semibold">@s.CustomerName</td>
+                            <td>@s.ItemName</td>
+                            <td class="text-num fw-bold text-success">@s.Qty.ToString("N2")</td>
+                            <td class="text-num">@s.Lbs.ToString("N2")</td>
+                            <td class="text-num">@s.Rate.ToString("F4")</td>
+                            <td class="text-num">@s.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@s.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@s.NetAmount.ToString("N2")</td>
+                        </tr>
+                        sIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="5" class="text-uppercase text-center">Total Sales Soda</td>
+                        <td class="text-num text-success">@sumSQty.ToString("N2")</td>
+                        <td class="text-num">@sumSLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumSLbs > 0 ? (sumSAmt / (sumSLbs / 10.0)) : (sumSQty > 0 ? sumSAmt / sumSQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumSAmt.ToString("N2")</td>
+                        <td class="text-num">@sumSTax.ToString("N2")</td>
+                        <td class="text-num text-success">@sumSNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No sales sodas booked against this contract yet.
+            </div>
+        }
+
+        <!-- 5. Sales Invoices Delivered (SAL) -->
+        <div class="section-heading">
+            <span>4. SALES INVOICES DELIVERED (SAL)</span>
+            <span class="fs-6 text-muted">Invoices Count: @Model.SalesInvoiceItems.Count</span>
+        </div>
+        @if (Model.SalesInvoiceItems.Any())
+        {
+            <table class="report-table mb-3">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">SAL #</th>
+                        <th style="width: 100px;">Date</th>
+                        <th style="width: 90px;">SSD Ref</th>
+                        <th>Customer Name</th>
+                        <th>Item Description</th>
+                        <th class="text-num" style="width: 110px;">Delivered Qty</th>
+                        <th class="text-num" style="width: 110px;">Delivered LBS</th>
+                        <th class="text-num" style="width: 100px;">Rate</th>
+                        <th class="text-num" style="width: 120px;">Amount</th>
+                        <th class="text-num" style="width: 100px;">Sales Tax</th>
+                        <th class="text-num" style="width: 130px;">Net Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int salIdx = 1;
+                        double sumSalQty = 0, sumSalLbs = 0, sumSalAmt = 0, sumSalTax = 0, sumSalNet = 0;
+                    }
+                    @foreach (var sal in Model.SalesInvoiceItems)
+                    {
+                        sumSalQty += sal.Qty;
+                        sumSalLbs += sal.Lbs;
+                        sumSalAmt += sal.Amount;
+                        sumSalTax += sal.TaxAmount;
+                        sumSalNet += sal.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@salIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Sales/Entry?id=@sal.SalId" class="text-decoration-none text-dark" target="_blank">
+                                    SAL-@sal.SalNumber
+                                </a>
+                            </td>
+                            <td>@sal.SalDate?.ToString("dd-MMM-yyyy")</td>
+                            <td class="text-muted">@(sal.RefSsdNumber.HasValue ? $"SSD-{sal.RefSsdNumber}" : "-")</td>
+                            <td class="fw-semibold">@sal.CustomerName</td>
+                            <td>@sal.ItemName</td>
+                            <td class="text-num fw-bold">@sal.Qty.ToString("N2")</td>
+                            <td class="text-num">@sal.Lbs.ToString("N2")</td>
+                            <td class="text-num">@sal.Rate.ToString("F4")</td>
+                            <td class="text-num">@sal.Amount.ToString("N2")</td>
+                            <td class="text-num text-muted">@sal.TaxAmount.ToString("N2")</td>
+                            <td class="text-num fw-bold">@sal.NetAmount.ToString("N2")</td>
+                        </tr>
+                        salIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="6" class="text-uppercase text-center">Total Delivered</td>
+                        <td class="text-num">@sumSalQty.ToString("N2")</td>
+                        <td class="text-num">@sumSalLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumSalLbs > 0 ? (sumSalAmt / (sumSalLbs / 10.0)) : (sumSalQty > 0 ? sumSalAmt / sumSalQty : 0)).ToString("F4"))</td>
+                        <td class="text-num">@sumSalAmt.ToString("N2")</td>
+                        <td class="text-num">@sumSalTax.ToString("N2")</td>
+                        <td class="text-num">@sumSalNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
+                <i class="bi bi-info-circle me-1"></i>No sales invoices delivered against this contract yet.
+            </div>
+        }
+
+        <!-- 6. Movement & Balance Summary Ledger (Clean Tabular Matrix, No Cards) -->
+        <div class="section-heading">
+            <span>5. MOVEMENT & BALANCE SUMMARY LEDGER</span>
+            <span class="fs-6 text-muted">Realization & Stock Position</span>
+        </div>
+        <table class="report-table summary-matrix mb-4">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Movement Stage / Description</th>
+                    <th class="text-num" style="width: 15%;">Quantity (Bags)</th>
+                    <th class="text-num" style="width: 15%;">Weight (LBS)</th>
+                    <th class="text-num" style="width: 15%;">Avg Rate / Unit</th>
+                    <th class="text-num" style="width: 20%;">Total Amount (PKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-dark">A. Contract Booked (PSD)</td>
+                    <td class="text-num fw-bold">@Model.Summary.ContractQty.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.ContractLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.ContractAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold">@Model.Summary.ContractAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-primary">B. Purchases Received (PUR)</td>
+                    <td class="text-num fw-bold text-primary">@Model.Summary.PurchasedQty.ToString("N2")</td>
+                    <td class="text-num text-primary">@Model.Summary.PurchasedLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.PurchasedAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold text-primary">@Model.Summary.PurchasedAmount.ToString("N2")</td>
+                </tr>
+                <tr class="table-warning">
+                    <td class="fw-bold text-danger">C. Contract Pending Balance (A - B)</td>
+                    <td class="text-num fw-bold text-danger">@Model.Summary.PendingContractQty.ToString("N2")</td>
+                    <td class="text-num text-danger">@Model.Summary.PendingContractLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num fw-bold text-danger">@Model.Summary.PendingContractAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-success">D. Sales Soda Booked (SSD)</td>
+                    <td class="text-num fw-bold text-success">@Model.Summary.SsdQty.ToString("N2")</td>
+                    <td class="text-num text-success">@Model.Summary.SsdLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.SsdAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold text-success">@Model.Summary.SsdAmount.ToString("N2")</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-dark">E. Sales Invoices Delivered (SAL)</td>
+                    <td class="text-num fw-bold">@Model.Summary.SalQty.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.SalLbs.ToString("N2")</td>
+                    <td class="text-num">@Model.Summary.SalAvgRate.ToString("F4")</td>
+                    <td class="text-num fw-bold">@Model.Summary.SalAmount.ToString("N2")</td>
+                </tr>
+                <tr class="table-light border-top border-2">
+                    <td class="fw-bold text-dark">F. Physical Stock in Hand (B - E)</td>
+                    <td class="text-num fw-bold text-dark">@Model.Summary.StockQty.ToString("N2")</td>
+                    <td class="text-num text-dark">@Model.Summary.StockLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num text-muted">-</td>
+                </tr>
+                <tr class="table-light">
+                    <td class="fw-bold text-dark">G. Uncommitted Contract Balance (A - D)</td>
+                    <td class="text-num fw-bold text-dark">@Model.Summary.UnsoldContractQty.ToString("N2")</td>
+                    <td class="text-num text-dark">@Model.Summary.UnsoldContractLbs.ToString("N2")</td>
+                    <td class="text-num">-</td>
+                    <td class="text-num text-muted">-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Signatures for Official Movement Statement -->
+        <div class="row pt-5 mt-4 text-center">
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Prepared By</div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Checked By</div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-1 small fw-semibold">Authorized Signature</div>
             </div>
         </div>
-
-        <footer class="premium-footer">
-            <span>&copy; 2026 YARN PRO - Confidential Inventory Statement</span>
-            <span>System User: @User.Identity?.Name</span>
-        </footer>
     </div>
 </div>
-
-<style>
-    .hover-up:hover {
-        transform: translateY(-2px);
-    }
-</style>
-
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        document.getElementById('reportDate').innerText = new Date().toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-
-        function downloadPDF() {
-            const element = document.getElementById('printTemplate');
-            element.style.display = 'block';
-
-            const psdNumber = '@Model.PsdHeader?.EntryNumber';
-
-            const opt = {
-                margin: [0, 0, 0, 0],
-                filename: `PSD_Statement_${psdNumber}.pdf`,
-                image: { type: 'jpeg', quality: 1 },
-                html2canvas: { 
-                    scale: 4, 
-                    useCORS: true,
-                    letterRendering: true,
-                    logging: false,
-                    scrollY: 0
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: 'a4', 
-                    orientation: 'portrait',
-                    compress: true
-                }
-            };
-
-            html2pdf().from(element).set(opt).save().then(() => {
-                element.style.display = 'none';
-            });
-        }
-    </script>
-}

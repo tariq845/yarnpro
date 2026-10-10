@@ -17,15 +17,24 @@ namespace YIS.Pages.Dashboard
             _context = context;
         }
 
-        // Stats
+        // Stats - Sales & Orders
         public double TotalSalesCurrentMonth { get; set; }
         public double SalesTrend { get; set; }
         public int TotalOrdersCurrentMonth { get; set; }
         public double OrdersTrend { get; set; }
+        public double TotalPurchasesCurrentMonth { get; set; }
+        public double PurchaseTrend { get; set; }
         public double TotalStockItems { get; set; }
         public double StockTrend { get; set; }
         public int ActiveCustomersCount { get; set; }
         public double CustomerTrend { get; set; }
+        public int ActiveSuppliersCount { get; set; }
+
+        // Financials & Balances
+        public double TotalReceivables { get; set; }
+        public double TotalPayables { get; set; }
+        public double TotalReceiptsCurrentMonth { get; set; }
+        public double TotalPaymentsCurrentMonth { get; set; }
 
         // Chart Data
         public string ChartLabelsJson { get; set; } = "[]";
@@ -74,6 +83,18 @@ namespace YIS.Pages.Dashboard
             TotalSalesCurrentMonth = currentMonthSales;
             SalesTrend = lastMonthSales == 0 ? 100 : Math.Round(((currentMonthSales - lastMonthSales) / lastMonthSales) * 100, 1);
 
+            // 1b. Purchase Calculation (ENTRY_TYPE = 'PUR')
+            var currentMonthPurchases = await _context.Entries
+                .Where(e => e.EntryType == "PUR" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+
+            var lastMonthPurchases = await _context.Entries
+                .Where(e => e.EntryType == "PUR" && e.EntryDate >= firstDayofLastMonth && e.EntryDate < firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+
+            TotalPurchasesCurrentMonth = currentMonthPurchases;
+            PurchaseTrend = lastMonthPurchases == 0 ? 100 : Math.Round(((currentMonthPurchases - lastMonthPurchases) / lastMonthPurchases) * 100, 1);
+
             // 2. Orders Count (SAL entries)
             TotalOrdersCurrentMonth = await _context.Entries
                 .Where(e => e.EntryType == "SAL" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
@@ -87,6 +108,32 @@ namespace YIS.Pages.Dashboard
 
             // Average Order Value
             AverageOrderValue = TotalOrdersCurrentMonth == 0 ? 0 : Math.Round(TotalSalesCurrentMonth / TotalOrdersCurrentMonth, 0);
+
+            // 2b. Monthly Cash Inflow (RV) & Outflow (PV)
+            TotalReceiptsCurrentMonth = await _context.Entries
+                .Where(e => e.EntryType == "RV" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+
+            TotalPaymentsCurrentMonth = await _context.Entries
+                .Where(e => e.EntryType == "PV" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+
+            // 2c. Outstanding Receivables (AR) & Payables (AP)
+            var totalSalesAllTime = await _context.Entries
+                .Where(e => (e.EntryType == "SAL" || e.EntryType == "DN") && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+            var totalReceiptsAllTime = await _context.Entries
+                .Where(e => (e.EntryType == "RV" || e.EntryType == "CN") && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+            TotalReceivables = Math.Max(0, totalSalesAllTime - totalReceiptsAllTime);
+
+            var totalPurAllTime = await _context.Entries
+                .Where(e => (e.EntryType == "PUR" || e.EntryType == "CN") && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+            var totalPaymentsAllTime = await _context.Entries
+                .Where(e => (e.EntryType == "PV" || e.EntryType == "DN") && e.UcpId == activeUcpId)
+                .SumAsync(e => e.Amount ?? 0);
+            TotalPayables = Math.Max(0, totalPurAllTime - totalPaymentsAllTime);
 
             // 3. Stock Levels (Calculated from PURL vs SALL)
             var inventoryStats = await _context.Entries
@@ -102,11 +149,15 @@ namespace YIS.Pages.Dashboard
             TotalStockItems = inventoryStats.Sum(x => x.Qty);
             StockTrend = 5.2;
 
-            // 4. Active Customers
+            // 4. Active Customers & Suppliers
             ActiveCustomersCount = await _context.CustomerMasters
                 .Where(c => (c.CustomerDeactiveOn == null || c.CustomerDeactiveOn > today) && c.UcpId == activeUcpId)
                 .CountAsync();
             CustomerTrend = 3.4;
+
+            ActiveSuppliersCount = await _context.SupplierMasters
+                .Where(s => (s.SupplierDeactiveOn == null || s.SupplierDeactiveOn > today) && s.UcpId == activeUcpId)
+                .CountAsync();
 
             // 5. Recent Transactions
             RecentOrders = await _context.Entries

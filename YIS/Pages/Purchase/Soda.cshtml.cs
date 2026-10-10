@@ -38,6 +38,9 @@ namespace YIS.Pages.Purchase
             public double? Lbs { get; set; }
             public double? Rate { get; set; }
             public double? Amount { get; set; }
+            public double? GstPercent { get; set; } = 0;
+            public double? TaxAmount { get; set; }
+            public double? NetAmount { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(long? id)
@@ -70,12 +73,17 @@ namespace YIS.Pages.Purchase
                     Qty = c.Qty,
                     Lbs = c.Lbs,
                     Rate = c.Rate,
-                    Amount = c.Amount
+                    Amount = c.Amount,
+                    GstPercent = double.TryParse(c.EntryAttribute2, out double gst) ? gst : 0,
+                    TaxAmount = c.TaxAmount ?? ((c.Amount ?? 0) * ((double.TryParse(c.EntryAttribute2, out double g) ? g : 0) / 100.0)),
+                    NetAmount = (c.Amount ?? 0) + (c.TaxAmount ?? ((c.Amount ?? 0) * ((double.TryParse(c.EntryAttribute2, out double g2) ? g2 : 0) / 100.0)))
                 }).ToList();
 
                 // If no child items exist (old data), create one from parent
                 if (LineItems.Count == 0 && Entry.ItemId.HasValue)
                 {
+                    double gst = double.TryParse(Entry.EntryAttribute2, out double g) ? g : 0;
+                    double tax = Entry.TaxAmount ?? ((Entry.Amount ?? 0) * (gst / 100.0));
                     LineItems.Add(new LineItemViewModel
                     {
                         EntryId = 0,
@@ -83,7 +91,10 @@ namespace YIS.Pages.Purchase
                         Qty = Entry.Qty,
                         Lbs = Entry.Lbs,
                         Rate = Entry.Rate,
-                        Amount = Entry.Amount
+                        Amount = Entry.Amount,
+                        GstPercent = gst,
+                        TaxAmount = tax,
+                        NetAmount = (Entry.Amount ?? 0) + tax
                     });
                 }
             }
@@ -94,18 +105,34 @@ namespace YIS.Pages.Purchase
                 {
                     EntryId = 0,
                     EntryDate = DateTime.Today,
-                    EntryType = "PSD"
+                    EntryType = "PSD",
+                    EntryAttribute2 = "Credit",
+                    EntryAttribute5 = "No",
+                    EntryCommPer = 10
                 };
                 DisplayEntryNumber = "PSD-(Auto)";
 
                 // Add one empty line item
-                LineItems.Add(new LineItemViewModel { EntryId = 0 });
+                LineItems.Add(new LineItemViewModel { EntryId = 0, GstPercent = 0 });
             }
 
             // Ensure at least one line item
             if (LineItems.Count == 0)
             {
-                LineItems.Add(new LineItemViewModel { EntryId = 0 });
+                LineItems.Add(new LineItemViewModel { EntryId = 0, GstPercent = 0 });
+            }
+
+            if (Entry != null && string.IsNullOrEmpty(Entry.EntryAttribute2))
+            {
+                Entry.EntryAttribute2 = "Credit";
+            }
+            if (Entry != null && string.IsNullOrEmpty(Entry.EntryAttribute5))
+            {
+                Entry.EntryAttribute5 = "No";
+            }
+            if (Entry != null && !Entry.EntryCommPer.HasValue)
+            {
+                Entry.EntryCommPer = 10;
             }
 
             return Page();
@@ -130,17 +157,52 @@ namespace YIS.Pages.Purchase
                 return Page();
             }
 
-            // Calculate grand total from line items
-            double grandTotal = 0;
+            // Calculate grand totals and line item amounts from line items
+            double grandTotalBasic = 0;
+            double grandTotalTax = 0;
+            double grandTotalNet = 0;
             double totalQty = 0;
             foreach (var item in LineItems)
             {
+                if (item.Qty.HasValue && (!item.Lbs.HasValue || item.Lbs == 0))
+                {
+                    item.Lbs = item.Qty.Value * 100;
+                }
                 if (item.Lbs.HasValue && item.Rate.HasValue)
                 {
                     item.Amount = item.Lbs.Value * item.Rate.Value;
                 }
-                grandTotal += item.Amount ?? 0;
+                if (item.Amount.HasValue && item.GstPercent.HasValue)
+                {
+                    item.TaxAmount = item.Amount.Value * (item.GstPercent.Value / 100.0);
+                }
+                else
+                {
+                    item.TaxAmount = 0;
+                }
+                item.NetAmount = (item.Amount ?? 0) + (item.TaxAmount ?? 0);
+
+                grandTotalBasic += item.Amount ?? 0;
+                grandTotalTax += item.TaxAmount ?? 0;
+                grandTotalNet += item.NetAmount ?? 0;
                 totalQty += item.Qty ?? 0;
+            }
+
+            // Commission Calculation
+            if (Entry.EntryAttribute5 == "Yes")
+            {
+                double commPer = Entry.EntryCommPer ?? 10;
+                Entry.EntryCommPer = commPer;
+                Entry.EntryCommAmt = grandTotalNet * (commPer / 100.0);
+                Entry.EntryCommSukri = (Entry.EntryCommAmt ?? 0) * 0.10;
+            }
+            else
+            {
+                Entry.EntryAttribute5 = "No";
+                Entry.EntryAttribute4 = null;
+                Entry.EntryCommPer = null;
+                Entry.EntryCommAmt = null;
+                Entry.EntryCommSukri = null;
             }
 
             // Get Active Company Profile from Session
@@ -157,8 +219,10 @@ namespace YIS.Pages.Purchase
                 Entry.UcpId = activeUcpId;
                 Entry.EntryType = "PSD";
                 Entry.CreationOn = DateTime.Now;
-                Entry.Amount = grandTotal; // Store grand total
+                Entry.Amount = grandTotalNet; // Store grand total including GST
+                Entry.TaxAmount = grandTotalTax; // Store total GST
                 Entry.Qty = totalQty; // Store total qty
+                Entry.EntryAttribute3 = grandTotalNet.ToString("F2");
 
                 // Generate Entry Number
                 var lastEntry = await _context.Entries
@@ -182,6 +246,9 @@ namespace YIS.Pages.Purchase
                         EntryDate = Entry.EntryDate,
                         EntryRefId = Entry.EntryId, // Link to parent
                         EntryAttribute1 = Entry.EntryAttribute1, // Same supplier
+                        EntryAttribute2 = lineItem.GstPercent?.ToString(), // GST %
+                        EntryAttribute3 = lineItem.NetAmount?.ToString(), // Net Amount
+                        TaxAmount = lineItem.TaxAmount, // GST Amount
                         ItemId = lineItem.ItemId,
                         Qty = lineItem.Qty,
                         Lbs = lineItem.Lbs,
@@ -205,9 +272,18 @@ namespace YIS.Pages.Purchase
                 // Update parent fields
                 existingEntry.EntryDate = Entry.EntryDate;
                 existingEntry.EntryAttribute1 = Entry.EntryAttribute1;
+                existingEntry.EntryAttribute2 = Entry.EntryAttribute2;
+                existingEntry.EntryTermsDays = Entry.EntryTermsDays;
                 existingEntry.EntryRemarks = Entry.EntryRemarks;
-                existingEntry.Amount = grandTotal;
+                existingEntry.EntryAttribute4 = Entry.EntryAttribute4;
+                existingEntry.EntryAttribute5 = Entry.EntryAttribute5;
+                existingEntry.EntryCommPer = Entry.EntryCommPer;
+                existingEntry.EntryCommAmt = Entry.EntryCommAmt;
+                existingEntry.EntryCommSukri = Entry.EntryCommSukri;
+                existingEntry.Amount = grandTotalNet;
+                existingEntry.TaxAmount = grandTotalTax;
                 existingEntry.Qty = totalQty;
+                existingEntry.EntryAttribute3 = grandTotalNet.ToString("F2");
                 existingEntry.UcpId = activeUcpId;
                 existingEntry.LastUpdateOn = DateTime.Now;
 
@@ -242,6 +318,9 @@ namespace YIS.Pages.Purchase
                             childToUpdate.Lbs = lineItem.Lbs;
                             childToUpdate.Rate = lineItem.Rate;
                             childToUpdate.Amount = lineItem.Amount;
+                            childToUpdate.EntryAttribute2 = lineItem.GstPercent?.ToString();
+                            childToUpdate.EntryAttribute3 = lineItem.NetAmount?.ToString();
+                            childToUpdate.TaxAmount = lineItem.TaxAmount;
                             childToUpdate.UcpId = activeUcpId;
                             childToUpdate.LastUpdateOn = DateTime.Now;
                         }
@@ -256,6 +335,9 @@ namespace YIS.Pages.Purchase
                             EntryDate = Entry.EntryDate,
                             EntryRefId = Entry.EntryId,
                             EntryAttribute1 = Entry.EntryAttribute1,
+                            EntryAttribute2 = lineItem.GstPercent?.ToString(),
+                            EntryAttribute3 = lineItem.NetAmount?.ToString(),
+                            TaxAmount = lineItem.TaxAmount,
                             ItemId = lineItem.ItemId,
                             Qty = lineItem.Qty,
                             Lbs = lineItem.Lbs,
