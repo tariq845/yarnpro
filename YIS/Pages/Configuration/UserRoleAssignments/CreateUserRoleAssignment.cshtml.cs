@@ -19,6 +19,9 @@ namespace YIS.Pages.Configuration.UserRoleAssignments
         {
             public long MoId { get; set; }
             public string? MoName { get; set; }
+            public string? MoType { get; set; }
+            public string? MoUrl { get; set; }
+            public string? ModuleName { get; set; }
             public bool IsSelected { get; set; }
             public bool CanCreate { get; set; }
             public bool CanRead { get; set; }
@@ -72,6 +75,9 @@ namespace YIS.Pages.Configuration.UserRoleAssignments
                 {
                     MoId = m.MoId,
                     MoName = m.MoName,
+                    MoType = m.MoType,
+                    MoUrl = m.MoUrl,
+                    ModuleName = DetermineModule(m.MoUrl, m.MoName),
                     IsSelected = existing != null,
                     CanCreate = existing?.CanCreate ?? false,
                     CanRead = existing?.CanRead ?? false,
@@ -82,6 +88,24 @@ namespace YIS.Pages.Configuration.UserRoleAssignments
             }).ToList();
 
             return Page();
+        }
+
+        private static string DetermineModule(string? url, string? name)
+        {
+            if (string.IsNullOrEmpty(url)) return "General";
+            var u = url.ToLowerInvariant();
+            if (u.Contains("/purchase")) return "Purchases";
+            if (u.Contains("/sale")) return "Sales";
+            if (u.Contains("/supplier") || u.Contains("/customer")) return "Parties (Suppliers / Customers)";
+            if (u.Contains("/item")) return "Inventory (Items)";
+            if (u.Contains("/account") || u.Contains("/ledger")) return "Accounts & Ledgers";
+            if (u.Contains("/categor")) return "Categories Setup";
+            if (u.Contains("/voucher")) return "Vouchers";
+            if (u.Contains("/report")) return "Reports & Tracking";
+            if (u.Contains("/seller") || u.Contains("/company") || u.Contains("/setting")) return "Company & Settings";
+            if (u.Contains("/configuration") || u.Contains("/user") || u.Contains("/role") || u.Contains("/menu")) return "Configuration & Security";
+            if (u.Contains("/dashboard")) return "Dashboard";
+            return "General";
         }
 
         public async Task<IActionResult> OnPostAsync()

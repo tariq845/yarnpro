@@ -20,7 +20,8 @@
             </div>
             <div class="col-md-6 text-end">
                 <h6 class="text-muted text-uppercase mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-                    Total Permissions: <span class="fw-bold fs-6 text-dark">@Model.MenuAssignments.Count</span>
+                    Total Permissions: <span class="fw-bold fs-6 text-dark" id="totalDisplay">@Model.MenuAssignments.Count</span>
+                    <span class="badge bg-primary-subtle text-primary border ms-2" id="assignedBadge">0 Assigned</span>
                 </h6>
             </div>
         </div>
@@ -32,30 +33,74 @@
         <form method="post" novalidate>
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             
-            <h5 class="card-title mb-4">Manage Roles for <span class="text-danger">@Model.UserName</span></h5>
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+                <h5 class="card-title mb-0">Manage Roles for <span class="text-danger">@Model.UserName</span></h5>
+                
+                <!-- Quick Selection Controls (Header toolbar) -->
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-outline-success" id="btnGrantAll" title="Grant all permissions on visible rows">
+                        <i class="bi bi-check-all"></i> Grant All
+                    </button>
+                    <button type="button" class="btn btn-outline-info" id="btnReadOnlyAll" title="Set Read-Only on all visible rows">
+                        <i class="bi bi-eye"></i> Read-Only All
+                    </button>
+                    <button type="button" class="btn btn-outline-warning" id="btnDenyDeleteAll" title="Deny Delete on all visible rows">
+                        <i class="bi bi-shield-x"></i> Deny Delete
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" id="btnDenyAll" title="Deny / Clear all visible rows">
+                        <i class="bi bi-x-circle"></i> Deny All
+                    </button>
+                </div>
+            </div>
 
             <input type="hidden" asp-for="UserId" />
-
-            
 
             <div class="row mt-3">
                 <div class="col-12">
                     <label class="form-label fw-bold">Menu Access Permissions</label>
                     <div class="table-responsive border rounded">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0 align-middle" id="permissionsTable">
                             <thead class="table-light">
                                 <tr>
-                                    <th style="width: 40px;">
+                                    <!-- Column 1: Row Select All Checkbox -->
+                                    <th style="width: 40px;" class="text-center">
                                         <div class="form-check m-0">
-                                            <input class="form-check-input" type="checkbox" id="selectAll">
+                                            <input class="form-check-input" type="checkbox" id="selectAll" title="Select / Deselect all visible rows">
                                         </div>
                                     </th>
                                     <th>Menu Option</th>
-                                    <th class="text-center" style="width: 80px;">Read</th>
-                                    <th class="text-center" style="width: 80px;">Create</th>
-                                    <th class="text-center" style="width: 80px;">Update</th>
-                                    <th class="text-center" style="width: 80px;">Delete</th>
-                                    <th style="width: 180px;">Disable On</th>
+                                    <!-- Column 3: Read Column Master Toggle -->
+                                    <th class="text-center" style="width: 95px;">
+                                        <div class="form-check d-inline-flex align-items-center gap-1 m-0">
+                                            <input class="form-check-input" type="checkbox" id="selectAllRead">
+                                            <label class="form-check-label fw-bold small text-primary" for="selectAllRead" style="cursor: pointer;">Read</label>
+                                        </div>
+                                    </th>
+                                    <!-- Column 4: Create Column Master Toggle -->
+                                    <th class="text-center" style="width: 95px;">
+                                        <div class="form-check d-inline-flex align-items-center gap-1 m-0">
+                                            <input class="form-check-input" type="checkbox" id="selectAllCreate">
+                                            <label class="form-check-label fw-bold small text-success" for="selectAllCreate" style="cursor: pointer;">Create</label>
+                                        </div>
+                                    </th>
+                                    <!-- Column 5: Update Column Master Toggle -->
+                                    <th class="text-center" style="width: 95px;">
+                                        <div class="form-check d-inline-flex align-items-center gap-1 m-0">
+                                            <input class="form-check-input" type="checkbox" id="selectAllUpdate">
+                                            <label class="form-check-label fw-bold small text-warning" for="selectAllUpdate" style="cursor: pointer;">Update</label>
+                                        </div>
+                                    </th>
+                                    <!-- Column 6: Delete Column Master Toggle -->
+                                    <th class="text-center" style="width: 95px;">
+                                        <div class="form-check d-inline-flex align-items-center gap-1 m-0">
+                                            <input class="form-check-input" type="checkbox" id="selectAllDelete">
+                                            <label class="form-check-label fw-bold small text-danger" for="selectAllDelete" style="cursor: pointer;">Delete</label>
+                                        </div>
+                                    </th>
+                                    <!-- Column 7: Disable On -->
+                                    <th style="width: 170px;">Disable On</th>
+                                    <!-- Column 8: Row-wise Quick Selection -->
+                                    <th class="text-center" style="width: 130px;">Row Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,8 +108,8 @@
                                 {
                                     for (int i = 0; i < Model.MenuAssignments.Count; i++)
                                     {
-                                        <tr>
-                                            <td>
+                                        <tr class="permission-row" data-row-index="@i">
+                                            <td class="text-center">
                                                 <input type="hidden" asp-for="MenuAssignments[i].MoId" />
                                                 <input type="hidden" asp-for="MenuAssignments[i].MoName" />
                                                 <div class="form-check m-0">
@@ -81,26 +126,33 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-inline-block m-0">
-                                                    <input class="form-check-input" type="checkbox" asp-for="MenuAssignments[i].CanRead" />
+                                                    <input class="form-check-input check-read" type="checkbox" asp-for="MenuAssignments[i].CanRead" />
                                                 </div>
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-inline-block m-0">
-                                                    <input class="form-check-input" type="checkbox" asp-for="MenuAssignments[i].CanCreate" />
+                                                    <input class="form-check-input check-create" type="checkbox" asp-for="MenuAssignments[i].CanCreate" />
                                                 </div>
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-inline-block m-0">
-                                                    <input class="form-check-input" type="checkbox" asp-for="MenuAssignments[i].CanUpdate" />
+                                                    <input class="form-check-input check-update" type="checkbox" asp-for="MenuAssignments[i].CanUpdate" />
                                                 </div>
                                             </td>
                                             <td class="text-center">
                                                 <div class="form-check d-inline-block m-0">
-                                                    <input class="form-check-input" type="checkbox" asp-for="MenuAssignments[i].CanDelete" />
+                                                    <input class="form-check-input check-delete" type="checkbox" asp-for="MenuAssignments[i].CanDelete" />
                                                 </div>
                                             </td>
                                             <td>
                                                 <input asp-for="MenuAssignments[i].DisableOn" class="form-control form-control-sm" type="date" />
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group btn-group-sm">
+                                                    <button type="button" class="btn btn-outline-success py-0 px-1 btn-row-all" title="Grant Full Row Access" style="font-size: 0.75rem;">All</button>
+                                                    <button type="button" class="btn btn-outline-info py-0 px-1 btn-row-read" title="Set Read Only for Row" style="font-size: 0.75rem;">Read</button>
+                                                    <button type="button" class="btn btn-outline-danger py-0 px-1 btn-row-clear" title="Deny / Clear Row" style="font-size: 0.75rem;">Clear</button>
+                                                </div>
                                             </td>
                                         </tr>
                                     }
@@ -108,7 +160,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="7" class="text-center py-4 text-muted">
+                                        <td colspan="8" class="text-center py-4 text-muted">
                                             No menu options available.
                                         </td>
                                     </tr>
@@ -121,7 +173,7 @@
 
             <div class="row mt-4">
                 <div class="col-12 text-end">
-                    <a href="/Configuration/Users/Index" class="btn btn-outline-secondary">
+                    <a href="/Configuration/Users/Index" class="btn btn-outline-secondary me-2">
                         Cancel
                     </a>
                     <button type="submit" class="btn btn-outline-success">
@@ -137,69 +189,272 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const selectAll = document.getElementById('selectAll');
-            const menuCheckboxes = document.querySelectorAll('.menu-checkbox');
+            const table = document.getElementById('permissionsTable');
             const searchInput = document.getElementById('permissionSearch');
-            const tableRows = document.querySelectorAll('tbody tr');
+            const assignedBadge = document.getElementById('assignedBadge');
 
-            if (selectAll && menuCheckboxes.length > 0) {
-                // Select All functionality
-                selectAll.addEventListener('change', function() {
-                    const visibleCheckboxes = document.querySelectorAll('tbody tr:not([style*="display: none"]) .menu-checkbox');
-                    visibleCheckboxes.forEach(cb => {
-                        cb.checked = this.checked;
-                    });
-                });
+            // Header master checkboxes
+            const selectAll = document.getElementById('selectAll');
+            const selectAllRead = document.getElementById('selectAllRead');
+            const selectAllCreate = document.getElementById('selectAllCreate');
+            const selectAllUpdate = document.getElementById('selectAllUpdate');
+            const selectAllDelete = document.getElementById('selectAllDelete');
 
-                // Update Select All checkbox state based on individual checkboxes
-                menuCheckboxes.forEach(cb => {
-                    cb.addEventListener('change', function() {
-                        const visibleCheckboxes = Array.from(document.querySelectorAll('tbody tr:not([style*="display: none"]) .menu-checkbox'));
-                        const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every(c => c.checked);
-                        selectAll.checked = allChecked;
-                        
-                        const someChecked = visibleCheckboxes.some(c => c.checked);
-                        selectAll.indeterminate = someChecked && !allChecked;
-                    });
-                });
+            // Bulk buttons
+            const btnGrantAll = document.getElementById('btnGrantAll');
+            const btnReadOnlyAll = document.getElementById('btnReadOnlyAll');
+            const btnDenyDeleteAll = document.getElementById('btnDenyDeleteAll');
+            const btnDenyAll = document.getElementById('btnDenyAll');
 
-                // Initial state for Select All
-                const allChecked = Array.from(menuCheckboxes).every(c => c.checked);
-                selectAll.checked = allChecked;
+            const rows = Array.from(document.querySelectorAll('tbody tr.permission-row'));
 
-                const someChecked = Array.from(menuCheckboxes).some(c => c.checked);
-                selectAll.indeterminate = someChecked && !allChecked;
+            function getVisibleRows() {
+                return rows.filter(r => r.style.display !== 'none');
             }
 
-            // Search functionality
+            // Sync all header checkboxes (checked / indeterminate state)
+            function syncHeaders() {
+                const visible = getVisibleRows();
+                if (visible.length === 0) {
+                    [selectAll, selectAllRead, selectAllCreate, selectAllUpdate, selectAllDelete].forEach(h => {
+                        if (h) { h.checked = false; h.indeterminate = false; }
+                    });
+                    if (assignedBadge) assignedBadge.textContent = "0 Assigned";
+                    return;
+                }
+
+                function updateHeaderState(header, selector) {
+                    if (!header) return;
+                    const cbs = visible.map(r => r.querySelector(selector)).filter(Boolean);
+                    if (cbs.length === 0) return;
+                    const allChecked = cbs.every(c => c.checked);
+                    const someChecked = cbs.some(c => c.checked);
+                    header.checked = allChecked;
+                    header.indeterminate = someChecked && !allChecked;
+                }
+
+                updateHeaderState(selectAll, '.menu-checkbox');
+                updateHeaderState(selectAllRead, '.check-read');
+                updateHeaderState(selectAllCreate, '.check-create');
+                updateHeaderState(selectAllUpdate, '.check-update');
+                updateHeaderState(selectAllDelete, '.check-delete');
+
+                // Count total assigned
+                const assignedCount = rows.filter(r => r.querySelector('.menu-checkbox')?.checked).length;
+                if (assignedBadge) {
+                    assignedBadge.textContent = `${assignedCount} Assigned`;
+                }
+            }
+
+            // Column Header Checkbox Event Handlers
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    getVisibleRows().forEach(r => {
+                        const cb = r.querySelector('.menu-checkbox');
+                        if (cb) {
+                            cb.checked = isChecked;
+                            if (!isChecked) {
+                                // Clear CRUD if row unselected
+                                const read = r.querySelector('.check-read');
+                                const create = r.querySelector('.check-create');
+                                const update = r.querySelector('.check-update');
+                                const del = r.querySelector('.check-delete');
+                                if (read) read.checked = false;
+                                if (create) create.checked = false;
+                                if (update) update.checked = false;
+                                if (del) del.checked = false;
+                            }
+                        }
+                    });
+                    syncHeaders();
+                });
+            }
+
+            function setupColumnToggle(headerEl, selector) {
+                if (!headerEl) return;
+                headerEl.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    getVisibleRows().forEach(r => {
+                        const target = r.querySelector(selector);
+                        const menuCb = r.querySelector('.menu-checkbox');
+                        if (target) {
+                            target.checked = isChecked;
+                            // If granting permission, auto-check menu checkbox
+                            if (isChecked && menuCb) {
+                                menuCb.checked = true;
+                            }
+                        }
+                    });
+                    syncHeaders();
+                });
+            }
+
+            setupColumnToggle(selectAllRead, '.check-read');
+            setupColumnToggle(selectAllCreate, '.check-create');
+            setupColumnToggle(selectAllUpdate, '.check-update');
+            setupColumnToggle(selectAllDelete, '.check-delete');
+
+            // Interactive Click Delegation inside Table
+            table.addEventListener('change', function(e) {
+                const target = e.target;
+                if (!target.classList.contains('form-check-input')) return;
+
+                const row = target.closest('tr.permission-row');
+                if (!row) return;
+
+                const menuCb = row.querySelector('.menu-checkbox');
+                const readCb = row.querySelector('.check-read');
+                const createCb = row.querySelector('.check-create');
+                const updateCb = row.querySelector('.check-update');
+                const deleteCb = row.querySelector('.check-delete');
+
+                // If clicked the row's main menu checkbox
+                if (target === menuCb) {
+                    if (!menuCb.checked) {
+                        // Uncheck all CRUD
+                        if (readCb) readCb.checked = false;
+                        if (createCb) createCb.checked = false;
+                        if (updateCb) updateCb.checked = false;
+                        if (deleteCb) deleteCb.checked = false;
+                    } else {
+                        // If checked and no CRUD selected, default to Read
+                        if (!readCb.checked && !createCb.checked && !updateCb.checked && !deleteCb.checked) {
+                            readCb.checked = true;
+                        }
+                    }
+                } else {
+                    // Clicked a CRUD checkbox
+                    if (target.checked && menuCb) {
+                        menuCb.checked = true;
+                    }
+                }
+
+                syncHeaders();
+            });
+
+            // Row-wise Quick Action Buttons (All / Read / Clear)
+            table.addEventListener('click', function(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+
+                const row = btn.closest('tr.permission-row');
+                if (!row) return;
+
+                const menuCb = row.querySelector('.menu-checkbox');
+                const readCb = row.querySelector('.check-read');
+                const createCb = row.querySelector('.check-create');
+                const updateCb = row.querySelector('.check-update');
+                const deleteCb = row.querySelector('.check-delete');
+
+                if (btn.classList.contains('btn-row-all')) {
+                    if (menuCb) menuCb.checked = true;
+                    if (readCb) readCb.checked = true;
+                    if (createCb) createCb.checked = true;
+                    if (updateCb) updateCb.checked = true;
+                    if (deleteCb) deleteCb.checked = true;
+                } else if (btn.classList.contains('btn-row-read')) {
+                    if (menuCb) menuCb.checked = true;
+                    if (readCb) readCb.checked = true;
+                    if (createCb) createCb.checked = false;
+                    if (updateCb) updateCb.checked = false;
+                    if (deleteCb) deleteCb.checked = false;
+                } else if (btn.classList.contains('btn-row-clear')) {
+                    if (menuCb) menuCb.checked = false;
+                    if (readCb) readCb.checked = false;
+                    if (createCb) createCb.checked = false;
+                    if (updateCb) updateCb.checked = false;
+                    if (deleteCb) deleteCb.checked = false;
+                }
+
+                syncHeaders();
+            });
+
+            // Bulk Action Button Handlers
+            if (btnGrantAll) {
+                btnGrantAll.addEventListener('click', function() {
+                    getVisibleRows().forEach(r => {
+                        const m = r.querySelector('.menu-checkbox');
+                        const rd = r.querySelector('.check-read');
+                        const cr = r.querySelector('.check-create');
+                        const up = r.querySelector('.check-update');
+                        const dl = r.querySelector('.check-delete');
+                        if (m) m.checked = true;
+                        if (rd) rd.checked = true;
+                        if (cr) cr.checked = true;
+                        if (up) up.checked = true;
+                        if (dl) dl.checked = true;
+                    });
+                    syncHeaders();
+                });
+            }
+
+            if (btnReadOnlyAll) {
+                btnReadOnlyAll.addEventListener('click', function() {
+                    getVisibleRows().forEach(r => {
+                        const m = r.querySelector('.menu-checkbox');
+                        const rd = r.querySelector('.check-read');
+                        const cr = r.querySelector('.check-create');
+                        const up = r.querySelector('.check-update');
+                        const dl = r.querySelector('.check-delete');
+                        if (m) m.checked = true;
+                        if (rd) rd.checked = true;
+                        if (cr) cr.checked = false;
+                        if (up) up.checked = false;
+                        if (dl) dl.checked = false;
+                    });
+                    syncHeaders();
+                });
+            }
+
+            if (btnDenyDeleteAll) {
+                btnDenyDeleteAll.addEventListener('click', function() {
+                    getVisibleRows().forEach(r => {
+                        const dl = r.querySelector('.check-delete');
+                        if (dl) dl.checked = false;
+                    });
+                    syncHeaders();
+                });
+            }
+
+            if (btnDenyAll) {
+                btnDenyAll.addEventListener('click', function() {
+                    getVisibleRows().forEach(r => {
+                        const m = r.querySelector('.menu-checkbox');
+                        const rd = r.querySelector('.check-read');
+                        const cr = r.querySelector('.check-create');
+                        const up = r.querySelector('.check-update');
+                        const dl = r.querySelector('.check-delete');
+                        if (m) m.checked = false;
+                        if (rd) rd.checked = false;
+                        if (cr) cr.checked = false;
+                        if (up) up.checked = false;
+                        if (dl) dl.checked = false;
+                    });
+                    syncHeaders();
+                });
+            }
+
+            // Search filter functionality
             if (searchInput) {
                 searchInput.addEventListener('input', function(e) {
-                    const searchTerm = e.target.value.toLowerCase();
+                    const searchTerm = e.target.value.toLowerCase().trim();
                     
-                    tableRows.forEach(row => {
+                    rows.forEach(row => {
                         const menuName = row.querySelector('label')?.textContent.toLowerCase() || "";
-                        if (menuName.includes(searchTerm)) {
+                        if (!searchTerm || menuName.includes(searchTerm)) {
                             row.style.display = '';
                         } else {
                             row.style.display = 'none';
                         }
                     });
 
-                    // Update Select All state for the new filtered view
-                    if (selectAll) {
-                        const visibleCheckboxes = Array.from(document.querySelectorAll('tbody tr:not([style*="display: none"]) .menu-checkbox'));
-                        if (visibleCheckboxes.length > 0) {
-                            const allChecked = visibleCheckboxes.every(c => c.checked);
-                            selectAll.checked = allChecked;
-                            const someChecked = visibleCheckboxes.some(c => c.checked);
-                            selectAll.indeterminate = someChecked && !allChecked;
-                        } else {
-                            selectAll.checked = false;
-                            selectAll.indeterminate = false;
-                        }
-                    }
+                    syncHeaders();
                 });
             }
+
+            // Initial header sync on page load
+            syncHeaders();
         });
     </script>
 }
