@@ -1,0 +1,105 @@
+name: Deploy to SmarterASP.NET
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore YIS/YIS.csproj
+
+      - name: Build Project
+        run: dotnet build YIS/YIS.csproj --configuration Release --no-restore
+
+      - name: Publish Web Application
+        run: dotnet publish YIS/YIS.csproj --configuration Release --output ./publish -p:UseAppHost=false
+
+      - name: Create Maintenance Page (app_offline.htm)
+        run: |
+          cat << 'EOF' > ./publish/app_offline.htm
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Updating Application...</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #0f172a; color: #f8fafc; }
+              .card { background: #1e293b; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; max-width: 450px; }
+              h1 { margin-bottom: 0.5rem; font-size: 1.5rem; color: #38bdf8; }
+              p { color: #94a3b8; font-size: 0.95rem; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>Deployment in Progress</h1>
+              <p>The application is currently being updated. Please refresh in a few moments.</p>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Deploy to SmarterASP.NET via FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SMARTERASP_FTP_SERVER }}
+          username: ${{ secrets.SMARTERASP_FTP_USERNAME }}
+          password: ${{ secrets.SMARTERASP_FTP_PASSWORD }}
+          local-dir: ./publish/
+          server-dir: ${{ secrets.SMARTERASP_FTP_REMOTE_PATH || 'ys/' }}
+          protocol: ftps
+          port: 21
+          security: loose
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/appsettings.Development.json
+
+      - name: Remove Maintenance Page to Restart App
+        if: always()
+        run: |
+          python3 -c "
+          import ftplib, ssl, os
+
+          server = os.environ.get('FTP_SERVER')
+          user = os.environ.get('FTP_USER')
+          passwd = os.environ.get('FTP_PASS')
+          remote_dir = (os.environ.get('FTP_DIR') or 'ys').strip('/')
+
+          if server and user and passwd:
+              try:
+                  context = ssl.create_default_context()
+                  context.check_hostname = False
+                  context.verify_mode = ssl.CERT_NONE
+
+                  ftps = ftplib.FTP_TLS(context=context)
+                  ftps.connect(server, 21, timeout=30)
+                  ftps.login(user, passwd)
+                  ftps.prot_p()
+                  if remote_dir:
+                      ftps.cwd(remote_dir)
+                  ftps.delete('app_offline.htm')
+                  print('Successfully removed app_offline.htm. Application is live!')
+                  ftps.quit()
+              except Exception as e:
+                  print(f'Note on app_offline removal (already clean or non-fatal): {e}')
+          "
+        env:
+          FTP_SERVER: ${{ secrets.SMARTERASP_FTP_SERVER }}
+          FTP_USER: ${{ secrets.SMARTERASP_FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.SMARTERASP_FTP_PASSWORD }}
+          FTP_DIR: ${{ secrets.SMARTERASP_FTP_REMOTE_PATH || 'ys/' }}
