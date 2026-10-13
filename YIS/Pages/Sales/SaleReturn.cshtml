@@ -186,9 +186,9 @@
                             </div>
 
                             <div class="row mb-3 align-items-center">
-                                <div class="col-6"><label class="small text-muted mb-0">Sukri (10%)</label></div>
+                                <div class="col-6"><label class="small text-muted mb-0">Sukri</label></div>
                                 <div class="col-6 text-end fw-bold">
-                                    <input asp-for="Entry.EntryCommSukri" class="form-control form-control-sm text-end bg-white" id="txtSukri" readonly disabled="@Model.IsPosted" />
+                                    <input asp-for="Entry.EntryCommSukri" class="form-control form-control-sm text-end" id="txtSukri" type="number" step="0.01" min="0" value="@(Model.Entry?.EntryCommSukri?.ToString("0.00") ?? "0.00")" disabled="@Model.IsPosted" />
                                 </div>
                             </div>
 
@@ -344,13 +344,6 @@
                     const commAmt = (totalBase * commPer) / 100;
                     const commAmtField = document.getElementById('txtCommAmt');
                     if(commAmtField) commAmtField.value = commAmt.toFixed(2);
-                }
-
-                // Sukri Calc (10% of total as requested: "net total of 10% is sukri")
-                const sukriField = document.getElementById('txtSukri');
-                if(sukriField) {
-                    const sukri = totalNet * 0.10;
-                    sukriField.value = sukri.toFixed(2);
                 }
                 
                 if(footerTotalAmount) footerTotalAmount.value = totalBase.toFixed(2);

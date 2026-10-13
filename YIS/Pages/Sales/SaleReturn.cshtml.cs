@@ -106,13 +106,19 @@ namespace YIS.Pages.Sales
                 {
                     EntryId = 0,
                     EntryDate = DateTime.Today,
-                    EntryType = "CN"
+                    EntryType = "CN",
+                    EntryCommSukri = 0
                 };
                 DisplayEntryNumber = "CN-(Auto)";
                 LineItems.Add(new LineItemViewModel { EntryId = 0 });
             }
 
             if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0 });
+
+            if (Entry != null && !Entry.EntryCommSukri.HasValue)
+            {
+                Entry.EntryCommSukri = 0;
+            }
 
             return Page();
         }
@@ -190,6 +196,7 @@ namespace YIS.Pages.Sales
             Entry.Qty = grandTotalQty;
             Entry.TaxAmount = totalTax;
             Entry.EntryAttribute3 = finalNetTotal.ToString(); // NET AMOUNT
+            Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
 
             if (Entry.EntryId == 0)
             {

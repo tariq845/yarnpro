@@ -89,6 +89,7 @@ namespace YIS.Pages.Reports
             public DateTime? Date { get; set; }
             public string ContractNumber { get; set; } = "";
             public string InvoiceNumber { get; set; } = "";
+            public string SupplierPurchaseNo { get; set; } = "";
             public double Qty { get; set; }
             public string Description { get; set; } = "";
             public double Rate { get; set; }
@@ -333,6 +334,7 @@ namespace YIS.Pages.Reports
                         Date = inv.EntryDate,
                         ContractNumber = contractNo > 0 ? contractNo.ToString("D7") : "-",
                         InvoiceNumber = inv.EntryNumber.HasValue ? inv.EntryNumber.Value.ToString() : inv.EntryId.ToString(),
+                        SupplierPurchaseNo = !string.IsNullOrWhiteSpace(inv.EntryRefCode) ? inv.EntryRefCode.Trim() : "-",
                         Qty = totalQty,
                         Description = desc,
                         Rate = rate,
@@ -358,6 +360,7 @@ namespace YIS.Pages.Reports
                     r.InvoiceNumber.Contains(term) ||
                     r.ContractNumber.Contains(term) ||
                     r.TransactionNumber.Contains(term) ||
+                    (!string.IsNullOrEmpty(r.SupplierPurchaseNo) && r.SupplierPurchaseNo.ToLower().Contains(term)) ||
                     (r.BuyerName != null && r.BuyerName.ToLower().Contains(term)) ||
                     (r.BrokerName != null && r.BrokerName.ToLower().Contains(term)) ||
                     r.Description.ToLower().Contains(term)
@@ -446,10 +449,10 @@ namespace YIS.Pages.Reports
             ws.Range("A2:N2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Cell("A3").Value = UnClearedOnly ? "UnCleared Bills Only" : "All Bills";
-            ws.Cell("N3").Value = $"Date: {GeneratedOn:dd/MM/yyyy hh:mm tt}";
+            ws.Cell("O3").Value = $"Date: {GeneratedOn:dd/MM/yyyy hh:mm tt}";
 
             string[] headers = {
-                "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER",
+                "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER", "SUPPLIER PUR NO",
                 "QTY", "DESCRIPTION", "RATE", "AMOUNT",
                 "RECEIVED / PAID", "BALANCE", "CONT. DAYS", "TOTAL DAYS",
                 "PDC AMOUNT", "PDC DT"
@@ -471,7 +474,7 @@ namespace YIS.Pages.Reports
             {
                 ws.Cell(rowIdx, 1).Value = broker.BrokerName;
                 ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-                ws.Range(rowIdx, 1, rowIdx, 14).Merge().Style.Fill.BackgroundColor = XLColor.FromHtml("#e8f4f8");
+                ws.Range(rowIdx, 1, rowIdx, 15).Merge().Style.Fill.BackgroundColor = XLColor.FromHtml("#e8f4f8");
                 rowIdx++;
 
                 foreach (var buyer in broker.Buyers)
@@ -479,7 +482,7 @@ namespace YIS.Pages.Reports
                     ws.Cell(rowIdx, 1).Value = buyer.BuyerName;
                     ws.Cell(rowIdx, 1).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 1).Style.Font.FontColor = XLColor.Red;
-                    ws.Range(rowIdx, 1, rowIdx, 14).Merge();
+                    ws.Range(rowIdx, 1, rowIdx, 15).Merge();
                     rowIdx++;
 
                     foreach (var item in buyer.Items)
@@ -488,18 +491,19 @@ namespace YIS.Pages.Reports
                         ws.Cell(rowIdx, 2).SetValue(item.Date?.ToString("dd/MM/yy") ?? "");
                         ws.Cell(rowIdx, 3).SetValue(item.ContractNumber);
                         ws.Cell(rowIdx, 4).SetValue(item.InvoiceNumber);
-                        ws.Cell(rowIdx, 5).SetValue(item.Qty).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 6).SetValue(item.Description);
-                        ws.Cell(rowIdx, 7).SetValue(item.Rate).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 8).SetValue(item.Amount).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 9).SetValue(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "0.00");
-                        ws.Cell(rowIdx, 10).SetValue(item.Balance).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 11).SetValue(item.ContDays);
-                        ws.Cell(rowIdx, 12).SetValue(item.TotalDays);
-                        ws.Cell(rowIdx, 13).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 14).SetValue(item.PdcDate?.ToString("dd/MM/yy") ?? "");
+                        ws.Cell(rowIdx, 5).SetValue(item.SupplierPurchaseNo);
+                        ws.Cell(rowIdx, 6).SetValue(item.Qty).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 7).SetValue(item.Description);
+                        ws.Cell(rowIdx, 8).SetValue(item.Rate).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 9).SetValue(item.Amount).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 10).SetValue(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "0.00");
+                        ws.Cell(rowIdx, 11).SetValue(item.Balance).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 12).SetValue(item.ContDays);
+                        ws.Cell(rowIdx, 13).SetValue(item.TotalDays);
+                        ws.Cell(rowIdx, 14).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 15).SetValue(item.PdcDate?.ToString("dd/MM/yy") ?? "");
 
-                        for (int col = 1; col <= 14; col++)
+                        for (int col = 1; col <= 15; col++)
                         {
                             ws.Cell(rowIdx, col).Style.Border.OutsideBorder = XLBorderStyleValues.Hair;
                         }
@@ -508,43 +512,43 @@ namespace YIS.Pages.Reports
 
                     ws.Cell(rowIdx, 1).Value = "SUPPLIER WISE SUB - TOTAL :";
                     ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-                    ws.Range(rowIdx, 1, rowIdx, 7).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                    ws.Range(rowIdx, 1, rowIdx, 8).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                     
-                    ws.Cell(rowIdx, 8).SetValue(buyer.SubTotalAmount).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 8).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(rowIdx, 9).SetValue(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 10).SetValue(buyer.SubTotalBalance).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(rowIdx, 13).SetValue(buyer.SubTotalPdc).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 13).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 9).SetValue(buyer.SubTotalAmount).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 10).SetValue(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 11).SetValue(buyer.SubTotalBalance).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 14).SetValue(buyer.SubTotalPdc).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 14).Style.NumberFormat.Format = "#,##0.00";
 
-                    ws.Range(rowIdx, 1, rowIdx, 14).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range(rowIdx, 1, rowIdx, 14).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     rowIdx++;
                 }
 
                 ws.Cell(rowIdx, 1).Value = "SUB - TOTAL OF BUYER / BROKER :";
                 ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-                ws.Range(rowIdx, 1, rowIdx, 7).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                ws.Range(rowIdx, 1, rowIdx, 8).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
 
-                ws.Cell(rowIdx, 8).SetValue(broker.SubTotalAmount).Style.Font.Bold = true;
-                ws.Cell(rowIdx, 8).Style.NumberFormat.Format = "#,##0.00";
-                ws.Cell(rowIdx, 9).SetValue(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
-                ws.Cell(rowIdx, 10).SetValue(broker.SubTotalBalance).Style.Font.Bold = true;
-                ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(rowIdx, 9).SetValue(broker.SubTotalAmount).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(rowIdx, 10).SetValue(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+                ws.Cell(rowIdx, 11).SetValue(broker.SubTotalBalance).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
 
-                ws.Range(rowIdx, 1, rowIdx, 14).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                ws.Range(rowIdx, 1, rowIdx, 14).Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Medium;
                 rowIdx += 2;
             }
 
             ws.Cell(rowIdx, 1).Value = "GRAND - TOTAL :";
             ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-            ws.Range(rowIdx, 1, rowIdx, 9).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-            ws.Cell(rowIdx, 10).SetValue(GrandTotalBalance).Style.Font.Bold = true;
-            ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
-            ws.Range(rowIdx, 1, rowIdx, 14).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            ws.Range(rowIdx, 1, rowIdx, 14).Style.Border.BottomBorder = XLBorderStyleValues.Double;
+            ws.Range(rowIdx, 1, rowIdx, 10).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+            ws.Cell(rowIdx, 11).SetValue(GrandTotalBalance).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
+            ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Double;
 
             ws.Columns().AdjustToContents();
 

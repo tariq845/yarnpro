@@ -122,13 +122,19 @@ namespace YIS.Pages.Purchase
                     EntryId = 0,
                     EntryDate = DateTime.Today,
                     EntryType = "PUR",
-                    EntryRefNo = psdId
+                    EntryRefNo = psdId,
+                    EntryCommSukri = 0
                 };
                 DisplayEntryNumber = "PUR-(Auto)";
                 LineItems.Add(new LineItemViewModel { EntryId = 0, GstPercent = 0 });
             }
 
             if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0, GstPercent = 0 });
+
+            if (Entry != null && !Entry.EntryCommSukri.HasValue)
+            {
+                Entry.EntryCommSukri = 0;
+            }
 
             await LoadDropdowns();
             return Page();
@@ -218,6 +224,7 @@ namespace YIS.Pages.Purchase
             Entry.TaxAmount = totalTax;
             Entry.Qty = totalQty;
             Entry.EntryAttribute3 = grandTotal.ToString(); // NET AMOUNT
+            Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
 
             using var transaction = await _context.Database.BeginTransactionAsync();
             try

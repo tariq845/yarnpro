@@ -90,13 +90,19 @@ namespace YIS.Pages.Purchase
                 {
                     EntryId = 0,
                     EntryDate = DateTime.Today,
-                    EntryType = "DN"
+                    EntryType = "DN",
+                    EntryCommSukri = 0
                 };
                 DisplayEntryNumber = "DN-(Auto)";
                 LineItems.Add(new LineItemViewModel { EntryId = 0 });
             }
 
             if (LineItems.Count == 0) LineItems.Add(new LineItemViewModel { EntryId = 0 });
+
+            if (Entry != null && !Entry.EntryCommSukri.HasValue)
+            {
+                Entry.EntryCommSukri = 0;
+            }
 
             return Page();
         }
@@ -172,6 +178,7 @@ namespace YIS.Pages.Purchase
             // ENTRY_COMM_AMT : AMOUNT
             // ENTRY_TERMS_DAYS : TERMS DAYS
             // ENTRY_COMM_SUKRI : SUKRI
+            Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
             
             if (Entry.EntryId == 0)
             {

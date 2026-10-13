@@ -361,16 +361,17 @@
                                 <th style="width: 6%;">DATE</th>
                                 <th style="width: 7%;">CONTRACT NUMBER</th>
                                 <th style="width: 6%;">INVOICE NUMBER</th>
+                                <th style="width: 7%;">SUPPLIER PUR NO</th>
                                 <th style="width: 5%;" class="text-end">QTY</th>
-                                <th style="width: 21%;" class="text-start">DESCRIPTION</th>
+                                <th style="width: 18%;" class="text-start">DESCRIPTION</th>
                                 <th style="width: 6%;" class="text-end">RATE</th>
-                                <th style="width: 8%;" class="text-end">AMOUNT</th>
-                                <th style="width: 8%;" class="text-end">RECEIVED / PAID</th>
-                                <th style="width: 8%;" class="text-end">BALANCE</th>
+                                <th style="width: 7%;" class="text-end">AMOUNT</th>
+                                <th style="width: 7%;" class="text-end">RECEIVED / PAID</th>
+                                <th style="width: 7%;" class="text-end">BALANCE</th>
                                 <th style="width: 4%;">CONT. DAYS</th>
                                 <th style="width: 4%;">TOTAL DAYS</th>
-                                <th style="width: 6%;" class="text-end">PDC AMOUNT</th>
-                                <th style="width: 5%;">PDC DT</th>
+                                <th style="width: 5%;" class="text-end">PDC AMOUNT</th>
+                                <th style="width: 4%;">PDC DT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -379,7 +380,7 @@
                                 @foreach (var broker in Model.GroupedReport)
                                 {
                                     <tr class="broker-header-row">
-                                        <td colspan="14" class="px-3 py-2">
+                                        <td colspan="15" class="px-3 py-2">
                                             <i class="bi bi-truck me-1 no-print"></i> @broker.BrokerName
                                         </td>
                                     </tr>
@@ -387,7 +388,7 @@
                                     @foreach (var buyer in broker.Buyers)
                                     {
                                         <tr class="buyer-header-row">
-                                            <td colspan="14" class="px-3 py-1">
+                                            <td colspan="15" class="px-3 py-1">
                                                 @buyer.BuyerName
                                             </td>
                                         </tr>
@@ -401,9 +402,21 @@
                                                     <span class="badge bg-light text-dark border">@item.ContractNumber</span>
                                                 </td>
                                                 <td class="text-center fw-semibold">
-                                                    <a href="/Purchase/Entry?id=@item.EntryId" class="text-decoration-none text-dark">
+                                                    <a href="/Purchase/Entry?id=@item.EntryId" class="text-decoration-none text-dark" title="View Purchase Entry">
                                                         @item.InvoiceNumber
                                                     </a>
+                                                </td>
+                                                <td class="text-center font-monospace">
+                                                    @if (!string.IsNullOrEmpty(item.SupplierPurchaseNo) && item.SupplierPurchaseNo != "-")
+                                                    {
+                                                        <a href="/Purchase/Entry?id=@item.EntryId" class="text-decoration-none text-primary fw-semibold" title="View Purchase Entry">
+                                                            @item.SupplierPurchaseNo
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">-</span>
+                                                    }
                                                 </td>
                                                 <td class="text-end">@item.Qty.ToString("N2")</td>
                                                 <td class="text-start" style="font-size: 10px;">@item.Description</td>
@@ -422,7 +435,7 @@
 
                                         <!-- Supplier Subtotal -->
                                         <tr class="buyer-subtotal-row">
-                                            <td colspan="7" class="text-end pe-3">
+                                            <td colspan="8" class="text-end pe-3">
                                                 <strong>SUPPLIER WISE SUB - TOTAL :</strong>
                                             </td>
                                             <td class="text-end fw-bold">@buyer.SubTotalAmount.ToString("N2")</td>
@@ -438,7 +451,7 @@
 
                                     <!-- Broker Subtotal -->
                                     <tr class="broker-subtotal-row">
-                                        <td colspan="7" class="text-end pe-3">
+                                        <td colspan="8" class="text-end pe-3">
                                             <strong>SUB - TOTAL OF BUYER / BROKER :</strong>
                                         </td>
                                         <td class="text-end fw-bold">@broker.SubTotalAmount.ToString("N2")</td>
@@ -452,7 +465,7 @@
 
                                 <!-- Final Grand Total -->
                                 <tr>
-                                    <td colspan="9" class="text-end pe-3 py-3 border-0">
+                                    <td colspan="10" class="text-end pe-3 py-3 border-0">
                                         <strong style="font-size: 14px;">GRAND - TOTAL :</strong>
                                     </td>
                                     <td class="text-end py-3 border-0">
@@ -466,7 +479,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="14" class="text-center py-5">
+                                    <td colspan="15" class="text-center py-5">
                                         <div class="py-4">
                                             <i class="bi bi-file-earmark-check text-muted" style="font-size: 3rem;"></i>
                                             <h5 class="mt-3 text-muted">No Bills Found</h5>

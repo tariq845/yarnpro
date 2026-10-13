@@ -1003,9 +1003,15 @@ namespace YIS.Pages.Sales
                     EntryId = 0,
                     EntryType = "SAL",
                     EntryDate = DateTime.Today,
-                    EntryRefId = ssdId
+                    EntryRefId = ssdId,
+                    EntryCommSukri = 0
                 };
                 LineItems.Add(new InvoiceLineItemViewModel());
+            }
+
+            if (Entry != null && !Entry.EntryCommSukri.HasValue)
+            {
+                Entry.EntryCommSukri = 0;
             }
 
             await LoadDropdowns();
@@ -1461,6 +1467,7 @@ namespace YIS.Pages.Sales
 
             // Net Amount stored in String Attribute 2 per request
             Entry.EntryAttribute2 = grandTotalAmount.ToString();
+            Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
 
             if (Entry.EntryId == 0)
             {

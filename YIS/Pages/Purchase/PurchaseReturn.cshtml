@@ -200,7 +200,7 @@
                             <div class="row align-items-center">
                                 <div class="col-6"><label class="small text-muted mb-0">SUKRI</label></div>
                                 <div class="col-6">
-                                    <input asp-for="Entry.EntryCommSukri" class="form-control form-control-sm text-end bg-white" id="txtSukri" readonly disabled="@Model.IsPosted" />
+                                    <input asp-for="Entry.EntryCommSukri" class="form-control form-control-sm text-end" id="txtSukri" type="number" step="0.01" min="0" value="@(Model.Entry?.EntryCommSukri?.ToString("0.00") ?? "0.00")" disabled="@Model.IsPosted" />
                                 </div>
                             </div>
                         </div>
@@ -333,13 +333,8 @@
                     const commPer = parseFloat(commPerInput.value) || 0;
                     const commAmt = totalNet * (commPer / 100);
                     commAmtInput.value = commAmt.toFixed(2);
-                    
-                    // Sukri is 10% of commission
-                    const sukriAmt = commAmt * 0.10;
-                    sukriInput.value = sukriAmt.toFixed(2);
                 } else {
                     if(commAmtInput) commAmtInput.value = '0.00';
-                    if(sukriInput) sukriInput.value = '0.00';
                 }
             }
             
@@ -348,17 +343,15 @@
                 
                 const isCommission = commissionSelect.value === 'Yes';
                 if(commAgentInput) commAgentInput.disabled = !isCommission;
-                if(commPerInput) commPerInput.disabled = !isCommission; // Wait, readonly in Entry.cshtml but disabled? 
+                if(commPerInput) commPerInput.disabled = !isCommission;
                 
                 if (!isCommission) {
                     if(commAgentInput) { commAgentInput.value = ''; commAgentInput.style.backgroundColor = '#e9ecef'; }
                     if(commPerInput) { commPerInput.value = '10'; commPerInput.style.backgroundColor = '#e9ecef'; }
-                    if(sukriInput) { sukriInput.value = '0.00'; sukriInput.style.backgroundColor = '#e9ecef'; }
                     if(commAmtInput) commAmtInput.value = '0.00';
                 } else {
                     if(commAgentInput) { commAgentInput.style.backgroundColor = ''; }
-                    if(commPerInput) { commPerInput.value = '10'; commPerInput.readOnly = true; commPerInput.style.backgroundColor = '#e9ecef'; } // Readonly as per Entry logic
-                    if(sukriInput) { sukriInput.style.backgroundColor = ''; }
+                    if(commPerInput) { commPerInput.value = '10'; commPerInput.readOnly = true; commPerInput.style.backgroundColor = '#e9ecef'; }
                     calcTotals();
                 }
             }

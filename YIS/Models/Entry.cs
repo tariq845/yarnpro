@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace YIS.Models
@@ -124,7 +124,7 @@ namespace YIS.Models
 
         // Maps to [ENTRY_COMM_SUKRI] float NULL
         [Column("ENTRY_COMM_SUKRI")]
-        public double? EntryCommSukri { get; set; }
+        public double? EntryCommSukri { get; set; } = 0;
 
         // --- FBR Integration Fields (Assuming Federal Board of Revenue) ---
 

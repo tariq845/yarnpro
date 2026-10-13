@@ -236,8 +236,8 @@
                                 <div class="col-6"><label class="small text-muted mb-0">SUKRI</label></div>
                                 <div class="col-6">
                                     <input asp-for="Entry.EntryCommSukri"
-                                        class="form-control form-control-sm text-end bg-white" id="txtSukri" readonly
-                                        value="@(Model.Entry?.EntryCommSukri?.ToString("N2") ?? "0.00")" />
+                                        class="form-control form-control-sm text-end" id="txtSukri" type="number" step="0.01" min="0"
+                                        value="@(Model.Entry?.EntryCommSukri?.ToString("0.00") ?? "0.00")" />
                                 </div>
                             </div>
                         </div>
@@ -358,12 +358,8 @@
                         const commPer = parseFloat(commPerInput ? commPerInput.value : 0) || 0;
                         const commAmt = totalNet * (commPer / 100);
                         if (commAmtInput) commAmtInput.value = commAmt.toFixed(2);
-
-                        const sukriAmt = commAmt * 0.10;
-                        if (sukriInput) sukriInput.value = sukriAmt.toFixed(2);
                     } else {
                         if (commAmtInput) commAmtInput.value = '0.00';
-                        if (sukriInput) sukriInput.value = '0.00';
                     }
                 }
 

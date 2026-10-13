@@ -126,7 +126,8 @@ namespace YIS.Pages.Sales
                     EntryRefType = "PSD",
                     EntryAttribute2 = "Credit",
                     EntryAttribute5 = "No",
-                    EntryCommPer = 10
+                    EntryCommPer = 10,
+                    EntryCommSukri = 0
                 };
                 DisplayEntryNumber = "SSD-(Auto)";
                 LineItems.Add(new LineItemViewModel { EntryId = 0, GstPer = 0 });
@@ -145,6 +146,10 @@ namespace YIS.Pages.Sales
             if (Entry != null && !Entry.EntryCommPer.HasValue)
             {
                 Entry.EntryCommPer = 10;
+            }
+            if (Entry != null && !Entry.EntryCommSukri.HasValue)
+            {
+                Entry.EntryCommSukri = 0;
             }
 
             await LoadDropdowns();
@@ -197,7 +202,7 @@ namespace YIS.Pages.Sales
                 double commPer = Entry.EntryCommPer ?? 10;
                 Entry.EntryCommPer = commPer;
                 Entry.EntryCommAmt = grandTotalNet * (commPer / 100.0);
-                Entry.EntryCommSukri = (Entry.EntryCommAmt ?? 0) * 0.10;
+                Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
             }
             else
             {
@@ -205,7 +210,7 @@ namespace YIS.Pages.Sales
                 Entry.EntryAttribute4 = null;
                 Entry.EntryCommPer = null;
                 Entry.EntryCommAmt = null;
-                Entry.EntryCommSukri = null;
+                Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
             }
 
             // Get Active Company Profile from Session
