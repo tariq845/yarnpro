@@ -196,12 +196,12 @@ namespace YIS.Pages.Sales
                 grandTotalNet += item.NetAmount ?? 0;
             }
 
-            // Commission Calculation
+            // Commission Calculation (on amount without GST)
             if (Entry.EntryAttribute5 == "Yes")
             {
                 double commPer = Entry.EntryCommPer ?? 10;
                 Entry.EntryCommPer = commPer;
-                Entry.EntryCommAmt = grandTotalNet * (commPer / 100.0);
+                Entry.EntryCommAmt = totalAmount * (commPer / 100.0);
                 Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
             }
             else
