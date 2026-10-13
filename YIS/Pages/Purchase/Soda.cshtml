@@ -320,10 +320,10 @@
             const commAmtInput = document.getElementById('txtCommAmt');
             const sukriInput = document.getElementById('txtSukri');
 
-            function calculateCommission(totalNet) {
+            function calculateCommission(totalAmount) {
                 if (commissionSelect && commissionSelect.value === 'Yes') {
                     const commPer = parseFloat(commPerInput ? commPerInput.value : 0) || 0;
-                    const commAmt = totalNet * (commPer / 100);
+                    const commAmt = totalAmount * (commPer / 100);
                     if (commAmtInput) commAmtInput.value = commAmt.toFixed(2);
                 } else {
                     if (commAmtInput) commAmtInput.value = '0.00';
@@ -338,15 +338,15 @@
                     commPerInput.disabled = !isCommission;
                     commPerInput.classList.toggle('bg-light', !isCommission);
                 }
-                const net = parseFloat(grandTotalInput ? grandTotalInput.value : 0) || 0;
-                calculateCommission(net);
+                const basic = parseFloat(totalBasicAmountInput ? totalBasicAmountInput.value : 0) || 0;
+                calculateCommission(basic);
             }
 
             if (commissionSelect) commissionSelect.addEventListener('change', toggleCommissionFields);
             if (commPerInput) {
                 commPerInput.addEventListener('input', function () {
-                    const net = parseFloat(grandTotalInput ? grandTotalInput.value : 0) || 0;
-                    calculateCommission(net);
+                    const basic = parseFloat(totalBasicAmountInput ? totalBasicAmountInput.value : 0) || 0;
+                    calculateCommission(basic);
                 });
             }
 
@@ -392,7 +392,7 @@
                 if (totalGstAmountInput) totalGstAmountInput.value = totalGst.toFixed(2);
                 if (grandTotalInput) grandTotalInput.value = grandTotal.toFixed(2);
 
-                calculateCommission(grandTotal);
+                calculateCommission(totalBasic);
             }
 
             // Disable already selected items

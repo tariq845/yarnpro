@@ -447,7 +447,7 @@
                 if (grandTotalGstInput) grandTotalGstInput.value = tGst.toFixed(2);
                 if (grandTotalNetInput) grandTotalNetInput.value = tNet.toFixed(2);
 
-                calculateCommission(tNet);
+                calculateCommission(tAmount);
             }
 
             // Capture initial values for Edit Mode
@@ -456,10 +456,10 @@
                 if (q) q.dataset.initialQty = q.value;
             });
 
-            function calculateCommission(totalNet) {
+            function calculateCommission(totalBasicAmount) {
                 if (commissionSelect && commissionSelect.value === 'Yes') {
                     const commPer = parseFloat(commPerInput ? commPerInput.value : 10) || 10;
-                    const commAmt = totalNet * (commPer / 100);
+                    const commAmt = totalBasicAmount * (commPer / 100);
                     if (commAmtInput) commAmtInput.value = commAmt.toFixed(2);
                 } else {
                     if (commAmtInput) commAmtInput.value = '0.00';
@@ -486,20 +486,20 @@
                     if (commAmtInput) { commAmtInput.style.backgroundColor = ''; }
                 }
 
-                let totalNet = 0;
+                let totalBasic = 0;
                 body.querySelectorAll('.line-item-row').forEach(row => {
-                    totalNet += parseFloat(row.querySelector('.net-amount-input')?.value) || 0;
+                    totalBasic += parseFloat(row.querySelector('.amount-input')?.value) || 0;
                 });
-                calculateCommission(totalNet);
+                calculateCommission(totalBasic);
             }
 
             if (commPerInput) {
                 commPerInput.addEventListener('input', function () {
-                    let totalNet = 0;
+                    let totalBasic = 0;
                     body.querySelectorAll('.line-item-row').forEach(row => {
-                        totalNet += parseFloat(row.querySelector('.net-amount-input')?.value) || 0;
+                        totalBasic += parseFloat(row.querySelector('.amount-input')?.value) || 0;
                     });
-                    calculateCommission(totalNet);
+                    calculateCommission(totalBasic);
                 });
             }
 

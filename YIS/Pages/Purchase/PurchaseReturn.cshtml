@@ -325,13 +325,13 @@
                 grandTotalGstInput.value = tGst.toFixed(2);
                 grandTotalNetInput.value = tNet.toFixed(2);
                 
-                calculateCommission(tNet);
+                calculateCommission(tAmount);
             }
 
-            function calculateCommission(totalNet) {
+            function calculateCommission(totalAmount) {
                  if (commissionSelect && commissionSelect.value === 'Yes') {
                     const commPer = parseFloat(commPerInput.value) || 0;
-                    const commAmt = totalNet * (commPer / 100);
+                    const commAmt = totalAmount * (commPer / 100);
                     commAmtInput.value = commAmt.toFixed(2);
                 } else {
                     if(commAmtInput) commAmtInput.value = '0.00';

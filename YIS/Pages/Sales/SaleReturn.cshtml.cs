@@ -198,6 +198,16 @@ namespace YIS.Pages.Sales
             Entry.EntryAttribute3 = finalNetTotal.ToString(); // NET AMOUNT
             Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
 
+            // Commission Calculation (on amount without GST)
+            if (Entry.EntryCommPer.HasValue && Entry.EntryCommPer > 0)
+            {
+                Entry.EntryCommAmt = (grandTotalAmount * Entry.EntryCommPer.Value) / 100.0;
+            }
+            else
+            {
+                Entry.EntryCommAmt = 0;
+            }
+
             if (Entry.EntryId == 0)
             {
                 Entry.CreationOn = DateTime.Now;

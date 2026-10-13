@@ -130,6 +130,7 @@ namespace YIS.Pages.Purchase
             double grandTotal = 0;
             double totalQty = 0;
             double totalTax = 0;
+            double totalBasic = 0;
             foreach (var item in LineItems)
             {
                 // Auto-calculate LBs = Qty * 100
@@ -155,6 +156,7 @@ namespace YIS.Pages.Purchase
                     item.Amount = (item.Qty.Value * item.Rate.Value);
                 }
                 
+                totalBasic += item.Amount ?? 0;
                 // GST Amt
                 item.TaxAmount = (item.Amount ?? 0) * ((item.GstPercent ?? 0) / 100);
                 totalTax += item.TaxAmount ?? 0;
@@ -171,13 +173,20 @@ namespace YIS.Pages.Purchase
             // ENTRY_ATTRIBUTE3 : NET AMOUNT
             Entry.EntryAttribute3 = grandTotal.ToString();
 
-            // Commission fields
-            // ENTRY_ATTRIBUTE4 : COMMISSION AGENT
-            // ENTRY_ATTRIBUTE5 : COMMISSION (YES/No)
-            // ENTRY_COMM_PER : COMM %
-            // ENTRY_COMM_AMT : AMOUNT
-            // ENTRY_TERMS_DAYS : TERMS DAYS
-            // ENTRY_COMM_SUKRI : SUKRI
+            // Commission Calculation (on amount without GST)
+            if (Entry.EntryAttribute5 == "Yes")
+            {
+                double commPer = Entry.EntryCommPer ?? 10;
+                Entry.EntryCommPer = commPer;
+                Entry.EntryCommAmt = totalBasic * (commPer / 100.0);
+            }
+            else
+            {
+                Entry.EntryAttribute5 = "No";
+                Entry.EntryAttribute4 = null;
+                Entry.EntryCommPer = null;
+                Entry.EntryCommAmt = null;
+            }
             Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
             
             if (Entry.EntryId == 0)

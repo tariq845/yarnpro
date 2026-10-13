@@ -187,6 +187,7 @@ namespace YIS.Pages.Purchase
             double grandTotal = 0;
             double totalQty = 0;
             double totalTax = 0;
+            double totalBasic = 0;
             foreach (var item in LineItems)
             {
                 // Auto-calculate LBs = Qty * 100
@@ -212,6 +213,7 @@ namespace YIS.Pages.Purchase
                     item.Amount = (item.Lbs.Value * item.Rate.Value);
                 }
                 
+                totalBasic += item.Amount ?? 0;
                 item.TaxAmount = (item.Amount ?? 0) * ((item.GstPercent ?? 0) / 100);
                 totalTax += item.TaxAmount ?? 0;
 
@@ -225,6 +227,21 @@ namespace YIS.Pages.Purchase
             Entry.Qty = totalQty;
             Entry.EntryAttribute3 = grandTotal.ToString(); // NET AMOUNT
             Entry.EntryCommSukri = Entry.EntryCommSukri ?? 0;
+
+            // Commission Calculation (on amount without GST)
+            if (Entry.EntryAttribute5 == "Yes")
+            {
+                double commPer = Entry.EntryCommPer ?? 10;
+                Entry.EntryCommPer = commPer;
+                Entry.EntryCommAmt = totalBasic * (commPer / 100.0);
+            }
+            else
+            {
+                Entry.EntryAttribute5 = "No";
+                Entry.EntryAttribute4 = null;
+                Entry.EntryCommPer = null;
+                Entry.EntryCommAmt = null;
+            }
 
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
