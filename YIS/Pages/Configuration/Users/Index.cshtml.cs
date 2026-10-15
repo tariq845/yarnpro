@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using YIS.Data;
 using YIS.Models;
+using YIS.Helpers;
 
 namespace YIS.Pages.Configuration.Users
 {
@@ -87,6 +88,49 @@ namespace YIS.Pages.Configuration.Users
             }
 
             return RedirectToPage("./Index");
+        }
+
+        public async Task<IActionResult> OnPostImpersonateAsync(long targetUserId)
+        {
+            if (!AuthHelper.IsAdmin(User))
+            {
+                TempData["ErrorMessage"] = "Access Denied: Only administrators are authorized to use Proxy Login.";
+                return RedirectToPage("./Index");
+            }
+
+            if (AuthHelper.IsImpersonating(HttpContext))
+            {
+                TempData["WarningMessage"] = "You are already impersonating a user. Please switch back to Admin first.";
+                return RedirectToPage("./Index");
+            }
+
+            var currentAdminId = AuthHelper.GetUserId(User);
+            if (currentAdminId == targetUserId)
+            {
+                TempData["InfoMessage"] = "You cannot impersonate yourself.";
+                return RedirectToPage("./Index");
+            }
+
+            var targetUser = await _context.UserMasters.FindAsync(targetUserId);
+            if (targetUser == null)
+            {
+                TempData["ErrorMessage"] = "Target user not found.";
+                return RedirectToPage("./Index");
+            }
+
+            var currentAdminName = User.Identity?.Name ?? "Administrator";
+
+            await AuthHelper.SetUserSessionAndSignInAsync(
+                HttpContext,
+                _context,
+                targetUser,
+                isImpersonating: true,
+                originalAdminUserId: currentAdminId,
+                originalAdminName: currentAdminName
+            );
+
+            TempData["StatusMessage"] = $"Proxy Login Active: You are now logged in as '{targetUser.UmName ?? targetUser.UmUsername}'.";
+            return RedirectToPage("/Dashboard/Index");
         }
     }
 }

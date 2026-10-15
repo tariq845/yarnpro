@@ -18,9 +18,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
        sqlServerOptions => sqlServerOptions.UseCompatibilityLevel(120)));
 
 //development 
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlServer("Server=144.91.78.205;Database=visacmec_YarnSYS;User Id=yarnsysmaster;Password=master@1yarnsys;TrustServerCertificate=True;",
-//         sqlServerOptions => sqlServerOptions.UseCompatibilityLevel(120)));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    //options.UseSqlServer("Server=144.91.78.205;Database=visacmec_YarnSYS;User Id=yarnsysmaster;Password=master@1yarnsys;TrustServerCertificate=True;",
+      //  sqlServerOptions => sqlServerOptions.UseCompatibilityLevel(120)));
 
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();

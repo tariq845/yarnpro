@@ -141,7 +141,8 @@ namespace YIS.Filters
                 "/Index",
                 "/Privacy",
                 "/Profile",
-                "/SelectCompany"
+                "/SelectCompany",
+                "/StopImpersonation"
             };
 
             if (publicPaths.Any(p => path.Equals(p, StringComparison.OrdinalIgnoreCase)))

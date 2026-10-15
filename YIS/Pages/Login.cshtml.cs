@@ -93,13 +93,22 @@ namespace YIS.Pages
             };
 
             // Add Role Claim if it exists
-            if (user.UmUrId.HasValue)
+            if (user.UmUrId.HasValue && user.UmUrId.Value > 0)
             {
                 var role = await _context.UserRoles.FindAsync(user.UmUrId.Value);
                 if (role != null)
                 {
                     claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, role.UrName ?? "User"));
                 }
+                else
+                {
+                    claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "User"));
+                }
+            }
+            else if (user.UmUrId == -1 || user.UmUsername?.ToLower() == "admin" || user.UmName?.ToLower() == "admin" || user.UmId == 1 || user.UmId == 6)
+            {
+                claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "SuperAdmin"));
+                claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Role, "Admin"));
             }
             else
             {

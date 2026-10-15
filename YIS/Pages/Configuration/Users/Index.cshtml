@@ -99,6 +99,20 @@
                                          }
                                      </td>
                                      <td class="px-4 py-3 text-end">
+                                         @if (YIS.Helpers.AuthHelper.IsAdmin(User) && !YIS.Helpers.AuthHelper.IsImpersonating(HttpContext) && user.UmId != YIS.Helpers.AuthHelper.GetUserId(User))
+                                         {
+                                             <form method="post" 
+                                                   asp-page-handler="Impersonate" 
+                                                   asp-route-targetUserId="@user.UmId" 
+                                                   style="display:inline;" 
+                                                   onsubmit="return confirm('Are you sure you want to login as @(user.UmName ?? user.UmUsername)? You can switch back to Admin anytime.');">
+                                                 <button type="submit" 
+                                                         class="text-decoration-none p-0 border-0 bg-transparent me-2" 
+                                                         title="Proxy Login: Login as @user.UmUsername">
+                                                     <i class="bi bi-person-bounding-box text-warning fs-5"></i>
+                                                 </button>
+                                             </form>
+                                         }
                                          <a href="/Configuration/UserRoleAssignments/CreateUserRoleAssignment?userId=@user.UmId"
                                            class="text-decoration-none  p-0 border-0 bg-transparent me-2 "
                                            title="Assign Roles">
