@@ -56,6 +56,7 @@ namespace YIS.Pages.CompanyProfile
             if (!string.IsNullOrEmpty(SearchTerm))
             {
                 query = query.Where(c => c.UcpCompanyName.Contains(SearchTerm) ||
+                                       (c.UcpOwnerName != null && c.UcpOwnerName.Contains(SearchTerm)) ||
                                        (c.UcpCompanyNtn != null && c.UcpCompanyNtn.Contains(SearchTerm)));
             }
 

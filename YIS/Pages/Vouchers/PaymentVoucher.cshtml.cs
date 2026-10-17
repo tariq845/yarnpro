@@ -197,8 +197,7 @@ namespace YIS.Pages.Vouchers
                 return RedirectToPage("/SelectCompany");
             }
 
-            // Store Party ID on parent for easier ledger filtering (since it's now single-item)
-            Entry.EntryAttribute2 = LineItems.FirstOrDefault()?.LinkedAccountId?.ToString();
+            // EntryAttribute2 already holds the selected Supplier ID from the form dropdown
 
             if (Entry.EntryId == 0)
             {
@@ -252,6 +251,7 @@ namespace YIS.Pages.Vouchers
 
                 // Update Header Attributes
                 existing.EntryAttribute1 = Entry.EntryAttribute1; // Bank/Cash Account
+                existing.EntryAttribute2 = Entry.EntryAttribute2; // Supplier
                 existing.UcpId = activeUcpId;
 
                 existing.LastUpdateOn = DateTime.Now;

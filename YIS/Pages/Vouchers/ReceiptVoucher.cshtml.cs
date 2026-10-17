@@ -234,6 +234,7 @@ namespace YIS.Pages.Vouchers
 
                 // Update Header Attributes
                 existing.EntryAttribute1 = Entry.EntryAttribute1; // Bank/Cash Account
+                existing.EntryAttribute2 = Entry.EntryAttribute2; // Customer
                 existing.UcpId = activeUcpId;
 
                 existing.LastUpdateOn = DateTime.Now;

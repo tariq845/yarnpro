@@ -74,6 +74,10 @@
                                     <tr class="@(profile.UcpId == Model.CurrentUcpId ? "table-success" : "")">
                                         <td class="px-4 py-3">
                                             <span class="fw-semibold">@profile.UcpCompanyName</span>
+                                            @if (!string.IsNullOrEmpty(profile.UcpOwnerName))
+                                            {
+                                                <div class="small text-muted">Owner: @profile.UcpOwnerName</div>
+                                            }
                                         </td>
                                         <td class="px-4 py-3">@profile.UcpCompanyNtn</td>
                                         <td class="px-4 py-3">@profile.UcpCompanyProvince</td>
