@@ -27,10 +27,15 @@ namespace YIS.Pages.Sales
             
             // Seller Info
             public string SellerName { get; set; }
+            public string? SellerOwnerName { get; set; }
             public string SellerNtn { get; set; }
             public string SellerAddress { get; set; }
             public string SellerProvince { get; set; }
             public string? SellerLogo { get; set; }
+            public string? SellerTermsDetails { get; set; }
+
+            // Terms Days
+            public int? TermsDays { get; set; }
 
             // Buyer Info
             public string BuyerName { get; set; }
@@ -123,10 +128,15 @@ namespace YIS.Pages.Sales
                 
                 // Seller Mapping
                 SellerName = sellerProfile?.UcpCompanyName ?? "YIS Company",
+                SellerOwnerName = sellerProfile?.UcpOwnerName,
                 SellerNtn = sellerProfile?.UcpCompanyNtn ?? "-",
                 SellerAddress = sellerProfile?.UcpCompanyAddress ?? "-",
                 SellerProvince = sellerProfile?.UcpCompanyProvince ?? "-",
                 SellerLogo = sellerProfile?.UcpPath,
+                SellerTermsDetails = sellerProfile?.UcpTermsDetails,
+
+                // Terms
+                TermsDays = entry.EntryTermsDays,
 
                 BuyerName = customer?.CustomerName ?? "Unknown",
                 BuyerNtn = customer?.CustomerNtnNo ?? "-",

@@ -65,10 +65,15 @@
                     <input type="hidden" asp-for="Input.SellerId" />
 
                     <div class="row">
-                        <div class="col-md-9 mb-3">
-                            <label asp-for="Input.UcpCompanyName" class="form-label fw-semibold">Company Name</label>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Input.UcpCompanyName" class="form-label fw-semibold">Company Name <span class="text-danger">*</span></label>
                             <input asp-for="Input.UcpCompanyName" class="form-control" placeholder="e.g. ABC Textiles" required />
                             <span asp-validation-for="Input.UcpCompanyName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label asp-for="Input.UcpOwnerName" class="form-label fw-semibold">Owner Name</label>
+                            <input asp-for="Input.UcpOwnerName" class="form-control" placeholder="e.g. Muhammad Ali" />
+                            <span asp-validation-for="Input.UcpOwnerName" class="text-danger small"></span>
                         </div>
                         <div class="col-md-3 mb-3">
                             <label asp-for="Input.UcpCompanyNtn" class="form-label fw-semibold">NTN #</label>
@@ -110,6 +115,14 @@
                         <div class="col-md-8 mb-3">
                             <label asp-for="Input.UcpCompanyAddress" class="form-label fw-semibold">Physical Address</label>
                             <input asp-for="Input.UcpCompanyAddress" class="form-control" placeholder="Full business address" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label asp-for="Input.UcpTermsDetails" class="form-label fw-semibold">Terms & Details</label>
+                            <textarea asp-for="Input.UcpTermsDetails" class="form-control" rows="3" placeholder="Enter terms, conditions, bank accounts, or notes for invoices & reports..."></textarea>
+                            <div class="small text-muted mt-1">This message box contains the terms & details printed or referenced on invoices and vouchers.</div>
                         </div>
                     </div>
 
@@ -189,6 +202,10 @@
                                         }
                                         <div>
                                             <div class="fw-bold text-primary">@profile.UcpCompanyName</div>
+                                            @if (!string.IsNullOrEmpty(profile.UcpOwnerName))
+                                            {
+                                                <div class="small text-dark"><i class="bi bi-person me-1 text-muted"></i>Owner: <span class="fw-medium">@profile.UcpOwnerName</span></div>
+                                            }
                                             <div class="small text-muted">
                                                 NTN: @(string.IsNullOrEmpty(profile.UcpCompanyNtn) ? "N/A" : profile.UcpCompanyNtn)
                                             </div>
@@ -197,6 +214,12 @@
                                     <td class="px-4 py-3">
                                         <div class="fw-medium text-dark">@profile.UcpCompanyProvince</div>
                                         <div class="small text-muted">@profile.UcpCompanyAddress</div>
+                                        @if (!string.IsNullOrEmpty(profile.UcpTermsDetails))
+                                        {
+                                            <div class="small text-muted mt-1 text-truncate" style="max-width: 250px;" title="@profile.UcpTermsDetails">
+                                                <i class="bi bi-file-earmark-text text-secondary me-1"></i>@profile.UcpTermsDetails
+                                            </div>
+                                        }
                                     </td>
                                     <td class="px-4 py-3">
                                         @if (profile.IsProductionToken)

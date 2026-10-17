@@ -28,6 +28,13 @@ namespace YIS.Models
         [Column("UCP_COMPANY_ADDRESS")]
         public string? UcpCompanyAddress { get; set; }
 
+        [StringLength(100)]
+        [Column("UCP_OWNER_NAME")]
+        public string? UcpOwnerName { get; set; }
+
+        [Column("UCP_TERMS_DETAILS")]
+        public string? UcpTermsDetails { get; set; }
+
         [StringLength(50)]
         [Column("UCP_IRIS_USERNAME")]
         public string? UcpIrisUsername { get; set; }
