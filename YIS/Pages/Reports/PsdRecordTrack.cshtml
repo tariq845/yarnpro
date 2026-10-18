@@ -101,7 +101,7 @@
 
     @@page {
         size: A4 portrait;
-        margin: 10mm 8mm;
+        margin: 0;
     }
 
     @@media print {
@@ -140,10 +140,11 @@
 
         .report-sheet {
             border: none !important;
-            padding: 0 !important;
+            padding: 10mm 8mm !important;
             margin: 0 !important;
             box-shadow: none !important;
             width: 100% !important;
+            box-sizing: border-box !important;
         }
 
         /* 3. Fix tables splitting over multiple pages */
@@ -193,9 +194,14 @@
             page-break-inside: avoid !important;
         }
 
-        a {
+        a, a:link, a:visited, a:hover, a:active {
             text-decoration: none !important;
             color: inherit !important;
+        }
+
+        a[href]:after, a[href]::after {
+            content: none !important;
+            display: none !important;
         }
     }
 </style>
@@ -361,9 +367,10 @@
                         <tr>
                             <td class="text-center text-muted">@pIdx</td>
                             <td class="fw-bold">
-                                <a href="/Purchase/Entry?id=@p.PurId" class="text-decoration-none text-primary" target="_blank">
+                                <a href="/Purchase/Entry?id=@p.PurId" class="text-decoration-none text-primary d-print-none" target="_blank">
                                     PUR-@p.PurNumber
                                 </a>
+                                <span class="d-none d-print-inline text-dark">PUR-@p.PurNumber</span>
                             </td>
                             <td>@p.PurDate?.ToString("dd-MMM-yyyy")</td>
                             <td class="fw-semibold">@p.ItemName</td>
@@ -435,9 +442,10 @@
                         <tr>
                             <td class="text-center text-muted">@sIdx</td>
                             <td class="fw-bold">
-                                <a href="/Sales/Soda?id=@s.SsdId" class="text-decoration-none text-success" target="_blank">
+                                <a href="/Sales/Soda?id=@s.SsdId" class="text-decoration-none text-success d-print-none" target="_blank">
                                     SSD-@s.SsdNumber
                                 </a>
+                                <span class="d-none d-print-inline text-dark">SSD-@s.SsdNumber</span>
                             </td>
                             <td>@s.SsdDate?.ToString("dd-MMM-yyyy")</td>
                             <td class="fw-semibold">@s.CustomerName</td>
@@ -510,9 +518,10 @@
                         <tr>
                             <td class="text-center text-muted">@salIdx</td>
                             <td class="fw-bold">
-                                <a href="/Sales/Entry?id=@sal.SalId" class="text-decoration-none text-dark" target="_blank">
+                                <a href="/Sales/Entry?id=@sal.SalId" class="text-decoration-none text-dark d-print-none" target="_blank">
                                     SAL-@sal.SalNumber
                                 </a>
+                                <span class="d-none d-print-inline text-dark">SAL-@sal.SalNumber</span>
                             </td>
                             <td>@sal.SalDate?.ToString("dd-MMM-yyyy")</td>
                             <td class="text-muted">@(sal.RefSsdNumber.HasValue ? $"SSD-{sal.RefSsdNumber}" : "-")</td>
