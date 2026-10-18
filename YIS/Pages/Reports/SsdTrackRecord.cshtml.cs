@@ -18,7 +18,17 @@ namespace YIS.Pages.Reports
 
         public Entry? SsdHeader { get; set; }
         public string CustomerName { get; set; } = "Unknown";
+        public string? CustomerNtn { get; set; }
+        public string? CustomerAddress { get; set; }
+        public string? CustomerContact { get; set; }
         public string CompanyName { get; set; } = "YARN PRO";
+        public string? OwnerName { get; set; }
+        public string? CompanyNtn { get; set; }
+        public string? CompanyAddress { get; set; }
+        public string? CompanyLogo { get; set; }
+        public string? CompanyTermsDetails { get; set; }
+        public int? TermsDays => SsdHeader?.EntryTermsDays;
+        public string? PaymentMode => SsdHeader?.EntryAttribute2;
 
         // Parent PSD Contract Info (if linked)
         public LinkedPsdViewModel? ParentPsd { get; set; }
@@ -109,9 +119,17 @@ namespace YIS.Pages.Reports
             if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
 
             var company = await _context.UserCompanyProfiles.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
-            if (company != null && !string.IsNullOrWhiteSpace(company.UcpCompanyName))
+            if (company != null)
             {
-                CompanyName = company.UcpCompanyName;
+                if (!string.IsNullOrWhiteSpace(company.UcpCompanyName))
+                {
+                    CompanyName = company.UcpCompanyName;
+                }
+                OwnerName = company.UcpOwnerName;
+                CompanyNtn = company.UcpCompanyNtn;
+                CompanyAddress = company.UcpCompanyAddress;
+                CompanyLogo = company.UcpPath;
+                CompanyTermsDetails = company.UcpTermsDetails;
             }
 
             // Load SSD Header
@@ -123,13 +141,19 @@ namespace YIS.Pages.Reports
                 return NotFound();
             }
 
-            // Customer Name
+            // Customer Information
             if (!string.IsNullOrEmpty(SsdHeader.EntryAttribute1) &&
                 long.TryParse(SsdHeader.EntryAttribute1, out long customerId))
             {
                 var customer = await _context.CustomerMasters
                     .FirstOrDefaultAsync(c => c.CustomerId == customerId && c.UcpId == activeUcpId);
-                CustomerName = customer?.CustomerName ?? "Unknown";
+                if (customer != null)
+                {
+                    CustomerName = customer.CustomerName ?? "Unknown";
+                    CustomerNtn = customer.CustomerNtnNo;
+                    CustomerAddress = customer.CustomerAddress;
+                    CustomerContact = customer.CustomerContact;
+                }
             }
 
             // Parent PSD Information
