@@ -101,7 +101,7 @@
 
     @@page {
         size: A4 portrait;
-        margin: 10mm 8mm;
+        margin: 0;
     }
 
     @@media print {
@@ -140,10 +140,11 @@
 
         .report-sheet {
             border: none !important;
-            padding: 0 !important;
+            padding: 10mm 8mm !important;
             margin: 0 !important;
             box-shadow: none !important;
             width: 100% !important;
+            box-sizing: border-box !important;
         }
 
         /* 3. Fix tables splitting over multiple pages */
@@ -193,9 +194,14 @@
             page-break-inside: avoid !important;
         }
 
-        a {
+        a, a:link, a:visited, a:hover, a:active {
             text-decoration: none !important;
             color: inherit !important;
+        }
+
+        a[href]:after, a[href]::after {
+            content: none !important;
+            display: none !important;
         }
     }
 </style>
@@ -252,9 +258,10 @@
                 <td class="value">
                     @if (Model.ParentPsd != null)
                     {
-                        <a href="/Reports/PsdRecordTrack/@Model.ParentPsd.PsdId" class="fw-bold text-primary text-decoration-none">
+                        <a href="/Reports/PsdRecordTrack/@Model.ParentPsd.PsdId" class="fw-bold text-primary text-decoration-none d-print-none">
                             PSD-@Model.ParentPsd.PsdNumber
                         </a>
+                        <span class="d-none d-print-inline fw-bold text-dark">PSD-@Model.ParentPsd.PsdNumber</span>
                         <span class="text-muted small ms-1">(@Model.ParentPsd.SupplierName)</span>
                     }
                     else
@@ -373,9 +380,10 @@
                         <tr>
                             <td class="text-center text-muted">@dIdx</td>
                             <td class="fw-bold">
-                                <a href="/Sales/Entry?id=@d.SalId" class="text-decoration-none text-primary" target="_blank">
+                                <a href="/Sales/Entry?id=@d.SalId" class="text-decoration-none text-primary d-print-none" target="_blank">
                                     SAL-@d.SalNumber
                                 </a>
+                                <span class="d-none d-print-inline text-dark">SAL-@d.SalNumber</span>
                             </td>
                             <td>@d.SalDate?.ToString("dd-MMM-yyyy")</td>
                             <td class="fw-semibold">@d.ItemName</td>

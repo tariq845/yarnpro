@@ -4,6 +4,45 @@
     ViewData["Title"] = "Contract Purchase Movement";
 }
 
+<style>
+    @@page {
+        size: A4 landscape;
+        margin: 0;
+    }
+    @@media print {
+        .sidebar, .sidebar-overlay, .navbar, nav, header, footer,
+        .breadcrumb-container, .page-title-main, .impersonation-bar,
+        #toast-container, .no-print, .action-bar,
+        .dashboard-wrapper > .sidebar,
+        .main-content > .navbar,
+        .main-content > .content-wrapper > .page-title-main,
+        .main-content > .content-wrapper > .breadcrumb-container {
+            display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        body, html {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        .container-fluid {
+            padding: 8mm 6mm !important;
+        }
+        a, a:link, a:visited, a:hover, a:active {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+        a[href]:after, a[href]::after {
+            content: none !important;
+            display: none !important;
+        }
+    }
+</style>
+
 <div class="container-fluid px-4 py-3">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -16,7 +55,7 @@
     </div>
 
     <!-- Search / Filter Bar -->
-    <div class="card shadow-sm border-0 mb-3 bg-light">
+    <div class="card shadow-sm border-0 mb-3 bg-light no-print d-print-none">
         <div class="card-body py-2 px-3">
             <form method="get" class="row g-2 align-items-center">
                 <div class="col-md-6 col-lg-5">
@@ -61,7 +100,7 @@
                             <th class="text-end text-danger">Pending Qty</th>
                             <th class="text-end text-success">Sold Qty</th>
                             <th class="text-center" style="width: 90px;">Status</th>
-                            <th class="text-center" style="width: 80px;">Action</th>
+                            <th class="text-center d-print-none" style="width: 80px;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -83,9 +122,10 @@
                                 <tr>
                                     <td class="text-center text-muted small">@rowIdx</td>
                                     <td>
-                                        <a href="/Reports/PsdRecordTrack/@item.EntryId" class="fw-bold text-decoration-none text-primary">
+                                        <a href="/Reports/PsdRecordTrack/@item.EntryId" class="fw-bold text-decoration-none text-primary d-print-none">
                                             PSD-@item.EntryNumber
                                         </a>
+                                        <span class="fw-bold text-dark d-none d-print-inline">PSD-@item.EntryNumber</span>
                                     </td>
                                     <td>@item.EntryDate?.ToString("dd-MMM-yyyy")</td>
                                     <td class="fw-semibold text-dark">@item.SupplierName</td>
@@ -109,7 +149,7 @@
                                             <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Pending</span>
                                         }
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center d-print-none">
                                         <a href="/Reports/PsdRecordTrack/@item.EntryId" class="btn btn-sm btn-outline-primary py-0 px-2" title="View Movement Ledger">
                                             <i class="bi bi-journal-text me-1"></i>View
                                         </a>
@@ -125,7 +165,8 @@
                                 <td class="text-end text-primary">@sumPurQty.ToString("N2")</td>
                                 <td class="text-end text-danger">@sumPendingQty.ToString("N2")</td>
                                 <td class="text-end text-success">@sumSoldQty.ToString("N2")</td>
-                                <td colspan="2"></td>
+                                <td></td>
+                                <td class="d-print-none"></td>
                             </tr>
                         }
                         else
