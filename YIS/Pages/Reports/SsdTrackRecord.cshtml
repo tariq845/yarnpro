@@ -5,7 +5,7 @@
 }
 
 <style>
-    /* Clean, Professional Report Styling - No KPI Cards */
+    /* Clean, Professional Report Styling */
     .movement-report {
         background-color: #ffffff;
         color: #212529;
@@ -77,11 +77,11 @@
         font-weight: 600;
         color: #495057;
         background-color: #f8f9fa;
-        width: 15%;
+        width: 18%;
     }
 
     .info-table .value {
-        width: 35%;
+        width: 32%;
         color: #111827;
     }
 
@@ -99,27 +99,103 @@
         font-variant-numeric: tabular-nums;
     }
 
+    @@page {
+        size: A4 portrait;
+        margin: 10mm 8mm;
+    }
+
     @@media print {
-        body {
-            background-color: #ffffff !important;
-        }
-        .no-print {
+        /* 1. Complete suppression of application layout & non-print chrome */
+        .sidebar, .sidebar-overlay, .navbar, nav, header, footer,
+        .breadcrumb-container, .page-title-main, .impersonation-bar,
+        #toast-container, .no-print, .action-bar,
+        .dashboard-wrapper > .sidebar,
+        .main-content > .navbar,
+        .main-content > .content-wrapper > .page-title-main,
+        .main-content > .content-wrapper > .breadcrumb-container {
             display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
+
+        /* 2. Reset containers to full page without padding/margins */
+        body, html {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        .dashboard-wrapper, .main-content, .content-wrapper, .container-fluid, .movement-report {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
         .report-sheet {
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
+            box-shadow: none !important;
+            width: 100% !important;
         }
+
+        /* 3. Fix tables splitting over multiple pages */
+        .table-responsive {
+            overflow: visible !important;
+            display: block !important;
+        }
+
+        table.report-table {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+            width: 100% !important;
+        }
+
+        table.report-table thead {
+            display: table-header-group !important; /* Repeats table header on next page */
+        }
+
+        table.report-table tfoot {
+            display: table-footer-group !important;
+        }
+
+        table.report-table tr {
+            page-break-inside: avoid !important; /* Prevents splitting a single row across pages */
+            break-inside: avoid !important;
+        }
+
+        .section-heading {
+            page-break-after: avoid !important; /* Keeps heading together with its table */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         .report-table th {
             background-color: #f1f3f5 !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
+
         .info-table .label {
             background-color: #f8f9fa !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+        }
+
+        .signature-section {
+            page-break-inside: avoid !important;
+        }
+
+        a {
+            text-decoration: none !important;
+            color: inherit !important;
         }
     }
 </style>
@@ -146,6 +222,10 @@
             <div class="row align-items-center">
                 <div class="col-8">
                     <h3 class="fw-bold mb-0 text-dark">@Model.CompanyName</h3>
+                    @if (!string.IsNullOrEmpty(Model.OwnerName))
+                    {
+                        <div class="text-muted small mt-1">Owner / Proprietor: <strong class="text-dark">@Model.OwnerName</strong></div>
+                    }
                     <h5 class="text-success fw-semibold mb-0 mt-1">CONTRACT SELL MOVEMENT</h5>
                     <small class="text-muted">Sales Soda Contract Lifecycle & Delivery Realization Statement</small>
                 </div>
@@ -183,13 +263,20 @@
                     }
                 </td>
             </tr>
-            @if (!string.IsNullOrEmpty(Model.SsdHeader?.EntryRemarks))
-            {
-                <tr>
-                    <td class="label">Remarks / Terms:</td>
-                    <td colspan="3" class="value">@Model.SsdHeader?.EntryRemarks</td>
-                </tr>
-            }
+            <tr>
+                <td class="label">Payment Terms:</td>
+                <td class="value fw-semibold text-dark">
+                    @(Model.TermsDays.HasValue && Model.TermsDays > 0 ? $"{Model.TermsDays} Days" : "Immediate / Cash")
+                </td>
+                <td class="label">Payment Mode:</td>
+                <td class="value">@(string.IsNullOrEmpty(Model.PaymentMode) ? "Credit" : Model.PaymentMode)</td>
+            </tr>
+            <tr>
+                <td class="label">Owner / Signatory:</td>
+                <td class="value fw-bold text-dark">@(string.IsNullOrEmpty(Model.OwnerName) ? "-" : Model.OwnerName)</td>
+                <td class="label">Remarks / Notes:</td>
+                <td class="value">@(string.IsNullOrEmpty(Model.SsdHeader?.EntryRemarks) ? "-" : Model.SsdHeader?.EntryRemarks)</td>
+            </tr>
         </table>
 
         <!-- 2. SSD Contract Booked Items -->
@@ -249,7 +336,7 @@
 
         <!-- 3. Sales Invoices Delivered (SAL Receipts / Deliveries) -->
         <div class="section-heading">
-            <span>2. SALES INVOICES DELIVERED (SAL DELIVERIES)</span>
+            <span>2. SALES INVOICES DELIVERED (SAL RECEIPTS)</span>
             <span class="fs-6 text-muted">Deliveries Count: @Model.DeliveryItems.Count</span>
         </div>
         @if (Model.DeliveryItems.Any())
@@ -259,9 +346,9 @@
                     <tr>
                         <th class="text-center" style="width: 40px;">#</th>
                         <th style="width: 100px;">SAL #</th>
-                        <th style="width: 100px;">Date</th>
+                        <th style="width: 100px;">Delivery Date</th>
                         <th>Item Description</th>
-                        <th>Remarks / DC Ref</th>
+                        <th>Remarks / Gate Pass</th>
                         <th class="text-num" style="width: 110px;">Delivered Qty</th>
                         <th class="text-num" style="width: 110px;">Delivered LBS</th>
                         <th class="text-num" style="width: 100px;">Rate</th>
@@ -286,14 +373,14 @@
                         <tr>
                             <td class="text-center text-muted">@dIdx</td>
                             <td class="fw-bold">
-                                <a href="/Sales/Entry?id=@d.SalId" class="text-decoration-none text-success" target="_blank">
+                                <a href="/Sales/Entry?id=@d.SalId" class="text-decoration-none text-primary" target="_blank">
                                     SAL-@d.SalNumber
                                 </a>
                             </td>
                             <td>@d.SalDate?.ToString("dd-MMM-yyyy")</td>
                             <td class="fw-semibold">@d.ItemName</td>
                             <td class="text-muted small">@(string.IsNullOrEmpty(d.Remarks) ? "-" : d.Remarks)</td>
-                            <td class="text-num fw-bold text-success">@d.Qty.ToString("N2")</td>
+                            <td class="text-num fw-bold text-primary">@d.Qty.ToString("N2")</td>
                             <td class="text-num">@d.Lbs.ToString("N2")</td>
                             <td class="text-num">@d.Rate.ToString("F4")</td>
                             <td class="text-num">@d.Amount.ToString("N2")</td>
@@ -304,12 +391,12 @@
                     }
                     <tr class="table-light fw-bold border-top border-2">
                         <td colspan="5" class="text-uppercase text-center">Total Delivered</td>
-                        <td class="text-num text-success">@sumDQty.ToString("N2")</td>
+                        <td class="text-num text-primary">@sumDQty.ToString("N2")</td>
                         <td class="text-num">@sumDLbs.ToString("N2")</td>
                         <td class="text-num">@((sumDLbs > 0 ? (sumDAmt / (sumDLbs / 10.0)) : (sumDQty > 0 ? sumDAmt / sumDQty : 0)).ToString("F4"))</td>
                         <td class="text-num">@sumDAmt.ToString("N2")</td>
                         <td class="text-num">@sumDTax.ToString("N2")</td>
-                        <td class="text-num text-success">@sumDNet.ToString("N2")</td>
+                        <td class="text-num text-primary">@sumDNet.ToString("N2")</td>
                     </tr>
                 </tbody>
             </table>
@@ -317,14 +404,14 @@
         else
         {
             <div class="alert alert-light border text-muted py-2 px-3 small mb-3">
-                <i class="bi bi-info-circle me-1"></i>No sales invoices delivered yet against this sales contract.
+                <i class="bi bi-info-circle me-1"></i>No sales invoices delivered against this contract yet.
             </div>
         }
 
-        <!-- 4. Movement & Balance Summary Ledger (Clean Tabular Matrix, No Cards) -->
+        <!-- 4. Movement & Delivery Summary Ledger -->
         <div class="section-heading">
-            <span>3. MOVEMENT & BALANCE SUMMARY LEDGER</span>
-            <span class="fs-6 text-muted">Sales Realization & Delivery Position</span>
+            <span>3. MOVEMENT & DELIVERY SUMMARY LEDGER</span>
+            <span class="fs-6 text-muted">Realization & Stock Position</span>
         </div>
         <table class="report-table summary-matrix mb-4">
             <thead>
@@ -345,14 +432,14 @@
                     <td class="text-num fw-bold">@Model.Summary.ContractAmount.ToString("N2")</td>
                 </tr>
                 <tr>
-                    <td class="fw-bold text-success">B. Sales Delivered & Invoiced (SAL)</td>
-                    <td class="text-num fw-bold text-success">@Model.Summary.DeliveredQty.ToString("N2")</td>
-                    <td class="text-num text-success">@Model.Summary.DeliveredLbs.ToString("N2")</td>
+                    <td class="fw-bold text-primary">B. Delivered to Customer (SAL)</td>
+                    <td class="text-num fw-bold text-primary">@Model.Summary.DeliveredQty.ToString("N2")</td>
+                    <td class="text-num text-primary">@Model.Summary.DeliveredLbs.ToString("N2")</td>
                     <td class="text-num">@Model.Summary.DeliveredAvgRate.ToString("F4")</td>
-                    <td class="text-num fw-bold text-success">@Model.Summary.DeliveredAmount.ToString("N2")</td>
+                    <td class="text-num fw-bold text-primary">@Model.Summary.DeliveredAmount.ToString("N2")</td>
                 </tr>
                 <tr class="table-warning">
-                    <td class="fw-bold text-danger">C. Pending Delivery to Customer (A - B)</td>
+                    <td class="fw-bold text-danger">C. Pending Delivery Balance (A - B)</td>
                     <td class="text-num fw-bold text-danger">@Model.Summary.PendingDeliveryQty.ToString("N2")</td>
                     <td class="text-num text-danger">@Model.Summary.PendingDeliveryLbs.ToString("N2")</td>
                     <td class="text-num">-</td>
@@ -360,19 +447,21 @@
                 </tr>
                 @if (Model.ParentPsd != null)
                 {
-                    <tr class="table-light">
-                        <td class="fw-bold text-primary">D. Source Purchase Contract (PSD-@Model.ParentPsd.PsdNumber)</td>
-                        <td class="text-num fw-bold text-primary">@Model.Summary.LinkedPsdQty.ToString("N2")</td>
-                        <td class="text-num text-primary">@Model.Summary.LinkedPsdLbs.ToString("N2")</td>
-                        <td class="text-num">@((Model.ParentPsd.Rate ?? 0).ToString("F4"))</td>
-                        <td class="text-num fw-bold text-primary">@Model.Summary.LinkedPsdAmount.ToString("N2")</td>
+                    <tr class="table-light border-top">
+                        <td class="text-muted">
+                            <em>Linked Purchase Contract (PSD-@Model.ParentPsd.PsdNumber - @Model.ParentPsd.SupplierName)</em>
+                        </td>
+                        <td class="text-num text-muted">@((Model.Summary.LinkedPsdQty).ToString("N2"))</td>
+                        <td class="text-num text-muted">@((Model.Summary.LinkedPsdLbs).ToString("N2"))</td>
+                        <td class="text-num text-muted">-</td>
+                        <td class="text-num text-muted">@((Model.Summary.LinkedPsdAmount).ToString("N2"))</td>
                     </tr>
                 }
             </tbody>
         </table>
 
         <!-- Signatures for Official Movement Statement -->
-        <div class="row pt-5 mt-4 text-center">
+        <div class="signature-section row pt-5 mt-4 text-center">
             <div class="col-4">
                 <div class="border-top border-dark pt-1 small fw-semibold">Prepared By</div>
             </div>
@@ -381,6 +470,10 @@
             </div>
             <div class="col-4">
                 <div class="border-top border-dark pt-1 small fw-semibold">Authorized Signature</div>
+                @if (!string.IsNullOrEmpty(Model.OwnerName))
+                {
+                    <div class="small fw-bold text-dark mt-1">@Model.OwnerName</div>
+                }
             </div>
         </div>
     </div>

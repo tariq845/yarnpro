@@ -5,7 +5,7 @@
 }
 
 <style>
-    /* Clean, Professional Report Styling - No KPI Cards */
+    /* Clean, Professional Report Styling */
     .movement-report {
         background-color: #ffffff;
         color: #212529;
@@ -77,11 +77,11 @@
         font-weight: 600;
         color: #495057;
         background-color: #f8f9fa;
-        width: 15%;
+        width: 18%;
     }
 
     .info-table .value {
-        width: 35%;
+        width: 32%;
         color: #111827;
     }
 
@@ -99,27 +99,103 @@
         font-variant-numeric: tabular-nums;
     }
 
+    @@page {
+        size: A4 portrait;
+        margin: 10mm 8mm;
+    }
+
     @@media print {
-        body {
-            background-color: #ffffff !important;
-        }
-        .no-print {
+        /* 1. Complete suppression of application layout & non-print chrome */
+        .sidebar, .sidebar-overlay, .navbar, nav, header, footer,
+        .breadcrumb-container, .page-title-main, .impersonation-bar,
+        #toast-container, .no-print, .action-bar,
+        .dashboard-wrapper > .sidebar,
+        .main-content > .navbar,
+        .main-content > .content-wrapper > .page-title-main,
+        .main-content > .content-wrapper > .breadcrumb-container {
             display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
+
+        /* 2. Reset containers to full page without padding/margins */
+        body, html {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        .dashboard-wrapper, .main-content, .content-wrapper, .container-fluid, .movement-report {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
         .report-sheet {
             border: none !important;
             padding: 0 !important;
             margin: 0 !important;
+            box-shadow: none !important;
+            width: 100% !important;
         }
+
+        /* 3. Fix tables splitting over multiple pages */
+        .table-responsive {
+            overflow: visible !important;
+            display: block !important;
+        }
+
+        table.report-table {
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+            width: 100% !important;
+        }
+
+        table.report-table thead {
+            display: table-header-group !important; /* Repeats table header on next page */
+        }
+
+        table.report-table tfoot {
+            display: table-footer-group !important;
+        }
+
+        table.report-table tr {
+            page-break-inside: avoid !important; /* Prevents splitting a single row across pages */
+            break-inside: avoid !important;
+        }
+
+        .section-heading {
+            page-break-after: avoid !important; /* Keeps heading together with its table */
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         .report-table th {
             background-color: #f1f3f5 !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
+
         .info-table .label {
             background-color: #f8f9fa !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
+        }
+
+        .signature-section {
+            page-break-inside: avoid !important;
+        }
+
+        a {
+            text-decoration: none !important;
+            color: inherit !important;
         }
     }
 </style>
@@ -146,6 +222,10 @@
             <div class="row align-items-center">
                 <div class="col-8">
                     <h3 class="fw-bold mb-0 text-dark">@Model.CompanyName</h3>
+                    @if (!string.IsNullOrEmpty(Model.OwnerName))
+                    {
+                        <div class="text-muted small mt-1">Owner / Proprietor: <strong class="text-dark">@Model.OwnerName</strong></div>
+                    }
                     <h5 class="text-primary fw-semibold mb-0 mt-1">CONTRACT PURCHASE MOVEMENT</h5>
                     <small class="text-muted">Lifecycle Tracking & Inventory Realization Statement</small>
                 </div>
@@ -171,13 +251,20 @@
                 <td class="label">System Ref ID:</td>
                 <td class="value">#@Model.PsdHeader?.EntryId</td>
             </tr>
-            @if (!string.IsNullOrEmpty(Model.PsdHeader?.EntryRemarks))
-            {
-                <tr>
-                    <td class="label">Remarks / Terms:</td>
-                    <td colspan="3" class="value">@Model.PsdHeader?.EntryRemarks</td>
-                </tr>
-            }
+            <tr>
+                <td class="label">Payment Terms:</td>
+                <td class="value fw-semibold text-dark">
+                    @(Model.TermsDays.HasValue && Model.TermsDays > 0 ? $"{Model.TermsDays} Days" : "Immediate / Cash")
+                </td>
+                <td class="label">Payment Mode:</td>
+                <td class="value">@(string.IsNullOrEmpty(Model.PaymentMode) ? "Credit" : Model.PaymentMode)</td>
+            </tr>
+            <tr>
+                <td class="label">Owner / Signatory:</td>
+                <td class="value fw-bold text-dark">@(string.IsNullOrEmpty(Model.OwnerName) ? "-" : Model.OwnerName)</td>
+                <td class="label">Remarks / Notes:</td>
+                <td class="value">@(string.IsNullOrEmpty(Model.PsdHeader?.EntryRemarks) ? "-" : Model.PsdHeader?.EntryRemarks)</td>
+            </tr>
         </table>
 
         <!-- 2. PSD Contract Booked Items -->
@@ -528,7 +615,7 @@
         </table>
 
         <!-- Signatures for Official Movement Statement -->
-        <div class="row pt-5 mt-4 text-center">
+        <div class="signature-section row pt-5 mt-4 text-center">
             <div class="col-4">
                 <div class="border-top border-dark pt-1 small fw-semibold">Prepared By</div>
             </div>
@@ -537,6 +624,10 @@
             </div>
             <div class="col-4">
                 <div class="border-top border-dark pt-1 small fw-semibold">Authorized Signature</div>
+                @if (!string.IsNullOrEmpty(Model.OwnerName))
+                {
+                    <div class="small fw-bold text-dark mt-1">@Model.OwnerName</div>
+                }
             </div>
         </div>
     </div>

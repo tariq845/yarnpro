@@ -18,7 +18,17 @@ namespace YIS.Pages.Reports
 
         public Entry? PsdHeader { get; set; }
         public string SupplierName { get; set; } = "Unknown";
+        public string? SupplierNtn { get; set; }
+        public string? SupplierAddress { get; set; }
+        public string? SupplierContact { get; set; }
         public string CompanyName { get; set; } = "YARN PRO";
+        public string? OwnerName { get; set; }
+        public string? CompanyNtn { get; set; }
+        public string? CompanyAddress { get; set; }
+        public string? CompanyLogo { get; set; }
+        public string? CompanyTermsDetails { get; set; }
+        public int? TermsDays => PsdHeader?.EntryTermsDays;
+        public string? PaymentMode => PsdHeader?.EntryAttribute2;
 
         // 1. Contract Lines
         public List<PsdContractItemViewModel> ContractItems { get; set; } = new();
@@ -150,9 +160,17 @@ namespace YIS.Pages.Reports
             if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
 
             var company = await _context.UserCompanyProfiles.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
-            if (company != null && !string.IsNullOrWhiteSpace(company.UcpCompanyName))
+            if (company != null)
             {
-                CompanyName = company.UcpCompanyName;
+                if (!string.IsNullOrWhiteSpace(company.UcpCompanyName))
+                {
+                    CompanyName = company.UcpCompanyName;
+                }
+                OwnerName = company.UcpOwnerName;
+                CompanyNtn = company.UcpCompanyNtn;
+                CompanyAddress = company.UcpCompanyAddress;
+                CompanyLogo = company.UcpPath;
+                CompanyTermsDetails = company.UcpTermsDetails;
             }
 
             // Load PSD Header
@@ -164,13 +182,19 @@ namespace YIS.Pages.Reports
                 return NotFound();
             }
 
-            // Supplier Name
+            // Supplier Information
             if (!string.IsNullOrEmpty(PsdHeader.EntryAttribute1) &&
                 long.TryParse(PsdHeader.EntryAttribute1, out long supplierId))
             {
                 var supplier = await _context.SupplierMasters
                     .FirstOrDefaultAsync(s => s.SupplierId == supplierId && s.UcpId == activeUcpId);
-                SupplierName = supplier?.SupplierName ?? "Unknown";
+                if (supplier != null)
+                {
+                    SupplierName = supplier.SupplierName ?? "Unknown";
+                    SupplierNtn = supplier.SupplierNtnNo;
+                    SupplierAddress = supplier.SupplierAddress;
+                    SupplierContact = supplier.SupplierContact;
+                }
             }
 
             // 1. PSD Contract Items
