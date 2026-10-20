@@ -50,10 +50,20 @@ namespace YIS.Pages.Vouchers
                 if (!string.IsNullOrEmpty(SearchTerm))
                 {
                     var term = SearchTerm.ToLower();
+                    var matchingCustomerIds = new List<string>();
+                    if (_context.CustomerMasters != null)
+                    {
+                        matchingCustomerIds = await _context.CustomerMasters
+                            .Where(c => c.UcpId == activeUcpId && c.CustomerName != null && c.CustomerName.ToLower().Contains(term))
+                            .Select(c => c.CustomerId.ToString())
+                            .ToListAsync();
+                    }
+
                     query = query.Where(e =>
                         e.EntryNumber.ToString().Contains(term) ||
+                        (e.EntryRemarks != null && e.EntryRemarks.ToLower().Contains(term)) ||
                         (e.EntryAttribute1 != null && e.EntryAttribute1.ToLower().Contains(term)) ||
-                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(term))
+                        (e.EntryAttribute2 != null && (matchingCustomerIds.Contains(e.EntryAttribute2) || e.EntryAttribute2.ToLower().Contains(term)))
                     );
                 }
 
@@ -130,7 +140,8 @@ namespace YIS.Pages.Vouchers
                         Amount = e.Amount,
                         ItemCount = childCounts.GetValueOrDefault(e.EntryId, 0),
                         IsPosted = postedEntryIds.Contains(e.EntryId),
-                        Account = custName
+                        Account = custName,
+                        Remarks = e.EntryRemarks
                     };
                 }).ToList();
             }

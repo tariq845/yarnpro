@@ -63,6 +63,8 @@
                     <thead class="table-light">
                         <tr>
                             <th class="border-0 px-4 py-3">Voucher #</th>
+                            <th class="border-0 px-4 py-3">Customer</th>
+                            <th class="border-0 px-4 py-3">Remarks</th>
                             <th class="border-0 px-4 py-3">Date</th>
                             <th class="border-0 px-4 py-3 text-center">Items</th>
                             <th class="border-0 px-4 py-3 text-end">Amount</th>
@@ -79,6 +81,14 @@
                                         <a asp-page="./ReceiptVoucher" asp-route-id="@item.EntryId" class="text-decoration-none fw-semibold text-danger">
                                             RV-@item.EntryNumber
                                         </a>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="fw-medium text-dark">@(item.Account ?? "-")</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="text-muted text-truncate d-block" style="max-width: 200px;" title="@item.Remarks">
+                                            @(string.IsNullOrEmpty(item.Remarks) ? "-" : item.Remarks)
+                                        </span>
                                     </td>
                                     <td class="px-4 py-3">
                                         <span class="fw-medium text-dark">@(item.EntryDate?.ToString("MMM dd, yyyy"))</span>
@@ -121,7 +131,7 @@
                         else
                         {
                              <tr>
-                                <td colspan="5" class="text-center py-5">
+                                <td colspan="7" class="text-center py-5">
                                     <div class="py-4">
                                         <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
                                         <h5 class="mt-3 text-muted">No Receipt Vouchers Found</h5>
