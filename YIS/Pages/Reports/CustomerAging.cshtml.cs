@@ -177,7 +177,15 @@ namespace YIS.Pages.Reports
                 SelectedCustomer = customerDict[CustomerId.Value];
             }
 
-            // 2. Get Sales Invoices (SAL) up to targetDate
+            // Only include entries that are POSTED to General Ledger (TRANS table)
+            var postedEntryIds = (await _context.Transactions
+                .Where(t => t.UcpId == ucpId && t.EntryId.HasValue)
+                .Select(t => t.EntryId!.Value)
+                .Distinct()
+                .ToListAsync())
+                .ToHashSet();
+
+            // 2. Get Sales Invoices (SAL) up to targetDate (Only GL-posted)
             var salesQuery = _context.Entries
                 .Where(e => e.EntryType == "SAL" && e.UcpId == ucpId && e.EntryDate <= targetDate);
 
@@ -187,10 +195,14 @@ namespace YIS.Pages.Reports
                 salesQuery = salesQuery.Where(e => e.EntryAttribute1 == partyStr);
             }
 
-            var salesInvoices = await salesQuery
+            var allSalesInvoices = await salesQuery
                 .OrderBy(e => e.EntryDate)
                 .ThenBy(e => e.EntryId)
                 .ToListAsync();
+
+            var salesInvoices = allSalesInvoices
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .ToList();
 
             var salesIds = salesInvoices.Select(s => s.EntryId).ToList();
 
@@ -213,13 +225,17 @@ namespace YIS.Pages.Reports
                 .Where(e => e.EntryType == "SSD" && ssdIds.Contains(e.EntryId))
                 .ToDictionaryAsync(e => e.EntryId, e => e.EntryNumber ?? 0);
 
-            // 5. Total Receipts per Customer up to targetDate (RV, CN)
+            // 5. Total Receipts per Customer up to targetDate (RV, CN - Only GL-posted)
             var custIdStrings = salesInvoices.Select(s => s.EntryAttribute1).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             var receiptsByCustomer = new Dictionary<string, double>();
 
-            var rvEntries = await _context.Entries
+            var allRvEntries = await _context.Entries
                 .Where(e => (e.EntryType == "RV" || e.EntryType == "CN") && e.UcpId == ucpId && e.EntryDate <= targetDate && custIdStrings.Contains(e.EntryAttribute2!))
                 .ToListAsync();
+
+            var rvEntries = allRvEntries
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .ToList();
 
             foreach (var custId in custIdStrings)
             {

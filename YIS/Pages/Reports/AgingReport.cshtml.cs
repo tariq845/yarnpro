@@ -180,7 +180,15 @@ namespace YIS.Pages.Reports
 
             var customerDict = customers.ToDictionary(c => c.CustomerId, c => c);
 
-            // 2. Get Sales Invoices (SAL) up to targetDate
+            // Only include entries that are POSTED to General Ledger (TRANS table)
+            var postedEntryIds = (await _context.Transactions
+                .Where(t => t.UcpId == ucpId && t.EntryId.HasValue)
+                .Select(t => t.EntryId!.Value)
+                .Distinct()
+                .ToListAsync())
+                .ToHashSet();
+
+            // 2. Get Sales Invoices (SAL) up to targetDate (Only GL-posted)
             var salesQuery = _context.Entries
                 .Where(e => e.EntryType == "SAL" && e.UcpId == ucpId && e.EntryDate <= targetDate);
 
@@ -190,10 +198,14 @@ namespace YIS.Pages.Reports
                 salesQuery = salesQuery.Where(e => e.EntryAttribute1 == partyStr);
             }
 
-            var salesInvoices = await salesQuery
+            var allSalesInvoices = await salesQuery
                 .OrderBy(e => e.EntryDate)
                 .ThenBy(e => e.EntryId)
                 .ToListAsync();
+
+            var salesInvoices = allSalesInvoices
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .ToList();
 
             var salesIds = salesInvoices.Select(s => s.EntryId).ToList();
 
@@ -216,14 +228,18 @@ namespace YIS.Pages.Reports
                 .Where(e => e.EntryType == "SSD" && ssdIds.Contains(e.EntryId))
                 .ToDictionaryAsync(e => e.EntryId, e => e.EntryNumber ?? 0);
 
-            // 5. Total Receipts & Credits per Customer up to targetDate (RV, CN, JV)
+            // 5. Total Receipts & Credits per Customer up to targetDate (RV, CN, JV - Only GL-posted)
             var custIdStrings = salesInvoices.Select(s => s.EntryAttribute1).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             var receiptsByCustomer = new Dictionary<string, double>();
 
             // Get RV entries for customers
-            var rvEntries = await _context.Entries
+            var allRvEntries = await _context.Entries
                 .Where(e => (e.EntryType == "RV" || e.EntryType == "CN") && e.UcpId == ucpId && e.EntryDate <= targetDate && custIdStrings.Contains(e.EntryAttribute2!))
                 .ToListAsync();
+
+            var rvEntries = allRvEntries
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .ToList();
 
             var rvIds = rvEntries.Select(r => r.EntryId).ToList();
             var rvLines = await _context.Entries
@@ -406,10 +422,22 @@ namespace YIS.Pages.Reports
                 purQuery = purQuery.Where(e => e.EntryAttribute1 == partyStr);
             }
 
-            var purchaseInvoices = await purQuery
+            // Only include entries that are POSTED to General Ledger (TRANS table)
+            var postedEntryIds = (await _context.Transactions
+                .Where(t => t.UcpId == ucpId && t.EntryId.HasValue)
+                .Select(t => t.EntryId!.Value)
+                .Distinct()
+                .ToListAsync())
+                .ToHashSet();
+
+            var allPurchaseInvoices = await purQuery
                 .OrderBy(e => e.EntryDate)
                 .ThenBy(e => e.EntryId)
                 .ToListAsync();
+
+            var purchaseInvoices = allPurchaseInvoices
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .ToList();
 
             var purIds = purchaseInvoices.Select(p => p.EntryId).ToList();
 
@@ -433,9 +461,13 @@ namespace YIS.Pages.Reports
             var suppIdStrings = purchaseInvoices.Select(p => p.EntryAttribute1).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
             var paymentsBySupplier = new Dictionary<string, double>();
 
-            var pvEntries = await _context.Entries
+            var allPvEntries = await _context.Entries
                 .Where(e => (e.EntryType == "PV" || e.EntryType == "DN") && e.UcpId == ucpId && e.EntryDate <= targetDate && suppIdStrings.Contains(e.EntryAttribute2!))
                 .ToListAsync();
+
+            var pvEntries = allPvEntries
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .ToList();
 
             foreach (var suppId in suppIdStrings)
             {
