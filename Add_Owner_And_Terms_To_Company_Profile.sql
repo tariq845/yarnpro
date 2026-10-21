@@ -1,0 +1,26 @@
+-- =========================================================================
+-- SQL Script: Add Owner Name and Terms & Details to USER_COMPANY_PROFILE
+-- Description: Adds UCP_OWNER_NAME and UCP_TERMS_DETAILS columns
+-- =========================================================================
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('USER_COMPANY_PROFILE') AND name = 'UCP_OWNER_NAME')
+BEGIN
+    ALTER TABLE USER_COMPANY_PROFILE ADD UCP_OWNER_NAME NVARCHAR(100) NULL;
+    PRINT 'Added UCP_OWNER_NAME to USER_COMPANY_PROFILE';
+END
+ELSE
+BEGIN
+    PRINT 'UCP_OWNER_NAME already exists in USER_COMPANY_PROFILE';
+END
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('USER_COMPANY_PROFILE') AND name = 'UCP_TERMS_DETAILS')
+BEGIN
+    ALTER TABLE USER_COMPANY_PROFILE ADD UCP_TERMS_DETAILS NVARCHAR(MAX) NULL;
+    PRINT 'Added UCP_TERMS_DETAILS to USER_COMPANY_PROFILE';
+END
+ELSE
+BEGIN
+    PRINT 'UCP_TERMS_DETAILS already exists in USER_COMPANY_PROFILE';
+END
+GO

@@ -54,6 +54,25 @@
     <!-- Dashboard CSS -->
     <link rel="stylesheet" href="~/css/dashboard.css" />
 
+    <!-- Flatpickr CSS (Strict DD-MM-YYYY Datepicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .flatpickr-calendar {
+            font-family: 'Inter', sans-serif !important;
+            border-radius: 8px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
+            border: 1px solid rgba(0,0,0,0.08) !important;
+        }
+        .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+            background: #0d6efd !important;
+            border-color: #0d6efd !important;
+        }
+        input.flatpickr-input[readonly] {
+            background-color: #fff !important;
+            cursor: pointer;
+        }
+    </style>
+
     @await RenderSectionAsync("Styles", required: false)
 </head>
 
@@ -156,10 +175,32 @@
         data-error="@(TempData["ErrorMessage"] ?? "")" data-warning="@(TempData["WarningMessage"] ?? "")"
         data-info="@(TempData["InfoMessage"] ?? "")"></div>
 
+    <!-- Flatpickr JS (Strict DD-MM-YYYY format across all inputs) -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        console.log("Toast System: Script loaded and ready.");
+        function initDatePickers(container) {
+            var root = container || document;
+            var dateInputs = root.querySelectorAll("input[type='date']");
+            dateInputs.forEach(function (el) {
+                if (!el._flatpickr) {
+                    flatpickr(el, {
+                        dateFormat: "Y-m-d",
+                        altInput: true,
+                        altFormat: "d-m-Y",
+                        allowInput: true
+                    });
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initDatePickers();
+        });
+
         if (typeof htmx !== 'undefined') {
-            console.log("HTMX: Detected and loaded.");
+            document.body.addEventListener('htmx:afterSwap', function (evt) {
+                initDatePickers(evt.target);
+            });
         }
     </script>
 

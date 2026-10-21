@@ -252,7 +252,7 @@ namespace YIS.Pages.Reports
             {
                 success      = true,
                 psdNumber    = psd.EntryNumber,
-                psdDate      = psd.EntryDate?.ToString("dd MMM yyyy"),
+                psdDate      = psd.EntryDate?.ToString("dd-MM-yyyy"),
                 supplierName = supplierName,
                 remarks      = psd.EntryRemarks ?? "-",
                 lines        = lines,

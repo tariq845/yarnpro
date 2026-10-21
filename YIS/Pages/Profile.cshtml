@@ -56,11 +56,11 @@
                     </div>
                     <div class="list-group-item d-flex justify-content-between align-items-center px-0">
                         <span class="text-muted">Account Created</span>
-                        <span class="fw-medium">@(Model.CurrentUser?.CreationOn?.ToString("dd MMM yyyy") ?? "-")</span>
+                        <span class="fw-medium">@(Model.CurrentUser?.CreationOn?.ToString("dd-MM-yyyy") ?? "-")</span>
                     </div>
                     <div class="list-group-item d-flex justify-content-between align-items-center px-0">
                         <span class="text-muted">Last Login</span>
-                        <span class="fw-medium">@(Model.CurrentUser?.LastLogin?.ToString("dd MMM yyyy hh:mm tt") ?? "-")</span>
+                        <span class="fw-medium">@(Model.CurrentUser?.LastLogin?.ToString("dd-MM-yyyy hh:mm tt") ?? "-")</span>
                     </div>
                 </div>
             </div>

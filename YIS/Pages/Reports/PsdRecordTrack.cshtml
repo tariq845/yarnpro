@@ -237,8 +237,8 @@
                 </div>
                 <div class="col-4 text-end">
                     <div class="fs-5 fw-bold text-dark">PSD-@Model.PsdHeader?.EntryNumber</div>
-                    <div class="text-muted small">Date: @Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</div>
-                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MMM-yyyy hh:mm tt")</div>
+                    <div class="text-muted small">Date: @Model.PsdHeader?.EntryDate?.ToString("dd-MM-yyyy")</div>
+                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MM-yyyy hh:mm tt")</div>
                 </div>
             </div>
         </div>
@@ -249,7 +249,7 @@
                 <td class="label">Contract (PSD) #:</td>
                 <td class="value fw-bold text-primary">PSD-@Model.PsdHeader?.EntryNumber</td>
                 <td class="label">Contract Date:</td>
-                <td class="value">@Model.PsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
+                <td class="value">@Model.PsdHeader?.EntryDate?.ToString("dd-MM-yyyy")</td>
             </tr>
             <tr>
                 <td class="label">Supplier Name:</td>
@@ -372,7 +372,7 @@
                                 </a>
                                 <span class="d-none d-print-inline text-dark">PUR-@p.PurNumber</span>
                             </td>
-                            <td>@p.PurDate?.ToString("dd-MMM-yyyy")</td>
+                            <td>@p.PurDate?.ToString("dd-MM-yyyy")</td>
                             <td class="fw-semibold">@p.ItemName</td>
                             <td class="text-muted small">@(string.IsNullOrEmpty(p.Remarks) ? "-" : p.Remarks)</td>
                             <td class="text-num fw-bold text-primary">@p.Qty.ToString("N2")</td>
@@ -447,7 +447,7 @@
                                 </a>
                                 <span class="d-none d-print-inline text-dark">SSD-@s.SsdNumber</span>
                             </td>
-                            <td>@s.SsdDate?.ToString("dd-MMM-yyyy")</td>
+                            <td>@s.SsdDate?.ToString("dd-MM-yyyy")</td>
                             <td class="fw-semibold">@s.CustomerName</td>
                             <td>@s.ItemName</td>
                             <td class="text-num fw-bold text-success">@s.Qty.ToString("N2")</td>
@@ -523,7 +523,7 @@
                                 </a>
                                 <span class="d-none d-print-inline text-dark">SAL-@sal.SalNumber</span>
                             </td>
-                            <td>@sal.SalDate?.ToString("dd-MMM-yyyy")</td>
+                            <td>@sal.SalDate?.ToString("dd-MM-yyyy")</td>
                             <td class="text-muted">@(sal.RefSsdNumber.HasValue ? $"SSD-{sal.RefSsdNumber}" : "-")</td>
                             <td class="fw-semibold">@sal.CustomerName</td>
                             <td>@sal.ItemName</td>

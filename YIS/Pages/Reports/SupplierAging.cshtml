@@ -343,11 +343,11 @@
                     <div class="text-center flex-grow-1">
                         <h5 class="fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">@Model.CompanyName</h5>
                         <div class="fw-bold text-uppercase" style="font-size: 13px;">
-                            AGING REPORT {(PAYABLES ONLY) UPTO @Model.AsOfDate?.ToString("dd/MM/yyyy")}
+                            AGING REPORT {(PAYABLES ONLY) UPTO @Model.AsOfDate?.ToString("dd-MM-yyyy")}
                         </div>
                     </div>
                     <div class="text-end" style="font-size: 10px; line-height: 1.3;">
-                        <div><strong>Date & Time :</strong> @Model.GeneratedOn.ToString("dd/MM/yy hh:mm tt")</div>
+                        <div><strong>Date & Time :</strong> @Model.GeneratedOn.ToString("dd-MM-yyyy hh:mm tt")</div>
                         <div><strong>User :</strong> @Model.UserName</div>
                         <div><strong>Page :</strong> 1 of 1</div>
                     </div>
@@ -397,7 +397,7 @@
                                         {
                                             <tr class="searchable-row">
                                                 <td class="text-center font-monospace">@item.TransactionNumber</td>
-                                                <td class="text-center">@item.Date?.ToString("dd/MM/yy")</td>
+                                                <td class="text-center">@item.Date?.ToString("dd-MM-yyyy")</td>
                                                 <td class="text-center font-monospace">
                                                     <span class="badge bg-light text-dark border">@item.ContractNumber</span>
                                                 </td>
@@ -429,7 +429,7 @@
                                                 <td class="text-center">@item.ContDays</td>
                                                 <td class="text-center @(item.TotalDays > 60 ? "text-danger fw-bold" : "")">@item.TotalDays</td>
                                                 <td class="text-end">@(item.PdcAmount > 0 ? item.PdcAmount.ToString("N2") : "")</td>
-                                                <td class="text-center">@item.PdcDate?.ToString("dd/MM/yy")</td>
+                                                <td class="text-center">@item.PdcDate?.ToString("dd-MM-yyyy")</td>
                                             </tr>
                                         }
 

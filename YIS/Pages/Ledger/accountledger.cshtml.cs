@@ -209,7 +209,7 @@ namespace YIS.Pages.Ledger
                 int row = 5;
                 foreach (var item in LedgerRows)
                 {
-                    worksheet.Cell(row, 1).Value = item.Date?.ToShortDateString() ?? "-";
+                    worksheet.Cell(row, 1).Value = item.Date?.ToString("dd-MM-yyyy") ?? "-";
                     worksheet.Cell(row, 2).Value = item.TransNo;
                     worksheet.Cell(row, 3).Value = item.Type;
                     worksheet.Cell(row, 4).Value = item.AccountName;

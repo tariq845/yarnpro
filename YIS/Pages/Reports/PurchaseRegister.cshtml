@@ -220,7 +220,7 @@
                                         </span>
                                     </td>
                                     <td class="fw-bold text-indigo">@record.PurchaseNo</td>
-                                    <td>@record.PurchaseDate?.ToString("dd/MM/yyyy")</td>
+                                    <td>@record.PurchaseDate?.ToString("dd-MM-yyyy")</td>
                                     <td class="text-muted">@(string.IsNullOrEmpty(record.AgainstPsdNo) ? "-" : record.AgainstPsdNo)</td>
                                     <td class="fw-bold text-success">@(string.IsNullOrEmpty(record.AgainstPurchaseNo) ? "-" : record.AgainstPurchaseNo)</td>
                                     <td>@record.SupplierId</td>
