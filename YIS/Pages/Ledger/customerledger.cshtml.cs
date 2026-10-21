@@ -62,66 +62,123 @@ namespace YIS.Pages.Ledger
 
             string customerIdStr = CustomerId.Value.ToString();
 
-            // Try AccountId first; if null, fallback to matching by name
-            long? accountId = customer.AccountId;
-            if (accountId == null && !string.IsNullOrEmpty(customer.CustomerName))
-            {
-                var matchedAccount = await _context.AccountMasters
-                    .FirstOrDefaultAsync(a => a.AccountName == customer.CustomerName && a.UcpId == ucpId);
-                accountId = matchedAccount?.AccountId;
-            }
-
-            if (accountId == null) return;
-
-            // Collect all ENTRY IDs that belong to THIS specific customer:
-            //   SAL entries: EntryAttribute1 = CustomerId (string)
-            //   RV  entries: EntryAttribute2 = CustomerId (string)
-            var customerEntryIds = await _context.Entries
-                .Where(e => e.UcpId == ucpId &&
-                            ((e.EntryType == "SAL" && e.EntryAttribute1 == customerIdStr) ||
-                             (e.EntryType == "RV" && e.EntryAttribute2 == customerIdStr)))
-                .Select(e => e.EntryId)
-                .ToListAsync();
-
-            // 1. Opening Balance (before StartDate)
+            // 1. Calculate Opening Balance (before StartDate)
             // Customer is an Asset (Receivable): Debit increases, Credit decreases
             // Balance = Debit - Credit
+            var salPre = await (from t in _context.Transactions
+                                join e in _context.Entries on t.EntryId equals e.EntryId
+                                where t.UcpId == ucpId && t.TransType == "SAL"
+                                   && e.EntryAttribute1 == customerIdStr
+                                   && e.EntryDate < StartDate
+                                select new { e.EntryId, t.Debit, t.Credit }).ToListAsync();
 
-            // All transactions for this customer's account before StartDate,
-            // limited to entries that belong to this customer
-            var preTrans = await (from t in _context.Transactions
-                                  join e in _context.Entries on t.EntryId equals e.EntryId
-                                  where t.UcpId == ucpId
-                                     && t.AccountId == accountId
-                                     && customerEntryIds.Contains(t.EntryId ?? 0)
-                                     && e.EntryDate < StartDate
-                                  select new { t.Debit, t.Credit }).ToListAsync();
+            double salPreTotal = salPre
+                .GroupBy(x => x.EntryId)
+                .Sum(g => g.Any(x => (x.Debit ?? 0) > 0)
+                    ? g.Where(x => (x.Debit ?? 0) > 0).Sum(x => x.Debit ?? 0)
+                    : g.Sum(x => x.Credit ?? 0));
 
-            double openingBalance = preTrans.Sum(x => (x.Debit ?? 0)) -
-                                    preTrans.Sum(x => (x.Credit ?? 0));
+            var rvPre = await (from t in _context.Transactions
+                               join e in _context.Entries on t.EntryId equals e.EntryId
+                               where t.UcpId == ucpId && t.TransType == "RV"
+                                  && e.EntryAttribute2 == customerIdStr
+                                  && e.EntryDate < StartDate
+                               select new { e.EntryId, t.Debit, t.Credit }).ToListAsync();
 
-            // 2. Transactions within date range
-            var transactionsData = await (from t in _context.Transactions
-                                          join e in _context.Entries on t.EntryId equals e.EntryId
-                                          where t.UcpId == ucpId
-                                             && t.AccountId == accountId
-                                             && customerEntryIds.Contains(t.EntryId ?? 0)
-                                             && e.EntryDate >= StartDate && e.EntryDate <= EndDate
-                                          select new
-                                          {
-                                              t.TransId,
-                                              TransNo = e.EntryNumber,
-                                              t.TransType,
-                                              t.Remarks,
-                                              t.Debit,
-                                              t.Credit,
-                                              EntryDate = e.EntryDate
-                                          }).ToListAsync();
+            double rvPreTotal = rvPre
+                .GroupBy(x => x.EntryId)
+                .Sum(g => g.Any(x => (x.Credit ?? 0) > 0)
+                    ? g.Where(x => (x.Credit ?? 0) > 0).Sum(x => x.Credit ?? 0)
+                    : g.Sum(x => x.Debit ?? 0));
 
-            var transactions = transactionsData
-                                     .OrderBy(x => x.EntryDate)
-                                     .ThenBy(x => x.TransId)
-                                     .ToList();
+            double openingBalance = salPreTotal - rvPreTotal;
+
+            // 2. Fetch Transactions within Range (Sum up Sales Revenue + Tax per invoice)
+            var salRaw = await (from t in _context.Transactions
+                                join e in _context.Entries on t.EntryId equals e.EntryId
+                                where t.UcpId == ucpId && t.TransType == "SAL"
+                                   && e.EntryAttribute1 == customerIdStr
+                                   && e.EntryDate >= StartDate && e.EntryDate <= EndDate
+                                select new
+                                {
+                                    t.TransId,
+                                    TransNo = e.EntryNumber,
+                                    t.TransType,
+                                    EntryRemarks = e.EntryRemarks,
+                                    TransRemarks = t.Remarks,
+                                    t.Debit,
+                                    t.Credit,
+                                    EntryDate = e.EntryDate,
+                                    e.EntryId
+                                }).ToListAsync();
+
+            var salTrans = salRaw
+                .GroupBy(x => x.EntryId)
+                .Select(g =>
+                {
+                    double totalInvoiceAmt = g.Any(x => (x.Debit ?? 0) > 0)
+                        ? g.Where(x => (x.Debit ?? 0) > 0).Sum(x => x.Debit ?? 0)
+                        : g.Sum(x => x.Credit ?? 0);
+
+                    return new
+                    {
+                        TransId = g.Min(x => x.TransId),
+                        TransNo = g.First().TransNo,
+                        TransType = g.First().TransType,
+                        Remarks = !string.IsNullOrEmpty(g.First().EntryRemarks)
+                            ? g.First().EntryRemarks
+                            : ("Sales Invoice # SAL-" + g.First().TransNo),
+                        Debit = (double?)totalInvoiceAmt,
+                        Credit = (double?)0,
+                        EntryDate = g.First().EntryDate
+                    };
+                }).ToList();
+
+            var rvRaw = await (from t in _context.Transactions
+                               join e in _context.Entries on t.EntryId equals e.EntryId
+                               where t.UcpId == ucpId && t.TransType == "RV"
+                                  && e.EntryAttribute2 == customerIdStr
+                                  && e.EntryDate >= StartDate && e.EntryDate <= EndDate
+                               select new
+                               {
+                                   t.TransId,
+                                   TransNo = e.EntryNumber,
+                                   t.TransType,
+                                   EntryRemarks = e.EntryRemarks,
+                                   TransRemarks = t.Remarks,
+                                   t.Debit,
+                                   t.Credit,
+                                   EntryDate = e.EntryDate,
+                                   e.EntryId
+                               }).ToListAsync();
+
+            var rvTrans = rvRaw
+                .GroupBy(x => x.EntryId)
+                .Select(g =>
+                {
+                    double totalReceiptAmt = g.Any(x => (x.Credit ?? 0) > 0)
+                        ? g.Where(x => (x.Credit ?? 0) > 0).Sum(x => x.Credit ?? 0)
+                        : g.Sum(x => x.Debit ?? 0);
+
+                    return new
+                    {
+                        TransId = g.Min(x => x.TransId),
+                        TransNo = g.First().TransNo,
+                        TransType = g.First().TransType,
+                        Remarks = !string.IsNullOrEmpty(g.First().EntryRemarks)
+                            ? g.First().EntryRemarks
+                            : ("Receipt Voucher # RV-" + g.First().TransNo),
+                        Debit = (double?)0,
+                        Credit = (double?)totalReceiptAmt,
+                        EntryDate = g.First().EntryDate
+                    };
+                }).ToList();
+
+            // Combine and sort
+            var transactions = salTrans.Concat(rvTrans)
+                                      .OrderBy(t => t.EntryDate)
+                                      .ThenBy(t => t.TransId)
+                                      .ToList();
 
             // 3. Build Ledger Rows
             LedgerRows.Add(new LedgerRow
@@ -179,7 +236,7 @@ namespace YIS.Pages.Ledger
                 worksheet.Cell(1, 1).Value = "Customer:";
                 worksheet.Cell(1, 2).Value = customerName;
                 worksheet.Cell(2, 1).Value = "Period:";
-                worksheet.Cell(2, 2).Value = $"{StartDate?.ToShortDateString()} to {EndDate?.ToShortDateString()}";
+                worksheet.Cell(2, 2).Value = $"{StartDate?.ToString("dd-MM-yyyy")} to {EndDate?.ToString("dd-MM-yyyy")}";
 
                 // Table Header
                 var tableHeader = worksheet.Range("A4:G4");
@@ -198,7 +255,7 @@ namespace YIS.Pages.Ledger
                 int row = 5;
                 foreach (var item in LedgerRows)
                 {
-                    worksheet.Cell(row, 1).Value = item.Date?.ToShortDateString() ?? "-";
+                    worksheet.Cell(row, 1).Value = item.Date?.ToString("dd-MM-yyyy") ?? "-";
                     worksheet.Cell(row, 2).Value = item.TransNo;
                     worksheet.Cell(row, 3).Value = item.Type;
                     worksheet.Cell(row, 4).Value = item.Remarks;

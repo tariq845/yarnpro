@@ -637,13 +637,13 @@ namespace YIS.Pages.Reports
             ws.Range("A1:N1").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             string typeStr = AgingType == "Receivables" ? "(RECEIVABLES ONLY)" : "(PAYABLES ONLY)";
-            string titleStr = $"AGING REPORT {typeStr} UPTO {targetDate:dd/MM/yyyy}";
+            string titleStr = $"AGING REPORT {typeStr} UPTO {targetDate:dd-MM-yyyy}";
             ws.Cell("A2").Value = titleStr;
             ws.Cell("A2").Style.Font.Bold = true;
             ws.Range("A2:N2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Cell("A3").Value = UnClearedOnly ? "UnCleared Bills Only" : "All Bills";
-            ws.Cell("N3").Value = $"Date: {GeneratedOn:dd/MM/yyyy hh:mm tt}";
+            ws.Cell("N3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
 
             // Table Headers
             string[] headers = {
@@ -685,7 +685,7 @@ namespace YIS.Pages.Reports
                     foreach (var item in buyer.Items)
                     {
                         ws.Cell(rowIdx, 1).SetValue(item.TransactionNumber);
-                        ws.Cell(rowIdx, 2).SetValue(item.Date?.ToString("dd/MM/yy") ?? "");
+                        ws.Cell(rowIdx, 2).SetValue(item.Date?.ToString("dd-MM-yyyy") ?? "");
                         ws.Cell(rowIdx, 3).SetValue(item.ContractNumber);
                         ws.Cell(rowIdx, 4).SetValue(item.InvoiceNumber);
                         ws.Cell(rowIdx, 5).SetValue(item.Qty).Style.NumberFormat.Format = "#,##0.00";
@@ -697,7 +697,7 @@ namespace YIS.Pages.Reports
                         ws.Cell(rowIdx, 11).SetValue(item.ContDays);
                         ws.Cell(rowIdx, 12).SetValue(item.TotalDays);
                         ws.Cell(rowIdx, 13).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 14).SetValue(item.PdcDate?.ToString("dd/MM/yy") ?? "");
+                        ws.Cell(rowIdx, 14).SetValue(item.PdcDate?.ToString("dd-MM-yyyy") ?? "");
 
                         for (int col = 1; col <= 14; col++)
                         {

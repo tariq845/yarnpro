@@ -204,7 +204,7 @@
                                         </span>
                                     </td>
                                     <td class="fw-bold text-indigo">@record.SaleNo</td>
-                                    <td>@record.SaleDate?.ToString("dd/MM/yyyy")</td>
+                                    <td>@record.SaleDate?.ToString("dd-MM-yyyy")</td>
                                     <td class="text-muted">@(string.IsNullOrEmpty(record.AgainstSsdNo) ? "-" : record.AgainstSsdNo)</td>
                                     <td class="fw-bold text-success">@(string.IsNullOrEmpty(record.AgainstSaleNo) ? "-" : record.AgainstSaleNo)</td>
                                     <td>@record.CustomerId</td>

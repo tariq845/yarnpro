@@ -250,7 +250,7 @@ namespace YIS.Pages.Reports
             {
                 success       = true,
                 ssdNumber     = ssd.EntryNumber,
-                ssdDate       = ssd.EntryDate?.ToString("dd MMM yyyy"),
+                ssdDate       = ssd.EntryDate?.ToString("dd-MM-yyyy"),
                 customerName  = customerName,
                 remarks       = ssd.EntryRemarks ?? "-",
                 lines         = lines,

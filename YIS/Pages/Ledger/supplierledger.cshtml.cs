@@ -85,23 +85,40 @@ namespace YIS.Pages.Ledger
             double openingBalance = purPre.Sum(x => (x.Debit ?? 0)) -
                                     pvPre.Sum(x => (x.Credit ?? 0));
 
-            // 2. Fetch Transactions within Range
-            var purTrans = await (from t in _context.Transactions
-                                  join e in _context.Entries on t.EntryId equals e.EntryId
-                                  where t.UcpId == ucpId && t.TransType == "PUR"
-                                     && e.EntryAttribute1 == supIdStr
-                                     && e.EntryDate >= StartDate && e.EntryDate <= EndDate
-                                     && (t.Debit ?? 0) > 0
-                                  select new
-                                  {
-                                      t.TransId,
-                                      TransNo = e.EntryNumber,
-                                      t.TransType,
-                                      t.Remarks,
-                                      t.Debit,
-                                      t.Credit,
-                                      EntryDate = e.EntryDate
-                                  }).ToListAsync();
+            // 2. Fetch Transactions within Range (Sum up Inventory + Tax per invoice)
+            var purRaw = await (from t in _context.Transactions
+                                join e in _context.Entries on t.EntryId equals e.EntryId
+                                where t.UcpId == ucpId && t.TransType == "PUR"
+                                   && e.EntryAttribute1 == supIdStr
+                                   && e.EntryDate >= StartDate && e.EntryDate <= EndDate
+                                   && (t.Debit ?? 0) > 0
+                                select new
+                                {
+                                    t.TransId,
+                                    TransNo = e.EntryNumber,
+                                    t.TransType,
+                                    EntryRemarks = e.EntryRemarks,
+                                    TransRemarks = t.Remarks,
+                                    t.Debit,
+                                    t.Credit,
+                                    EntryDate = e.EntryDate,
+                                    e.EntryId
+                                }).ToListAsync();
+
+            var purTrans = purRaw
+                .GroupBy(x => x.EntryId)
+                .Select(g => new
+                {
+                    TransId = g.Min(x => x.TransId),
+                    TransNo = g.First().TransNo,
+                    TransType = g.First().TransType,
+                    Remarks = !string.IsNullOrEmpty(g.First().EntryRemarks)
+                        ? g.First().EntryRemarks
+                        : ("Purchase Invoice # PUR-" + g.First().TransNo),
+                    Debit = (double?)g.Sum(x => x.Debit ?? 0),
+                    Credit = (double?)0,
+                    EntryDate = g.First().EntryDate
+                }).ToList();
 
             var pvTrans = await (from t in _context.Transactions
                                  join e in _context.Entries on t.EntryId equals e.EntryId
@@ -183,7 +200,7 @@ namespace YIS.Pages.Ledger
                 worksheet.Cell(1, 1).Value = "Supplier:";
                 worksheet.Cell(1, 2).Value = supplierName;
                 worksheet.Cell(2, 1).Value = "Period:";
-                worksheet.Cell(2, 2).Value = $"{StartDate?.ToShortDateString()} to {EndDate?.ToShortDateString()}";
+                worksheet.Cell(2, 2).Value = $"{StartDate?.ToString("dd-MM-yyyy")} to {EndDate?.ToString("dd-MM-yyyy")}";
 
                 // Table Header
                 var tableHeader = worksheet.Range("A4:G4");
@@ -202,7 +219,7 @@ namespace YIS.Pages.Ledger
                 int row = 5;
                 foreach (var item in LedgerRows)
                 {
-                    worksheet.Cell(row, 1).Value = item.Date?.ToShortDateString() ?? "-";
+                    worksheet.Cell(row, 1).Value = item.Date?.ToString("dd-MM-yyyy") ?? "-";
                     worksheet.Cell(row, 2).Value = item.TransNo;
                     worksheet.Cell(row, 3).Value = item.Type;
                     worksheet.Cell(row, 4).Value = item.Remarks;

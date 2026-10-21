@@ -452,7 +452,7 @@ namespace YIS.Pages.Sales
                 var selectListItems = PsdEntriesForJs.Select(p => new
                 {
                     p.EntryId,
-                    DisplayText = "PSD-" + psdRaw.FirstOrDefault(x => x.EntryId == p.EntryId)?.EntryNumber + " (" + (p.EntryDate.HasValue ? p.EntryDate.Value.ToString("yyyy-MM-dd") : "") + ")" +
+                    DisplayText = "PSD-" + psdRaw.FirstOrDefault(x => x.EntryId == p.EntryId)?.EntryNumber + " (" + (p.EntryDate.HasValue ? p.EntryDate.Value.ToString("dd-MM-yyyy") : "") + ")" +
                                   (p.Items.Any() ? " - " + string.Join(", ", p.Items.Select(i => i.ItemName).Distinct()) : "")
                 }).ToList();
 

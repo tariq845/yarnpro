@@ -119,7 +119,7 @@ namespace YIS.Pages.Sales
             {
                 EntryId = entry.EntryId,
                 InvoiceNo = "SAL-" + entry.EntryNumber?.ToString().PadLeft(4, '0'),
-                Date = entry.EntryDate?.ToString("dd-MMM-yyyy") ?? "-",
+                Date = entry.EntryDate?.ToString("dd-MM-yyyy") ?? "-",
                 Remarks = entry.EntryRemarks ?? "",
                 TotalQty = entry.Qty ?? 0,
                 TotalTax = entry.TaxAmount ?? 0,

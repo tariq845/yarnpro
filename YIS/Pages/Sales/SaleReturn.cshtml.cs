@@ -394,7 +394,7 @@ namespace YIS.Pages.Sales
                         EntryId = s.EntryId,
                         EntryNumber = s.EntryNumber ?? 0,
                         CustomerId = s.EntryAttribute1,
-                        DisplayText = "SAL-" + s.EntryNumber + " (" + (s.EntryDate.HasValue ? s.EntryDate.Value.ToString("yyyy-MM-dd") : "") + ")" + itemsStr,
+                        DisplayText = "SAL-" + s.EntryNumber + " (" + (s.EntryDate.HasValue ? s.EntryDate.Value.ToString("dd-MM-yyyy") : "") + ")" + itemsStr,
                         Items = items
                     };
                 }).ToList();

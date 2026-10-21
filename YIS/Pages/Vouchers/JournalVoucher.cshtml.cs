@@ -259,5 +259,49 @@ namespace YIS.Pages.Vouchers
             TempData["StatusMessage"] = isNew ? "Journal voucher created successfully!" : "Journal voucher updated successfully!";
             return RedirectToPage("./JournalVoucherIndex");
         }
+
+        public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)
+        {
+            var path = "/Vouchers/JournalVoucher";
+            if (!AuthHelper.CanUpdate(HttpContext, path))
+            {
+                TempData["ErrorMessage"] = "Access Denied: You do not have permission to unpost Journal Vouchers.";
+                return RedirectToPage(new { id });
+            }
+
+            var entry = await _context.Entries.FindAsync(id);
+            if (entry == null || entry.EntryType != "JV")
+            {
+                TempData["ErrorMessage"] = "Journal voucher not found.";
+                return RedirectToPage("./JournalVoucherIndex");
+            }
+
+            var transRows = await _context.Transactions
+                .Where(t => t.EntryId == id)
+                .ToListAsync();
+
+            if (!transRows.Any())
+            {
+                TempData["ErrorMessage"] = "This voucher is not posted to ledger.";
+                return RedirectToPage(new { id });
+            }
+
+            using var dbTxn = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Transactions.RemoveRange(transRows);
+                await _context.SaveChangesAsync();
+                await dbTxn.CommitAsync();
+
+                TempData["StatusMessage"] = $"Journal Voucher JV-{entry.EntryNumber} has been unposted from the ledger. It is now unlocked and editable.";
+            }
+            catch (Exception ex)
+            {
+                await dbTxn.RollbackAsync();
+                TempData["ErrorMessage"] = "Error unposting from ledger: " + ex.Message;
+            }
+
+            return RedirectToPage(new { id });
+        }
     }
 }

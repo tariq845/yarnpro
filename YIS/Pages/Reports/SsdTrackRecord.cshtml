@@ -237,8 +237,8 @@
                 </div>
                 <div class="col-4 text-end">
                     <div class="fs-5 fw-bold text-dark">SSD-@Model.SsdHeader?.EntryNumber</div>
-                    <div class="text-muted small">Date: @Model.SsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</div>
-                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MMM-yyyy hh:mm tt")</div>
+                    <div class="text-muted small">Date: @Model.SsdHeader?.EntryDate?.ToString("dd-MM-yyyy")</div>
+                    <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MM-yyyy hh:mm tt")</div>
                 </div>
             </div>
         </div>
@@ -249,7 +249,7 @@
                 <td class="label">Contract (SSD) #:</td>
                 <td class="value fw-bold text-success">SSD-@Model.SsdHeader?.EntryNumber</td>
                 <td class="label">Contract Date:</td>
-                <td class="value">@Model.SsdHeader?.EntryDate?.ToString("dd-MMM-yyyy")</td>
+                <td class="value">@Model.SsdHeader?.EntryDate?.ToString("dd-MM-yyyy")</td>
             </tr>
             <tr>
                 <td class="label">Customer Name:</td>
@@ -385,7 +385,7 @@
                                 </a>
                                 <span class="d-none d-print-inline text-dark">SAL-@d.SalNumber</span>
                             </td>
-                            <td>@d.SalDate?.ToString("dd-MMM-yyyy")</td>
+                            <td>@d.SalDate?.ToString("dd-MM-yyyy")</td>
                             <td class="fw-semibold">@d.ItemName</td>
                             <td class="text-muted small">@(string.IsNullOrEmpty(d.Remarks) ? "-" : d.Remarks)</td>
                             <td class="text-num fw-bold text-primary">@d.Qty.ToString("N2")</td>

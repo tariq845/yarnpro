@@ -370,7 +370,7 @@ namespace YIS.Pages.Purchase
                     {
                         EntryNumber = p.EntryNumber ?? 0,
                         EntryId = p.EntryId,
-                        DisplayText = "PUR-" + p.EntryNumber + " (" + (p.EntryDate.HasValue ? p.EntryDate.Value.ToString("yyyy-MM-dd") : "") + ")" + itemsStr,
+                        DisplayText = "PUR-" + p.EntryNumber + " (" + (p.EntryDate.HasValue ? p.EntryDate.Value.ToString("dd-MM-yyyy") : "") + ")" + itemsStr,
                         SupplierId = p.EntryAttribute1,
                         Items = items
                     };

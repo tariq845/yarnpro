@@ -296,5 +296,49 @@ namespace YIS.Pages.Vouchers
 
             return RedirectToPage();
         }
+
+        public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)
+        {
+            var path = "/Vouchers/ReceiptVoucher";
+            if (!AuthHelper.CanUpdate(HttpContext, path))
+            {
+                TempData["ErrorMessage"] = "Access Denied: You do not have permission to unpost Receipt Vouchers.";
+                return RedirectToPage();
+            }
+
+            var entry = await _context.Entries.FindAsync(id);
+            if (entry == null || entry.EntryType != "RV")
+            {
+                TempData["ErrorMessage"] = "Receipt voucher not found.";
+                return RedirectToPage();
+            }
+
+            var transRows = await _context.Transactions
+                .Where(t => t.EntryId == id)
+                .ToListAsync();
+
+            if (!transRows.Any())
+            {
+                TempData["ErrorMessage"] = "This voucher is not posted to ledger.";
+                return RedirectToPage();
+            }
+
+            using var dbTxn = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                _context.Transactions.RemoveRange(transRows);
+                await _context.SaveChangesAsync();
+                await dbTxn.CommitAsync();
+
+                TempData["SuccessMessage"] = $"Receipt Voucher RV-{entry.EntryNumber} has been unposted from the ledger. {transRows.Count} GL entries removed.";
+            }
+            catch (Exception ex)
+            {
+                await dbTxn.RollbackAsync();
+                TempData["ErrorMessage"] = "Error unposting from ledger: " + ex.Message;
+            }
+
+            return RedirectToPage();
+        }
     }
 }

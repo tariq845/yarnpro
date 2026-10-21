@@ -460,12 +460,12 @@ namespace YIS.Pages.Reports
             ws.Cell("A1").Style.Font.FontSize = 14;
             ws.Range("A1:N1").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A2").Value = $"AGING REPORT (PAYABLES ONLY) UPTO {targetDate:dd/MM/yyyy}";
+            ws.Cell("A2").Value = $"AGING REPORT (PAYABLES ONLY) UPTO {targetDate:dd-MM-yyyy}";
             ws.Cell("A2").Style.Font.Bold = true;
             ws.Range("A2:N2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Cell("A3").Value = UnClearedOnly ? "UnCleared Bills Only" : "All Bills";
-            ws.Cell("O3").Value = $"Date: {GeneratedOn:dd/MM/yyyy hh:mm tt}";
+            ws.Cell("O3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
 
             string[] headers = {
                 "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER", "SUPPLIER PUR NO",
@@ -504,7 +504,7 @@ namespace YIS.Pages.Reports
                     foreach (var item in buyer.Items)
                     {
                         ws.Cell(rowIdx, 1).SetValue(item.TransactionNumber);
-                        ws.Cell(rowIdx, 2).SetValue(item.Date?.ToString("dd/MM/yy") ?? "");
+                        ws.Cell(rowIdx, 2).SetValue(item.Date?.ToString("dd-MM-yyyy") ?? "");
                         ws.Cell(rowIdx, 3).SetValue(item.ContractNumber);
                         ws.Cell(rowIdx, 4).SetValue(item.InvoiceNumber);
                         ws.Cell(rowIdx, 5).SetValue(item.SupplierPurchaseNo);
@@ -517,7 +517,7 @@ namespace YIS.Pages.Reports
                         ws.Cell(rowIdx, 12).SetValue(item.ContDays);
                         ws.Cell(rowIdx, 13).SetValue(item.TotalDays);
                         ws.Cell(rowIdx, 14).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 15).SetValue(item.PdcDate?.ToString("dd/MM/yy") ?? "");
+                        ws.Cell(rowIdx, 15).SetValue(item.PdcDate?.ToString("dd-MM-yyyy") ?? "");
 
                         for (int col = 1; col <= 15; col++)
                         {
