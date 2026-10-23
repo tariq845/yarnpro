@@ -9,12 +9,22 @@
     /* Screen Styles */
     .aging-card {
         border-radius: 10px;
-        border: none;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+        border: 1px solid #e3e6f0;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.08);
         transition: all 0.2s ease-in-out;
     }
-    .aging-card:hover {
-        transform: translateY(-2px);
+    .card-filter {
+        cursor: pointer;
+        user-select: none;
+    }
+    .card-filter:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.12) !important;
+    }
+    .active-slab {
+        border: 2px solid #0d6efd !important;
+        background-color: #f0f7ff !important;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2) !important;
     }
     .kpi-title {
         font-size: 0.75rem;
@@ -101,7 +111,7 @@
             font-size: 9pt !important;
             color: #000 !important;
         }
-        .no-print, nav, .navbar, .sidebar, .yis-sidebar, footer, .btn, .breadcrumb, #toast-data {
+        .no-print, nav, .navbar, .sidebar, .yis-sidebar, footer, .btn, .breadcrumb, #toast-data, .dropdown-menu {
             display: none !important;
         }
         .container-fluid, .content, main {
@@ -148,11 +158,11 @@
                         <i class="bi bi-clock-history text-primary me-2"></i>Aging Analysis Report
                     </h5>
                     <div class="btn-group btn-group-sm" role="group">
-                        <a href="?AgingType=Receivables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly" 
+                        <a href="?AgingType=Receivables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly&SlabFilter=@Model.SlabFilter" 
                            class="btn @(Model.AgingType == "Receivables" ? "btn-primary" : "btn-outline-primary") px-3 fw-bold">
                             <i class="bi bi-arrow-down-left-circle me-1"></i> Receivables (Customer)
                         </a>
-                        <a href="?AgingType=Payables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly" 
+                        <a href="?AgingType=Payables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly&SlabFilter=@Model.SlabFilter" 
                            class="btn @(Model.AgingType == "Payables" ? "btn-primary" : "btn-outline-primary") px-3 fw-bold">
                             <i class="bi bi-arrow-up-right-circle me-1"></i> Payables (Supplier)
                         </a>
@@ -169,6 +179,7 @@
                        asp-route-BrokerFilter="@Model.BrokerFilter"
                        asp-route-UnClearedOnly="@Model.UnClearedOnly"
                        asp-route-SearchTerm="@Model.SearchTerm"
+                       asp-route-SlabFilter="@Model.SlabFilter"
                        class="btn btn-sm btn-success fw-bold px-3">
                         <i class="bi bi-file-earmark-excel me-1"></i> EXCEL (XLSX)
                     </a>
@@ -178,6 +189,7 @@
             <!-- Filter Controls Form -->
             <form method="get" id="filterForm">
                 <input type="hidden" name="AgingType" value="@Model.AgingType" />
+                <input type="hidden" name="SlabFilter" id="slabFilterInput" value="@Model.SlabFilter" />
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
                         <label class="form-label small text-muted fw-bold mb-1">As Of Date</label>
@@ -217,7 +229,7 @@
                                    checked="@Model.UnClearedOnly" onchange="this.form.submit()" />
                             <label class="form-check-label small fw-bold text-danger" for="chkUnCleared">UnCleared Only</label>
                         </div>
-                        <button type="submit" class="btn btn-sm btn-primary px-3">
+                        <button type="submit" class="btn btn-sm btn-primary px-3" title="Apply Filter">
                             <i class="bi bi-funnel-fill"></i>
                         </button>
                     </div>
@@ -226,25 +238,33 @@
         </div>
     </div>
 
-    <!-- KPI Summary Slabs (Screen Only) -->
+    <!-- KPI Summary Slabs (Clickable Filter Cards) -->
     <div class="row g-2 mb-3 no-print">
         <div class="col-md-3">
-            <div class="card aging-card bg-white p-2">
+            <div class="card aging-card card-filter p-2 @(string.IsNullOrEmpty(Model.SlabFilter) ? "active-slab" : "bg-white")"
+                 onclick="filterSlab('')" title="Click to show All Invoices">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="kpi-title text-primary">Total Outstanding</div>
+                        <div class="kpi-title text-primary">
+                            Total Outstanding
+                            @if (string.IsNullOrEmpty(Model.SlabFilter)) { <span class="badge bg-primary text-white ms-1" style="font-size: 9px;">Active</span> }
+                        </div>
                         <div class="kpi-value text-primary">₨ @Model.GrandTotalBalance.ToString("N0")</div>
                     </div>
                     <div class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
                         <i class="bi bi-wallet2 fs-5"></i>
                     </div>
                 </div>
-                <div class="small text-muted mt-1">@Model.TotalInvoicesCount Invoices Pending</div>
+                <div class="small text-muted mt-1">@Model.TotalInvoicesCount Invoices Pending (Click to View All)</div>
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card aging-card bg-white p-2">
-                <div class="kpi-title text-success">0 - 30 Days</div>
+            <div class="card aging-card card-filter p-2 @(Model.SlabFilter == "0-30" ? "active-slab" : "bg-white")"
+                 onclick="filterSlab('0-30')" title="Click to filter 0 - 30 Days">
+                <div class="kpi-title text-success d-flex justify-content-between">
+                    <span>0 - 30 Days</span>
+                    @if (Model.SlabFilter == "0-30") { <span class="badge bg-success text-white" style="font-size: 9px;">Active</span> }
+                </div>
                 <div class="kpi-value text-success">₨ @Model.Slab_0_30.ToString("N0")</div>
                 <div class="progress mt-1" style="height: 4px;">
                     <div class="progress-bar bg-success" style="width: @(Model.GrandTotalBalance > 0 ? (Model.Slab_0_30 / Model.GrandTotalBalance * 100) : 0)%"></div>
@@ -252,8 +272,12 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card aging-card bg-white p-2">
-                <div class="kpi-title text-info">31 - 60 Days</div>
+            <div class="card aging-card card-filter p-2 @(Model.SlabFilter == "31-60" ? "active-slab" : "bg-white")"
+                 onclick="filterSlab('31-60')" title="Click to filter 31 - 60 Days">
+                <div class="kpi-title text-info d-flex justify-content-between">
+                    <span>31 - 60 Days</span>
+                    @if (Model.SlabFilter == "31-60") { <span class="badge bg-info text-white" style="font-size: 9px;">Active</span> }
+                </div>
                 <div class="kpi-value text-info">₨ @Model.Slab_31_60.ToString("N0")</div>
                 <div class="progress mt-1" style="height: 4px;">
                     <div class="progress-bar bg-info" style="width: @(Model.GrandTotalBalance > 0 ? (Model.Slab_31_60 / Model.GrandTotalBalance * 100) : 0)%"></div>
@@ -261,8 +285,12 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card aging-card bg-white p-2">
-                <div class="kpi-title text-warning">61 - 90 Days</div>
+            <div class="card aging-card card-filter p-2 @(Model.SlabFilter == "61-90" ? "active-slab" : "bg-white")"
+                 onclick="filterSlab('61-90')" title="Click to filter 61 - 90 Days">
+                <div class="kpi-title text-warning d-flex justify-content-between">
+                    <span>61 - 90 Days</span>
+                    @if (Model.SlabFilter == "61-90") { <span class="badge bg-warning text-dark" style="font-size: 9px;">Active</span> }
+                </div>
                 <div class="kpi-value text-warning">₨ @Model.Slab_61_90.ToString("N0")</div>
                 <div class="progress mt-1" style="height: 4px;">
                     <div class="progress-bar bg-warning" style="width: @(Model.GrandTotalBalance > 0 ? (Model.Slab_61_90 / Model.GrandTotalBalance * 100) : 0)%"></div>
@@ -270,8 +298,12 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card aging-card bg-white p-2">
-                <div class="kpi-title text-danger">90+ Days (High Risk)</div>
+            <div class="card aging-card card-filter p-2 @(Model.SlabFilter == "90+" ? "active-slab" : "bg-white")"
+                 onclick="filterSlab('90+')" title="Click to filter 90+ Days">
+                <div class="kpi-title text-danger d-flex justify-content-between">
+                    <span>90+ Days (High Risk)</span>
+                    @if (Model.SlabFilter == "90+") { <span class="badge bg-danger text-white" style="font-size: 9px;">Active</span> }
+                </div>
                 <div class="kpi-value text-danger">₨ @((Model.Slab_91_120 + Model.Slab_120_Plus).ToString("N0"))</div>
                 <div class="progress mt-1" style="height: 4px;">
                     <div class="progress-bar bg-danger" style="width: @(Model.GrandTotalBalance > 0 ? ((Model.Slab_91_120 + Model.Slab_120_Plus) / Model.GrandTotalBalance * 100) : 0)%"></div>
@@ -279,6 +311,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Active Slab Filter Banner -->
+    @if (!string.IsNullOrEmpty(Model.SlabFilter))
+    {
+        <div class="alert alert-primary py-2 px-3 d-flex justify-content-between align-items-center mb-3 shadow-sm no-print" style="font-size: 12px;">
+            <div>
+                <i class="bi bi-funnel-fill me-1 text-primary"></i>
+                Showing invoices filtered by bracket: 
+                <strong class="text-uppercase">@(Model.SlabFilter == "90+" ? "90+ Days (Overdue)" : $"{Model.SlabFilter} Days")</strong>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 fw-semibold" onclick="filterSlab('')">
+                <i class="bi bi-x-circle me-1"></i> Clear Slab Filter (Show All)
+            </button>
+        </div>
+    }
 
     <!-- Main Report Body (Print & Screen Standard Layout) -->
     <div class="card shadow-sm border-0 bg-white">
@@ -288,6 +335,10 @@
             <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-2">
                 <div style="font-size: 11px; font-weight: 600;">
                     @(Model.UnClearedOnly ? "UnCleared Bills Only" : "All Bills")
+                    @if (!string.IsNullOrEmpty(Model.SlabFilter))
+                    {
+                        <span class="text-primary ms-1">[@Model.SlabFilter Days]</span>
+                    }
                 </div>
                 <div class="text-center flex-grow-1">
                     <h5 class="fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">@Model.CompanyName</h5>
@@ -309,17 +360,18 @@
                         <tr>
                             <th style="width: 7%;">TRANSACTION NUMBER</th>
                             <th style="width: 6%;">DATE</th>
-                            <th style="width: 7%;">CONTRACT NUMBER</th>
+                            <th style="width: 6%;">CONTRACT NUMBER</th>
                             <th style="width: 6%;">INVOICE NUMBER</th>
                             <th style="width: 5%;">QTY</th>
-                            <th style="width: 21%;">DESCRIPTION</th>
-                            <th style="width: 6%;">RATE</th>
-                            <th style="width: 8%;">AMOUNT</th>
-                            <th style="width: 8%;">RECEIVED / PAID</th>
+                            <th style="width: 19%;">DESCRIPTION</th>
+                            <th style="width: 5%;">RATE</th>
+                            <th style="width: 7%;">AMOUNT</th>
+                            <th style="width: 6%;">GST</th>
+                            <th style="width: 9%;">RECEIVED / PAID</th>
                             <th style="width: 8%;">BALANCE</th>
                             <th style="width: 4%;">CONT. DAYS</th>
                             <th style="width: 4%;">TOTAL DAYS</th>
-                            <th style="width: 6%;">PDC AMOUNT</th>
+                            <th style="width: 5%;">PDC AMOUNT</th>
                             <th style="width: 5%;">PDC DT</th>
                         </tr>
                     </thead>
@@ -330,7 +382,7 @@
                             {
                                 <!-- Broker Group Header -->
                                 <tr class="broker-header-row">
-                                    <td colspan="14" class="px-2 py-1">
+                                    <td colspan="15" class="px-2 py-1">
                                         <i class="bi bi-briefcase me-1 no-print"></i> @broker.BrokerName
                                     </td>
                                 </tr>
@@ -339,7 +391,7 @@
                                 {
                                     <!-- Buyer / Customer Header -->
                                     <tr class="buyer-header-row">
-                                        <td colspan="14" class="px-2 py-1">
+                                        <td colspan="15" class="px-2 py-1">
                                             @buyer.BuyerName
                                         </td>
                                     </tr>
@@ -350,14 +402,107 @@
                                             <td class="text-center font-monospace">@item.TransactionNumber</td>
                                             <td class="text-center">@item.Date?.ToString("dd-MM-yyyy")</td>
                                             <td class="text-center font-monospace">@item.ContractNumber</td>
-                                            <td class="text-center fw-semibold">@item.InvoiceNumber</td>
+                                            
+                                            <!-- Clickable Invoice Link -->
+                                            <td class="text-center font-monospace">
+                                                @if (item.EntryType == "PUR")
+                                                {
+                                                    <a href="/Purchase/Entry?id=@item.EntryId" target="_blank" class="text-decoration-none text-danger fw-semibold" title="View Purchase Invoice PUR-@item.InvoiceNumber">
+                                                        @item.InvoiceNumber <i class="bi bi-box-arrow-up-right no-print" style="font-size: 8px;"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="/Sales/Entry?id=@item.EntryId" target="_blank" class="text-decoration-none text-primary fw-semibold" title="View Sales Invoice SAL-@item.InvoiceNumber">
+                                                        @item.InvoiceNumber <i class="bi bi-box-arrow-up-right no-print" style="font-size: 8px;"></i>
+                                                    </a>
+                                                }
+                                            </td>
+
                                             <td class="text-end">@item.Qty.ToString("N2")</td>
                                             <td class="text-start" style="font-size: 10px;">@item.Description</td>
                                             <td class="text-end">@item.Rate.ToString("N2")</td>
                                             <td class="text-end fw-semibold">@item.Amount.ToString("N2")</td>
+                                            
+                                            <!-- GST Column -->
                                             <td class="text-end text-muted">
-                                                @(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "")
+                                                @(item.GstAmount > 0 ? item.GstAmount.ToString("N2") : "-")
                                             </td>
+
+                                            <!-- Clickable Received / Paid Link -->
+                                            <td class="text-end">
+                                                @{
+                                                    bool isPurch = (Model.AgingType == "Purchase");
+                                                    var flowData = new {
+                                                        billNo = item.InvoiceNumber,
+                                                        txNo = item.TransactionNumber,
+                                                        date = item.Date?.ToString("dd-MM-yyyy"),
+                                                        contractNo = item.ContractNumber,
+                                                        partyName = buyer.BuyerName,
+                                                        brokerName = broker.BrokerName,
+                                                        amount = item.Amount,
+                                                        gst = item.GstAmount,
+                                                        netAmount = item.Amount + item.GstAmount,
+                                                        receivedPaid = item.ReceivedPaid,
+                                                        balance = item.Balance,
+                                                        isPurchase = isPurch,
+                                                        partyRole = isPurch ? "Supplier" : "Customer",
+                                                        vouchers = item.AppliedVouchers?.Select(v => new {
+                                                            entryId = v.EntryId,
+                                                            voucherNo = v.VoucherNumber,
+                                                            voucherType = v.VoucherType,
+                                                            date = v.VoucherDate?.ToString("dd-MM-yyyy"),
+                                                            totalAmount = v.TotalVoucherAmount,
+                                                            consumedBefore = v.ConsumedBeforeThis,
+                                                            availableForThis = v.AvailableForThis,
+                                                            applied = v.AmountApplied,
+                                                            remainingAfter = v.RemainingAfterThis,
+                                                            url = (v.VoucherType == "PV" || v.VoucherType == "DN")
+                                                                ? $"/Vouchers/PaymentVoucher?id={v.EntryId}"
+                                                                : $"/Vouchers/ReceiptVoucher?id={v.EntryId}",
+                                                            earlierBills = v.EarlierBills?.Select(eb => new {
+                                                                entryId = eb.EntryId,
+                                                                invNo = eb.InvoiceNumber,
+                                                                date = eb.Date?.ToString("dd-MM-yyyy"),
+                                                                applied = eb.AmountApplied,
+                                                                url = isPurch ? $"/Purchase/Entry?id={eb.EntryId}" : $"/Sales/Entry?id={eb.EntryId}"
+                                                            }).ToList()
+                                                        }).ToList()
+                                                    };
+                                                    var jsonFlow = System.Text.Json.JsonSerializer.Serialize(flowData);
+                                                }
+                                                @if (item.ReceivedPaid > 0)
+                                                {
+                                                    <div class="d-inline-flex align-items-center justify-content-end gap-1">
+                                                        <button type="button" 
+                                                                class="btn btn-link p-0 text-success text-decoration-none fw-semibold" 
+                                                                data-flow="@jsonFlow" 
+                                                                onclick="openSettlementFromBtn(this)"
+                                                                title="Click to view complete settlement calculation flow (FIFO breakdown)">
+                                                            (@item.ReceivedPaid.ToString("N2"))
+                                                            <i class="bi bi-info-circle-fill text-primary" style="font-size: 11px;"></i>
+                                                        </button>
+                                                        @if (item.AppliedVouchers != null && item.AppliedVouchers.Count == 1)
+                                                        {
+                                                            var vSingle = item.AppliedVouchers[0];
+                                                            string sUrl = (vSingle.VoucherType == "PV" || vSingle.VoucherType == "DN")
+                                                                ? $"/Vouchers/PaymentVoucher?id={vSingle.EntryId}"
+                                                                : $"/Vouchers/ReceiptVoucher?id={vSingle.EntryId}";
+                                                            <a href="@sUrl" 
+                                                               target="_blank" 
+                                                               class="text-muted ms-1" 
+                                                               title="Directly open @vSingle.VoucherType #@vSingle.VoucherNumber">
+                                                                <i class="bi bi-box-arrow-up-right" style="font-size: 10px;"></i>
+                                                            </a>
+                                                        }
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+
                                             <td class="text-end fw-bold text-dark">@item.Balance.ToString("N2")</td>
                                             <td class="text-center">@item.ContDays</td>
                                             <td class="text-center @(item.TotalDays > 60 ? "text-danger fw-bold" : "")">@item.TotalDays</td>
@@ -372,6 +517,9 @@
                                             <strong>BUYER WISE SUB - TOTAL :</strong>
                                         </td>
                                         <td class="text-end fw-bold">@buyer.SubTotalAmount.ToString("N2")</td>
+                                        <td class="text-end fw-bold text-muted">
+                                            @(buyer.SubTotalGst > 0 ? buyer.SubTotalGst.ToString("N2") : "-")
+                                        </td>
                                         <td class="text-end fw-bold">
                                             @(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00")
                                         </td>
@@ -388,6 +536,9 @@
                                         <strong>SUB - TOTAL OF SELLER / BROKER :</strong>
                                     </td>
                                     <td class="text-end fw-bold">@broker.SubTotalAmount.ToString("N2")</td>
+                                    <td class="text-end fw-bold text-muted">
+                                        @(broker.SubTotalGst > 0 ? broker.SubTotalGst.ToString("N2") : "-")
+                                    </td>
                                     <td class="text-end fw-bold">
                                         @(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00")
                                     </td>
@@ -398,8 +549,17 @@
 
                             <!-- Final Grand Total -->
                             <tr>
-                                <td colspan="9" class="text-end pe-3 py-3 border-0">
+                                <td colspan="7" class="text-end pe-2 py-3 border-0">
                                     <strong style="font-size: 13px;">GRAND - TOTAL :</strong>
+                                </td>
+                                <td class="text-end py-3 border-0 fw-bold">
+                                    @Model.GrandTotalAmount.ToString("N2")
+                                </td>
+                                <td class="text-end py-3 border-0 fw-bold text-muted">
+                                    @(Model.GrandTotalGst > 0 ? Model.GrandTotalGst.ToString("N2") : "-")
+                                </td>
+                                <td class="text-end py-3 border-0 fw-bold">
+                                    @(Model.GrandTotalReceived > 0 ? $"({Model.GrandTotalReceived:N2})" : "0.00")
                                 </td>
                                 <td class="text-end py-3 border-0">
                                     <div class="grand-total-box">
@@ -412,11 +572,17 @@
                         else
                         {
                             <tr>
-                                <td colspan="14" class="text-center py-5">
+                                <td colspan="15" class="text-center py-5">
                                     <div class="py-4 text-muted">
                                         <i class="bi bi-clipboard-check fs-1 text-muted"></i>
                                         <h6 class="mt-2 fw-bold">No Pending / Overdue Bills Found</h6>
                                         <p class="small mb-0">Either all accounts are settled or no records match your filter criteria.</p>
+                                        @if (!string.IsNullOrEmpty(Model.SlabFilter))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-primary mt-2" onclick="filterSlab('')">
+                                                Show All Aging Slabs
+                                            </button>
+                                        }
                                     </div>
                                 </td>
                             </tr>
@@ -428,3 +594,229 @@
         </div>
     </div>
 </div>
+
+<!-- Settlement Flow Audit Modal -->
+<div class="modal fade" id="settlementFlowModal" tabindex="-1" aria-labelledby="settlementFlowModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-primary text-white py-3">
+                <div>
+                    <h5 class="modal-title fw-bold" id="settlementFlowModalLabel">
+                        <i class="bi bi-clock-history me-2"></i> Payment Settlement Flow (Audit Trail)
+                    </h5>
+                    <div class="small text-white-50" id="flowModalSubtitle">
+                        Step-by-step FIFO allocation details
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4" id="settlementFlowModalBody">
+                <!-- Dynamically populated via JS -->
+            </div>
+            <div class="modal-footer bg-light py-2">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterSlab(slab) {
+        var input = document.getElementById('slabFilterInput');
+        if (input) {
+            input.value = slab;
+        }
+        var form = document.getElementById('filterForm');
+        if (form) {
+            form.submit();
+        }
+    }
+
+    function openSettlementFromBtn(btn) {
+        try {
+            var raw = btn.getAttribute('data-flow');
+            if (!raw) return;
+            var data = JSON.parse(raw);
+            openSettlementModal(data);
+        } catch (err) {
+            console.error("Failed to parse settlement flow data:", err);
+        }
+    }
+
+    function openSettlementModal(data) {
+        if (!data) return;
+        
+        var subtitle = (data.isPurchase ? "Purchase Bill Settlement Audit • " : "Sale Invoice Settlement Audit • ") +
+            (data.partyName || "Party") + " (Inv #" + (data.billNo || "-") + ")";
+        document.getElementById('flowModalSubtitle').innerText = subtitle;
+        
+        var container = document.getElementById('settlementFlowModalBody');
+        
+        var fmt = function(num) {
+            return Number(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+        var fmt0 = function(num) {
+            return Number(num || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        };
+
+        var html = '';
+
+        // 1. Bill Summary Header Box
+        html += '<div class="card bg-light border-0 mb-4">';
+        html += '  <div class="card-body p-3">';
+        html += '    <div class="row g-2 align-items-center">';
+        html += '      <div class="col-md-3 border-end">';
+        html += '        <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">' + (data.isPurchase ? 'Bill / Inv No' : 'Sale Inv No') + '</small>';
+        html += '        <div class="fw-bold text-dark fs-6">' + (data.billNo || '-') + '</div>';
+        html += '        <small class="text-muted" style="font-size: 11px;">Tx: ' + (data.txNo || '-') + ' | Dt: ' + (data.date || '-') + '</small>';
+        html += '      </div>';
+        html += '      <div class="col-md-3 border-end">';
+        html += '        <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">' + (data.partyRole || 'Party') + ' & Contract</small>';
+        html += '        <div class="fw-bold text-primary text-truncate" title="' + (data.partyName || '-') + '">' + (data.partyName || '-') + '</div>';
+        html += '        <small class="text-muted" style="font-size: 11px;">Contract: ' + (data.contractNo || '-') + '</small>';
+        html += '      </div>';
+        html += '      <div class="col-md-3 border-end text-end">';
+        html += '        <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">Bill Total Amount</small>';
+        html += '        <div class="fw-bold text-dark fs-6">₨ ' + fmt(data.netAmount) + '</div>';
+        html += '        <small class="text-muted" style="font-size: 11px;">(Amt: ' + fmt(data.amount) + ' + GST: ' + fmt(data.gst) + ')</small>';
+        html += '      </div>';
+        html += '      <div class="col-md-3 text-end">';
+        html += '        <small class="text-muted text-uppercase fw-bold" style="font-size: 10px;">Settled & Balance</small>';
+        html += '        <div class="fw-bold text-success fs-6">Paid: ₨ ' + fmt(data.receivedPaid) + '</div>';
+        html += '        <div class="fw-bold ' + (data.balance > 0 ? 'text-danger' : 'text-muted') + '" style="font-size: 12px;">Remaining: ₨ ' + fmt(data.balance) + '</div>';
+        html += '      </div>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '</div>';
+
+        // 2. Settlement Explanation / Flow
+        html += '<h6 class="fw-bold text-dark mb-3 d-flex align-items-center">';
+        html += '  <i class="bi bi-diagram-3-fill text-primary me-2"></i>';
+        html += '  Complete Settlement Flow (FIFO Audit Trail):';
+        html += '</h6>';
+
+        if (!data.vouchers || data.vouchers.length === 0) {
+            html += '<div class="alert alert-secondary py-3 text-center">';
+            html += '  <i class="bi bi-info-circle me-1 fs-5 align-middle"></i>';
+            html += '  <strong>No specific voucher entries linked.</strong><br/>';
+            html += '  <small class="text-muted">Either no payment has been received/made, or payment was recorded directly on the entry.</small>';
+            html += '</div>';
+        } else {
+            html += '<div class="alert alert-info py-2 px-3 small mb-3">';
+            html += '  <i class="bi bi-info-circle-fill me-1"></i>';
+            html += '  <strong>Wazahat (Explanation):</strong> Jab party ke naam ikatha (lump-sum) voucher banta hai, to system <strong>FIFO (First In First Out)</strong> ke tehat sab se pehle purane bills ko pay karta hai. Neeche dekhein is voucher ki kul rakam kitni thi, pehle kitni consume hui, aur is bill par kitni apply hui.';
+            html += '</div>';
+
+            data.vouchers.forEach(function(v) {
+                html += '<div class="card shadow-sm border mb-3" style="border-radius: 8px; border-left: 5px solid #0d6efd !important;">';
+                html += '  <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">';
+                html += '    <div class="d-flex align-items-center gap-2">';
+                html += '      <span class="badge bg-primary px-2 py-1 fs-6">' + (v.voucherType || 'VOUCHER') + ' #' + (v.voucherNo || '-') + '</span>';
+                html += '      <span class="text-muted small"><i class="bi bi-calendar3 me-1"></i>' + (v.date || '-') + '</span>';
+                html += '    </div>';
+                if (v.url) {
+                    html += '    <a href="' + v.url + '" target="_blank" class="btn btn-sm btn-outline-primary py-1 px-3">';
+                    html += '      <i class="bi bi-box-arrow-up-right me-1"></i> View Voucher Entry';
+                    html += '    </a>';
+                }
+                html += '  </div>';
+                
+                html += '  <div class="card-body p-3">';
+                html += '    <div class="timeline-flow">';
+                
+                // Step 1: Total Voucher Amount
+                html += '      <div class="d-flex align-items-start mb-2">';
+                html += '        <div class="badge rounded-circle bg-secondary text-white p-2 me-3" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 11px;">1</div>';
+                html += '        <div class="flex-grow-1">';
+                html += '          <div class="d-flex justify-content-between">';
+                html += '            <strong>Total Lump-Sum Voucher Amount <span class="text-muted fw-normal">(Asal Voucher Ki Kul Rakam):</span></strong>';
+                html += '            <span class="fw-bold fs-6 text-dark">₨ ' + fmt0(v.totalAmount) + '</span>';
+                html += '          </div>';
+                html += '          <div class="small text-muted">Party ko/se ek sath banaya gaya kul voucher.</div>';
+                html += '        </div>';
+                html += '      </div>';
+
+                // Step 2: Consumed by Earlier Bills
+                html += '      <div class="d-flex align-items-start mb-2">';
+                html += '        <div class="badge rounded-circle bg-warning text-dark p-2 me-3" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 11px;">2</div>';
+                html += '        <div class="flex-grow-1">';
+                html += '          <div class="d-flex justify-content-between">';
+                html += '            <strong>Consumed by Earlier Invoices <span class="text-muted fw-normal">(Purane Bills Me Kharch):</span></strong>';
+                html += '            <span class="fw-bold text-danger">- ₨ ' + fmt0(v.consumedBefore) + '</span>';
+                html += '          </div>';
+                html += '          <div class="small text-muted">Is bill se pehle wale purane unpaid bills ko adjust karne me istemaal hui.</div>';
+                if (v.earlierBills && v.earlierBills.length > 0) {
+                    html += '      <div class="mt-2 p-2 bg-light rounded border">';
+                    html += '        <div class="small fw-bold text-dark mb-1 d-flex justify-content-between align-items-center">';
+                    html += '          <span><i class="bi bi-receipt me-1 text-primary"></i> Yeh Rakam In Specific Purane Bills Par Lagi Thi:</span>';
+                    html += '          <span class="badge bg-secondary">' + v.earlierBills.length + ' Earlier Bill(s)</span>';
+                    html += '        </div>';
+                    html += '        <div class="table-responsive">';
+                    html += '          <table class="table table-sm table-bordered bg-white mb-0" style="font-size: 11px;">';
+                    html += '            <thead class="table-light"><tr><th>Bill / Inv No</th><th>Date</th><th class="text-end">Amount Consumed</th><th class="text-center">Action</th></tr></thead>';
+                    html += '            <tbody>';
+                    v.earlierBills.forEach(function(eb) {
+                        html += '          <tr>';
+                        html += '            <td class="fw-bold text-primary">' + (eb.invNo || '-') + '</td>';
+                        html += '            <td>' + (eb.date || '-') + '</td>';
+                        html += '            <td class="text-end fw-bold text-danger">₨ ' + fmt0(eb.applied) + '</td>';
+                        html += '            <td class="text-center"><a href="' + eb.url + '" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2" style="font-size: 10px;">View Bill ↗</a></td>';
+                        html += '          </tr>';
+                    });
+                    html += '            </tbody>';
+                    html += '          </table>';
+                    html += '        </div>';
+                    html += '      </div>';
+                }
+                html += '        </div>';
+                html += '      </div>';
+
+                // Step 3: Available when reaching this bill
+                html += '      <div class="d-flex align-items-start mb-2">';
+                html += '        <div class="badge rounded-circle bg-info text-white p-2 me-3" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 11px;">3</div>';
+                html += '        <div class="flex-grow-1">';
+                html += '          <div class="d-flex justify-content-between">';
+                html += '            <strong>Available for This Invoice <span class="text-muted fw-normal">(Is Bill Ke Liye Bachi Rakam):</span></strong>';
+                html += '            <span class="fw-bold text-primary">= ₨ ' + fmt0(v.availableForThis) + '</span>';
+                html += '          </div>';
+                html += '          <div class="small text-muted">Jab voucher is bill tak pohancha to is me itni rakam baqi thi.</div>';
+                html += '        </div>';
+                html += '      </div>';
+
+                // Step 4: Applied on this bill
+                html += '      <div class="d-flex align-items-start mb-2 p-2 bg-success bg-opacity-10 rounded border border-success border-opacity-25">';
+                html += '        <div class="badge rounded-circle bg-success text-white p-2 me-3" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 11px;">4</div>';
+                html += '        <div class="flex-grow-1">';
+                html += '          <div class="d-flex justify-content-between">';
+                html += '            <strong class="text-success fs-6">👉 Applied to This Invoice <span class="fw-normal">(Is Bill Par Apply Hua):</span></strong>';
+                html += '            <span class="fw-bold fs-5 text-success">₨ ' + fmt0(v.applied) + '</span>';
+                html += '          </div>';
+                html += '          <div class="small text-success">Yeh wo rakam hai jo Aging Report ke "RECEIVED / PAID" column me show ho rahi hai.</div>';
+                html += '        </div>';
+                html += '      </div>';
+
+                // Step 5: Remaining after this bill
+                html += '      <div class="d-flex align-items-start">';
+                html += '        <div class="badge rounded-circle bg-light text-muted border p-2 me-3" style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 11px;">5</div>';
+                html += '        <div class="flex-grow-1">';
+                html += '          <div class="d-flex justify-content-between">';
+                html += '            <span class="text-muted">Voucher Remaining Balance <span class="fw-normal">(Iske Baad Voucher Me Baqi):</span></span>';
+                html += '            <span class="fw-bold text-muted">₨ ' + fmt0(v.remainingAfter) + '</span>';
+                html += '          </div>';
+                html += '          <div class="small text-muted">' + (v.remainingAfter > 0 ? 'Yeh baqi rakam agle aane wale bills ko pay karne me utilize hogi.' : 'Yeh voucher yahan mukammal tor par consume ho gaya.') + '</div>';
+                html += '        </div>';
+                html += '      </div>';
+
+                html += '    </div>';
+                html += '  </div>';
+                html += '</div>';
+            });
+        }
+
+        container.innerHTML = html;
+        
+        var modalEl = document.getElementById('settlementFlowModal');
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+</script>
