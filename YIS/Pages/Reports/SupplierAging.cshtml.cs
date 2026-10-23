@@ -37,6 +37,9 @@ namespace YIS.Pages.Reports
         [BindProperty(SupportsGet = true)]
         public string? SodaNo { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string? SlabFilter { get; set; }
+
         public string CompanyName { get; set; } = "YARN PRO";
         public string UserName { get; set; } = "ADMIN";
         public DateTime GeneratedOn { get; set; } = DateTime.Now;
@@ -55,6 +58,7 @@ namespace YIS.Pages.Reports
 
         // Metrics
         public double GrandTotalAmount { get; set; }
+        public double GrandTotalGst { get; set; }
         public double GrandTotalReceived { get; set; }
         public double GrandTotalBalance { get; set; }
         public double GrandTotalPdc { get; set; }
@@ -66,6 +70,39 @@ namespace YIS.Pages.Reports
         public double Slab_61_90 { get; set; }
         public double Slab_91_120 { get; set; }
         public double Slab_120_Plus { get; set; }
+
+        public class SettledInvoiceRecord
+        {
+            public long EntryId { get; set; }
+            public string InvoiceNumber { get; set; } = "";
+            public DateTime? Date { get; set; }
+            public double AmountApplied { get; set; }
+        }
+
+        public class VoucherSettlementInfo
+        {
+            public long EntryId { get; set; }
+            public string VoucherNumber { get; set; } = "";
+            public string VoucherType { get; set; } = "";
+            public DateTime? VoucherDate { get; set; }
+            public double TotalVoucherAmount { get; set; }
+            public double ConsumedBeforeThis { get; set; }
+            public double AvailableForThis { get; set; }
+            public double AmountApplied { get; set; }
+            public double RemainingAfterThis { get; set; }
+            public List<SettledInvoiceRecord> EarlierBills { get; set; } = new();
+        }
+
+        private class ActiveVoucherItem
+        {
+            public long EntryId { get; set; }
+            public string VoucherNumber { get; set; } = "";
+            public string VoucherType { get; set; } = "";
+            public DateTime? VoucherDate { get; set; }
+            public double TotalAmount { get; set; }
+            public double RemainingAmount { get; set; }
+            public List<SettledInvoiceRecord> SettledInvoices { get; set; } = new();
+        }
 
         public class SupplierSummaryItem
         {
@@ -94,6 +131,7 @@ namespace YIS.Pages.Reports
             public string Description { get; set; } = "";
             public double Rate { get; set; }
             public double Amount { get; set; }
+            public double GstAmount { get; set; }
             public double ReceivedPaid { get; set; }
             public double Balance { get; set; }
             public int ContDays { get; set; }
@@ -102,6 +140,7 @@ namespace YIS.Pages.Reports
             public DateTime? PdcDate { get; set; }
             public string? BuyerName { get; set; } // Supplier / Seller
             public string? BrokerName { get; set; }
+            public List<VoucherSettlementInfo> AppliedVouchers { get; set; } = new();
         }
 
         public class BuyerAgingGroup
@@ -109,6 +148,7 @@ namespace YIS.Pages.Reports
             public string BuyerName { get; set; } = "";
             public List<AgingItemRow> Items { get; set; } = new();
             public double SubTotalAmount => Items.Sum(i => i.Amount);
+            public double SubTotalGst => Items.Sum(i => i.GstAmount);
             public double SubTotalReceived => Items.Sum(i => i.ReceivedPaid);
             public double SubTotalBalance => Items.Sum(i => i.Balance);
             public double SubTotalPdc => Items.Sum(i => i.PdcAmount);
@@ -119,6 +159,7 @@ namespace YIS.Pages.Reports
             public string BrokerName { get; set; } = "";
             public List<BuyerAgingGroup> Buyers { get; set; } = new();
             public double SubTotalAmount => Buyers.Sum(b => b.SubTotalAmount);
+            public double SubTotalGst => Buyers.Sum(b => b.SubTotalGst);
             public double SubTotalReceived => Buyers.Sum(b => b.SubTotalReceived);
             public double SubTotalBalance => Buyers.Sum(b => b.SubTotalBalance);
             public double SubTotalPdc => Buyers.Sum(b => b.SubTotalPdc);
@@ -228,20 +269,21 @@ namespace YIS.Pages.Reports
 
             // 5. Total Payments per Supplier up to targetDate (PV, DN - Only GL-posted)
             var suppIdStrings = purchaseInvoices.Select(p => p.EntryAttribute1).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
-            var paymentsBySupplier = new Dictionary<string, double>();
 
             var allPvEntries = await _context.Entries
-                .Where(e => (e.EntryType == "PV" || e.EntryType == "DN") && e.UcpId == ucpId && e.EntryDate <= targetDate && suppIdStrings.Contains(e.EntryAttribute2!))
+                .Where(e => (e.EntryType == "PV" || e.EntryType == "DN") && e.UcpId == ucpId && e.EntryDate <= targetDate)
+                .OrderBy(e => e.EntryDate)
+                .ThenBy(e => e.EntryId)
                 .ToListAsync();
 
-            var pvEntries = allPvEntries
-                .Where(e => postedEntryIds.Contains(e.EntryId))
-                .ToList();
+            Func<Entry, string> getVoucherSuppId = (v) =>
+                v.EntryType == "DN"
+                    ? (!string.IsNullOrEmpty(v.EntryAttribute1) ? v.EntryAttribute1 : (v.EntryAttribute2 ?? ""))
+                    : (v.EntryAttribute2 ?? "");
 
-            foreach (var suppId in suppIdStrings)
-            {
-                paymentsBySupplier[suppId] = pvEntries.Where(p => p.EntryAttribute2 == suppId).Sum(p => p.Amount ?? 0);
-            }
+            var pvEntries = allPvEntries
+                .Where(e => postedEntryIds.Contains(e.EntryId) && suppIdStrings.Contains(getVoucherSuppId(e)))
+                .ToList();
 
             // Extract Brokers
             var brokers = purchaseInvoices
@@ -264,32 +306,75 @@ namespace YIS.Pages.Reports
             foreach (var suppGroup in groupedBySupp)
             {
                 string suppKey = suppGroup.Key;
-                double unallocatedPayments = paymentsBySupplier.ContainsKey(suppKey) ? paymentsBySupplier[suppKey] : 0;
-
                 long.TryParse(suppKey, out long parsedSuppId);
                 var sMaster = supplierDict.ContainsKey(parsedSuppId) ? supplierDict[parsedSuppId] : null;
                 string suppName = sMaster?.SupplierName ?? "Supplier #" + suppKey;
+
+                var supplierVouchers = pvEntries
+                    .Where(p => getVoucherSuppId(p) == suppKey)
+                    .Select(p => new ActiveVoucherItem
+                    {
+                        EntryId = p.EntryId,
+                        VoucherNumber = p.EntryNumber.HasValue ? p.EntryNumber.Value.ToString() : p.EntryId.ToString(),
+                        VoucherType = p.EntryType ?? "PV",
+                        VoucherDate = p.EntryDate,
+                        TotalAmount = p.Amount ?? 0,
+                        RemainingAmount = p.Amount ?? 0
+                    })
+                    .ToList();
 
                 foreach (var inv in suppGroup.OrderBy(i => i.EntryDate).ThenBy(i => i.EntryId))
                 {
                     double.TryParse(inv.EntryAttribute3, out double netAmt);
                     double invAmount = netAmt > 0 ? netAmt : (inv.Amount ?? 0);
-                    double paidForThis = 0;
+                    double needed = invAmount;
+                    var appliedList = new List<VoucherSettlementInfo>();
 
-                    if (unallocatedPayments > 0)
+                    foreach (var v in supplierVouchers)
                     {
-                        if (unallocatedPayments >= invAmount)
+                        if (needed <= 0.001) break;
+                        if (v.RemainingAmount <= 0.001) continue;
+
+                        double apply = Math.Min(needed, v.RemainingAmount);
+                        double availableForThis = v.RemainingAmount;
+                        double consumedBefore = v.TotalAmount - availableForThis;
+                        double remainingAfter = availableForThis - apply;
+
+                        var earlierList = v.SettledInvoices.Select(si => new SettledInvoiceRecord
                         {
-                            paidForThis = invAmount;
-                            unallocatedPayments -= invAmount;
-                        }
-                        else
+                            EntryId = si.EntryId,
+                            InvoiceNumber = si.InvoiceNumber,
+                            Date = si.Date,
+                            AmountApplied = si.AmountApplied
+                        }).ToList();
+
+                        appliedList.Add(new VoucherSettlementInfo
                         {
-                            paidForThis = unallocatedPayments;
-                            unallocatedPayments = 0;
-                        }
+                            EntryId = v.EntryId,
+                            VoucherNumber = v.VoucherNumber,
+                            VoucherType = v.VoucherType,
+                            VoucherDate = v.VoucherDate,
+                            TotalVoucherAmount = v.TotalAmount,
+                            ConsumedBeforeThis = consumedBefore,
+                            AvailableForThis = availableForThis,
+                            AmountApplied = apply,
+                            RemainingAfterThis = remainingAfter,
+                            EarlierBills = earlierList
+                        });
+
+                        v.RemainingAmount -= apply;
+                        needed -= apply;
+
+                        v.SettledInvoices.Add(new SettledInvoiceRecord
+                        {
+                            EntryId = inv.EntryId,
+                            InvoiceNumber = string.IsNullOrWhiteSpace(inv.EntryAttribute2) ? (inv.EntryNumber?.ToString() ?? inv.EntryId.ToString()) : inv.EntryAttribute2.Trim(),
+                            Date = inv.EntryDate,
+                            AmountApplied = apply
+                        });
                     }
 
+                    double paidForThis = appliedList.Sum(a => a.AmountApplied);
                     double balance = invAmount - paidForThis;
 
                     if (UnClearedOnly && balance <= 0.01)
@@ -301,10 +386,13 @@ namespace YIS.Pages.Reports
                     string desc = "";
                     double totalQty = 0;
                     double rate = inv.Rate ?? 0;
+                    double invGst = inv.TaxAmount ?? 0;
 
                     if (lines.Any())
                     {
                         totalQty = lines.Sum(l => l.Qty ?? 0);
+                        if (invGst == 0) invGst = lines.Sum(l => l.TaxAmount ?? 0);
+
                         var descList = lines.Select(l =>
                         {
                             string iName = (l.ItemId.HasValue && itemsMap.ContainsKey(l.ItemId.Value)) ? itemsMap[l.ItemId.Value] : "";
@@ -355,13 +443,15 @@ namespace YIS.Pages.Reports
                         Description = desc,
                         Rate = rate,
                         Amount = invAmount,
+                        GstAmount = invGst,
                         ReceivedPaid = paidForThis,
                         Balance = balance,
                         ContDays = contDays,
                         TotalDays = totalDays,
                         PdcAmount = 0,
                         BuyerName = suppName,
-                        BrokerName = broker
+                        BrokerName = broker,
+                        AppliedVouchers = appliedList
                     };
 
                     processedRows.Add(row);
@@ -429,18 +519,45 @@ namespace YIS.Pages.Reports
                 .ToList();
 
             // Slabs
-            GrandTotalAmount = GroupedReport.Sum(g => g.SubTotalAmount);
-            GrandTotalReceived = GroupedReport.Sum(g => g.SubTotalReceived);
-            GrandTotalBalance = GroupedReport.Sum(g => g.SubTotalBalance);
-            GrandTotalPdc = GroupedReport.Sum(g => g.SubTotalPdc);
-            TotalInvoicesCount = GroupedReport.Sum(g => g.Buyers.Sum(b => b.Items.Count));
-
             var allRows = GroupedReport.SelectMany(g => g.Buyers.SelectMany(b => b.Items)).ToList();
+            GrandTotalAmount = allRows.Sum(r => r.Amount);
+            GrandTotalGst = allRows.Sum(r => r.GstAmount);
+            GrandTotalReceived = allRows.Sum(r => r.ReceivedPaid);
+            GrandTotalBalance = allRows.Sum(r => r.Balance);
+            GrandTotalPdc = allRows.Sum(r => r.PdcAmount);
+            TotalInvoicesCount = allRows.Count;
+
             Slab_0_30 = allRows.Where(r => r.TotalDays <= 30).Sum(r => r.Balance);
             Slab_31_60 = allRows.Where(r => r.TotalDays > 30 && r.TotalDays <= 60).Sum(r => r.Balance);
             Slab_61_90 = allRows.Where(r => r.TotalDays > 60 && r.TotalDays <= 90).Sum(r => r.Balance);
             Slab_91_120 = allRows.Where(r => r.TotalDays > 90 && r.TotalDays <= 120).Sum(r => r.Balance);
             Slab_120_Plus = allRows.Where(r => r.TotalDays > 120).Sum(r => r.Balance);
+
+            // Apply SlabFilter if requested
+            if (!string.IsNullOrWhiteSpace(SlabFilter))
+            {
+                GroupedReport = GroupedReport.Select(broker => new BrokerAgingGroup
+                {
+                    BrokerName = broker.BrokerName,
+                    Buyers = broker.Buyers.Select(buyer => new BuyerAgingGroup
+                    {
+                        BuyerName = buyer.BuyerName,
+                        Items = buyer.Items.Where(r =>
+                            (SlabFilter == "0-30" && r.TotalDays <= 30) ||
+                            (SlabFilter == "31-60" && r.TotalDays > 30 && r.TotalDays <= 60) ||
+                            (SlabFilter == "61-90" && r.TotalDays > 60 && r.TotalDays <= 90) ||
+                            (SlabFilter == "90+" && r.TotalDays > 90)
+                        ).ToList()
+                    }).Where(b => b.Items.Any()).ToList()
+                }).Where(g => g.Buyers.Any()).ToList();
+
+                SupplierSummaries = SupplierSummaries.Where(s =>
+                    (SlabFilter == "0-30" && s.Slab0_30 > 0) ||
+                    (SlabFilter == "31-60" && s.Slab31_60 > 0) ||
+                    (SlabFilter == "61-90" && s.Slab61_90 > 0) ||
+                    (SlabFilter == "90+" && s.Slab90Plus > 0)
+                ).ToList();
+            }
         }
 
         public async Task<IActionResult> OnGetExportExcelAsync()
@@ -458,18 +575,18 @@ namespace YIS.Pages.Reports
             ws.Cell("A1").Value = CompanyName;
             ws.Cell("A1").Style.Font.Bold = true;
             ws.Cell("A1").Style.Font.FontSize = 14;
-            ws.Range("A1:N1").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range("A1:P1").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Cell("A2").Value = $"AGING REPORT (PAYABLES ONLY) UPTO {targetDate:dd-MM-yyyy}";
             ws.Cell("A2").Style.Font.Bold = true;
-            ws.Range("A2:N2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range("A2:P2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Cell("A3").Value = UnClearedOnly ? "UnCleared Bills Only" : "All Bills";
-            ws.Cell("O3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
+            ws.Cell("P3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
 
             string[] headers = {
                 "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER", "SUPPLIER PUR NO",
-                "QTY", "DESCRIPTION", "RATE", "AMOUNT",
+                "QTY", "DESCRIPTION", "RATE", "AMOUNT", "GST",
                 "RECEIVED / PAID", "BALANCE", "CONT. DAYS", "TOTAL DAYS",
                 "PDC AMOUNT", "PDC DT"
             };
@@ -490,7 +607,7 @@ namespace YIS.Pages.Reports
             {
                 ws.Cell(rowIdx, 1).Value = broker.BrokerName;
                 ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-                ws.Range(rowIdx, 1, rowIdx, 15).Merge().Style.Fill.BackgroundColor = XLColor.FromHtml("#e8f4f8");
+                ws.Range(rowIdx, 1, rowIdx, 16).Merge().Style.Fill.BackgroundColor = XLColor.FromHtml("#e8f4f8");
                 rowIdx++;
 
                 foreach (var buyer in broker.Buyers)
@@ -498,7 +615,7 @@ namespace YIS.Pages.Reports
                     ws.Cell(rowIdx, 1).Value = buyer.BuyerName;
                     ws.Cell(rowIdx, 1).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 1).Style.Font.FontColor = XLColor.Red;
-                    ws.Range(rowIdx, 1, rowIdx, 15).Merge();
+                    ws.Range(rowIdx, 1, rowIdx, 16).Merge();
                     rowIdx++;
 
                     foreach (var item in buyer.Items)
@@ -512,14 +629,15 @@ namespace YIS.Pages.Reports
                         ws.Cell(rowIdx, 7).SetValue(item.Description);
                         ws.Cell(rowIdx, 8).SetValue(item.Rate).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(rowIdx, 9).SetValue(item.Amount).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 10).SetValue(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "0.00");
-                        ws.Cell(rowIdx, 11).SetValue(item.Balance).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 12).SetValue(item.ContDays);
-                        ws.Cell(rowIdx, 13).SetValue(item.TotalDays);
-                        ws.Cell(rowIdx, 14).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 15).SetValue(item.PdcDate?.ToString("dd-MM-yyyy") ?? "");
+                        ws.Cell(rowIdx, 10).SetValue(item.GstAmount).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 11).SetValue(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "0.00");
+                        ws.Cell(rowIdx, 12).SetValue(item.Balance).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 13).SetValue(item.ContDays);
+                        ws.Cell(rowIdx, 14).SetValue(item.TotalDays);
+                        ws.Cell(rowIdx, 15).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 16).SetValue(item.PdcDate?.ToString("dd-MM-yyyy") ?? "");
 
-                        for (int col = 1; col <= 15; col++)
+                        for (int col = 1; col <= 16; col++)
                         {
                             ws.Cell(rowIdx, col).Style.Border.OutsideBorder = XLBorderStyleValues.Hair;
                         }
@@ -532,14 +650,16 @@ namespace YIS.Pages.Reports
                     
                     ws.Cell(rowIdx, 9).SetValue(buyer.SubTotalAmount).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(rowIdx, 10).SetValue(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 11).SetValue(buyer.SubTotalBalance).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(rowIdx, 14).SetValue(buyer.SubTotalPdc).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 14).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 10).SetValue(buyer.SubTotalGst).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 11).SetValue(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 12).SetValue(buyer.SubTotalBalance).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 12).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 15).SetValue(buyer.SubTotalPdc).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 15).Style.NumberFormat.Format = "#,##0.00";
 
-                    ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     rowIdx++;
                 }
 
@@ -549,22 +669,29 @@ namespace YIS.Pages.Reports
 
                 ws.Cell(rowIdx, 9).SetValue(broker.SubTotalAmount).Style.Font.Bold = true;
                 ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
-                ws.Cell(rowIdx, 10).SetValue(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
-                ws.Cell(rowIdx, 11).SetValue(broker.SubTotalBalance).Style.Font.Bold = true;
-                ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(rowIdx, 10).SetValue(broker.SubTotalGst).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(rowIdx, 11).SetValue(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+                ws.Cell(rowIdx, 12).SetValue(broker.SubTotalBalance).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 12).Style.NumberFormat.Format = "#,##0.00";
 
-                ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.BottomBorder = XLBorderStyleValues.Medium;
                 rowIdx += 2;
             }
 
             ws.Cell(rowIdx, 1).Value = "GRAND - TOTAL :";
             ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-            ws.Range(rowIdx, 1, rowIdx, 10).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-            ws.Cell(rowIdx, 11).SetValue(GrandTotalBalance).Style.Font.Bold = true;
-            ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
-            ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Double;
+            ws.Range(rowIdx, 1, rowIdx, 8).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+            ws.Cell(rowIdx, 9).SetValue(GrandTotalAmount).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
+            ws.Cell(rowIdx, 10).SetValue(GrandTotalGst).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+            ws.Cell(rowIdx, 11).SetValue(GrandTotalReceived > 0 ? $"({GrandTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+            ws.Cell(rowIdx, 12).SetValue(GrandTotalBalance).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 12).Style.NumberFormat.Format = "#,##0.00";
+            ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.BottomBorder = XLBorderStyleValues.Double;
 
             ws.Columns().AdjustToContents();
 
