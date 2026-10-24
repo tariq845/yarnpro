@@ -22,6 +22,9 @@ namespace YIS.Pages.Customers
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
 
         public PaginationViewModel Pagination { get; set; } = default!;
@@ -49,13 +52,14 @@ namespace YIS.Pages.Customers
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
 
                 Customers = await query
                     .OrderBy(c => c.CustomerName)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
             }
         }

@@ -202,6 +202,37 @@
                 initDatePickers(evt.target);
             });
         }
+
+        function toggleSortDirection(inputId, formId) {
+            var input = document.getElementById(inputId || 'sortDirInput');
+            var form = document.getElementById(formId || 'searchForm') || (input ? input.closest('form') : null);
+            if (input) {
+                input.value = (input.value === 'asc') ? 'desc' : 'asc';
+                if (form) {
+                    var searchInput = form.querySelector('input[name="SearchTerm"]');
+                    if (window.htmx && searchInput && searchInput.getAttribute('hx-get')) {
+                        htmx.trigger(searchInput, 'search');
+                    } else {
+                        form.submit();
+                    }
+                }
+            }
+        }
+
+        function clearSearchInput(inputId, formId) {
+            var input = document.getElementById(inputId || 'searchInput');
+            var form = document.getElementById(formId || 'searchForm') || (input ? input.closest('form') : null);
+            if (input) {
+                input.value = '';
+                if (form) {
+                    if (window.htmx && input.getAttribute('hx-get')) {
+                        htmx.trigger(input, 'search');
+                    } else {
+                        form.submit();
+                    }
+                }
+            }
+        }
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

@@ -22,7 +22,15 @@ namespace YIS.Pages.Vouchers
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string SortDir { get; set; } = "desc";
+
+        public List<string> SearchSuggestions { get; set; } = new List<string>();
 
         public PaginationViewModel Pagination { get; set; } = default!;
 
@@ -47,22 +55,36 @@ namespace YIS.Pages.Vouchers
 
                 if (!string.IsNullOrEmpty(SearchTerm))
                 {
-                    var term = SearchTerm.ToLower();
+                    var smart = SmartSearchHelper.Parse(SearchTerm);
                     query = query.Where(e =>
-                        e.EntryNumber.ToString().Contains(term) ||
-                        (e.EntryAttribute1 != null && e.EntryAttribute1.ToLower().Contains(term)) ||
-                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(term))
+                        (smart.HasNumber && e.EntryNumber == smart.ExtractedNumber.Value) ||
+                        e.EntryNumber.ToString().Contains(smart.CleanTerm) ||
+                        (e.EntryAttribute1 != null && e.EntryAttribute1.ToLower().Contains(smart.CleanTerm)) ||
+                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(smart.CleanTerm))
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
+
+                // Populate search suggestions (recent JV numbers)
+                var recentNumbers = await _context.Entries
+                    .Where(e => e.EntryType == "JV" && e.UcpId == activeUcpId && e.EntryNumber != null)
+                    .OrderByDescending(e => e.EntryId)
+                    .Take(8)
+                    .Select(e => $"JV-{e.EntryNumber}")
+                    .ToListAsync();
+                SearchSuggestions = recentNumbers;
+
+                var orderedQuery = (SortDir == "asc")
+                    ? query.OrderBy(e => e.EntryId)
+                    : query.OrderByDescending(e => e.EntryId);
 
                 // Get parent entries
-                var parentEntries = await query
-                    .OrderByDescending(e => e.EntryId)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                var parentEntries = await orderedQuery
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
 
                 // Get child counts

@@ -1,141 +1,160 @@
 @model YIS.Models.PaginationViewModel
 
 @{
-    string GetPageUrl(int pageNum)
+    if (Model == null) return;
+
+    string GetPageUrl(int pageNum, int? pageSize = null)
     {
-        var query = new Dictionary<string, string>();
+        var query = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         foreach (var key in Context.Request.Query.Keys)
         {
             query[key] = Context.Request.Query[key]!;
         }
         query["currentPage"] = pageNum.ToString();
+        query["pageSize"] = (pageSize ?? Model.PageSize).ToString();
         return "?" + string.Join("&", query.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
     }
+
+    int startItem = Model.StartItem;
+    int endItem = Model.EndItem;
 }
 
-@if (Model.TotalPages > 1)
-{
-    <style>
-        .pagination-container {
-            animation: fadeIn 0.5s ease-out;
-        }
+<style>
+    .mui-pagination-bar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 20px;
+        padding: 12px 18px;
+        font-size: 13px;
+        color: #64748b;
+        user-select: none;
+        background: transparent;
+    }
 
-        .page-link-box {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 36px;
-            height: 36px;
-            padding: 0 10px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all var(--transition-normal, 0.3s ease);
-            border: 1px solid var(--border-color, #e2e8f0) !important;
-            color: var(--text-secondary, #64748b);
-            background-color: var(--card-bg, #ffffff);
-            text-decoration: none;
-        }
+    .mui-pagination-label {
+        font-weight: 500;
+        color: #64748b;
+        margin-bottom: 0;
+        font-size: 13px;
+    }
 
-        .page-link-box:hover:not(.disabled-link) {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1)) !important;
-            background-color: var(--primary-color, #4f46e5) !important;
-            border-color: var(--primary-color, #4f46e5) !important;
-            color: white !important;
-        }
+    .mui-pagination-select {
+        border: none;
+        background-color: transparent;
+        color: #1e293b;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 2px 18px 2px 4px;
+        cursor: pointer;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 2px center;
+        background-size: 11px;
+        transition: color 0.15s ease;
+    }
 
-        .page-link-box.active-page {
-            background-color: var(--primary-color, #4f46e5) !important;
-            border-color: var(--primary-color, #4f46e5) !important;
-            color: white !important;
-            box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1)) !important;
-        }
+    .mui-pagination-select:hover {
+        color: #0f172a;
+    }
 
-        .page-link-box.disabled-link {
-            opacity: 0.5;
-            background-color: var(--body-bg, #f1f5f9) !important;
-            color: var(--text-secondary, #64748b) !important;
-            border-color: var(--border-color, #e2e8f0) !important;
-            pointer-events: none;
-        }
+    .mui-pagination-range {
+        font-weight: 500;
+        color: #1e293b;
+        font-size: 13px;
+        min-width: 55px;
+        text-align: center;
+    }
 
-        .page-ellipsis {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 36px;
-            height: 36px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-secondary, #64748b);
-        }
+    .mui-pagination-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        color: #475569;
+        text-decoration: none;
+        transition: background-color 0.15s ease, color 0.15s ease;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
 
-        @@keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    .mui-pagination-btn:hover:not(.disabled) {
+        background-color: #f1f5f9;
+        color: #0f172a;
+    }
 
+    .mui-pagination-btn.disabled {
+        color: #cbd5e1 !important;
+        cursor: default;
+        pointer-events: none;
+    }
 
-    <nav aria-label="Page navigation" class="mt-4 mb-4 px-4 overflow-hidden pagination-container">
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 border-top">
-            <div class="text-muted small">
-                Showing <strong>@((Model.CurrentPage - 1) * Model.PageSize + 1)</strong> to 
-                <strong>@Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalItems)</strong> of 
-                <strong>@Model.TotalItems</strong> entries
-            </div>
-            
-            <div class="d-flex align-items-center gap-1">
-                @* Previous Button *@
-                <a class="page-link-box @(!Model.HasPreviousPage ? "disabled-link" : "")" 
-                   href="@GetPageUrl(Model.CurrentPage - 1)">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
+    .mui-pagination-btn i {
+        font-size: 13px;
+    }
+</style>
 
-                @* Page Numbers *@
-                @if (Model.TotalPages <= 5)
+<div class="mui-pagination-bar flex-wrap">
+    <!-- Rows per page selector -->
+    <div class="d-flex align-items-center gap-1">
+        <span class="mui-pagination-label">Rows per page:</span>
+        <select class="mui-pagination-select" 
+                id="paginationPageSizeSelect" 
+                onchange="handlePageSizeChange(this.value)"
+                title="Rows per page">
+            @foreach (var opt in Model.PageSizeOptions)
+            {
+                if (opt == Model.PageSize)
                 {
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        <a class="page-link-box @(i == Model.CurrentPage ? "active-page" : "")" 
-                           href="@GetPageUrl(i)">@i</a>
-                    }
+                    <option value="@opt" selected>@opt</option>
                 }
                 else
                 {
-                    @* First Page *@
-                    <a class="page-link-box @(Model.CurrentPage == 1 ? "active-page" : "")" 
-                       href="@GetPageUrl(1)">1</a>
-
-                    @if (Model.CurrentPage > 3)
-                    {
-                        <span class="page-ellipsis">...</span>
-                    }
-
-                    @* Middle Pages *@
-                    @for (int i = Math.Max(2, Model.CurrentPage - 1); i <= Math.Min(Model.TotalPages - 1, Model.CurrentPage + 1); i++)
-                    {
-                        <a class="page-link-box @(i == Model.CurrentPage ? "active-page" : "")" 
-                           href="@GetPageUrl(i)">@i</a>
-                    }
-
-                    @if (Model.CurrentPage < Model.TotalPages - 2)
-                    {
-                        <span class="page-ellipsis">...</span>
-                    }
-
-                    @* Last Page *@
-                    <a class="page-link-box @(Model.CurrentPage == Model.TotalPages ? "active-page" : "")" 
-                       href="@GetPageUrl(Model.TotalPages)">@Model.TotalPages</a>
+                    <option value="@opt">@opt</option>
                 }
+            }
+        </select>
+    </div>
 
-                @* Next Button *@
-                <a class="page-link-box @(!Model.HasNextPage ? "disabled-link" : "")" 
-                   href="@GetPageUrl(Model.CurrentPage + 1)">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </div>
-        </div>
-    </nav>
-}
+    <!-- Range Indicator: e.g. 1-5 of 5 -->
+    <div class="mui-pagination-range">
+        @startItem-@endItem of @Model.TotalItems
+    </div>
+
+    <!-- Navigation chevrons: < and > -->
+    <div class="d-flex align-items-center gap-1">
+        <!-- Previous Page -->
+        <a class="mui-pagination-btn @(!Model.HasPreviousPage ? "disabled" : "")" 
+           href="@(Model.HasPreviousPage ? GetPageUrl(Model.CurrentPage - 1) : "javascript:void(0)")"
+           title="Previous page"
+           aria-label="Previous page">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+
+        <!-- Next Page -->
+        <a class="mui-pagination-btn @(!Model.HasNextPage ? "disabled" : "")" 
+           href="@(Model.HasNextPage ? GetPageUrl(Model.CurrentPage + 1) : "javascript:void(0)")"
+           title="Next page"
+           aria-label="Next page">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    if (typeof handlePageSizeChange !== 'function') {
+        function handlePageSizeChange(newSize) {
+            var url = new URL(window.location.href);
+            url.searchParams.set('pageSize', newSize);
+            url.searchParams.set('currentPage', '1');
+            window.location.href = url.toString();
+        }
+    }
+</script>

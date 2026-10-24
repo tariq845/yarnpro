@@ -152,6 +152,7 @@
                        asp-route-CustomerId="@Model.CustomerId"
                        asp-route-BrokerFilter="@Model.BrokerFilter"
                        asp-route-SodaNo="@Model.SodaNo"
+                       asp-route-BillStatus="@Model.BillStatus"
                        asp-route-UnClearedOnly="@Model.UnClearedOnly"
                        asp-route-SearchTerm="@Model.SearchTerm"
                        asp-route-SlabFilter="@Model.SlabFilter"
@@ -164,6 +165,7 @@
             <!-- Filter Controls -->
             <div class="pt-3 border-top">
                 <form method="get" id="filterForm">
+                    <input type="hidden" name="BillStatus" id="billStatusInput" value="@Model.BillStatus" />
                     <input type="hidden" name="SlabFilter" id="slabFilterInput" value="@Model.SlabFilter" />
                     <div class="row align-items-end g-2">
                         <div class="col-md-2">
@@ -196,14 +198,43 @@
                             <input type="text" name="SodaNo" class="form-control form-control-sm" placeholder="e.g. 7651" value="@Model.SodaNo" />
                         </div>
                         <div class="col-md-2 d-flex align-items-center gap-2">
-                            <div class="form-check form-switch pt-2 mb-0">
-                                <input class="form-check-input" type="checkbox" name="UnClearedOnly" value="true" id="chkUnCleared" 
-                                       checked="@Model.UnClearedOnly" onchange="this.form.submit()" />
-                                <label class="form-check-label small fw-bold text-danger" for="chkUnCleared">UnCleared</label>
-                            </div>
-                            <button type="submit" class="btn btn-sm btn-primary px-3">
-                                <i class="bi bi-funnel-fill"></i>
+                            <button type="submit" class="btn btn-sm btn-primary w-100">
+                                <i class="bi bi-funnel-fill me-1"></i> Filter
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- Status Tabs: UnCleared / Cleared / All -->
+                    <div class="pt-3 border-top mt-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div class="btn-group shadow-sm" role="group">
+                            <a href="?BillStatus=UnCleared&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&CustomerId=@Model.CustomerId&BrokerFilter=@Model.BrokerFilter&SodaNo=@Model.SodaNo&SlabFilter=@Model.SlabFilter&SearchTerm=@Model.SearchTerm"
+                               class="btn btn-sm @(Model.BillStatus == "UnCleared" ? "btn-danger fw-bold" : "btn-outline-danger") px-3">
+                                <i class="bi bi-hourglass-split me-1"></i> UnCleared Invoices
+                            </a>
+                            <a href="?BillStatus=Cleared&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&CustomerId=@Model.CustomerId&BrokerFilter=@Model.BrokerFilter&SodaNo=@Model.SodaNo&SlabFilter=@Model.SlabFilter&SearchTerm=@Model.SearchTerm"
+                               class="btn btn-sm @(Model.BillStatus == "Cleared" ? "btn-success fw-bold" : "btn-outline-success") px-3">
+                                <i class="bi bi-check2-circle me-1"></i> Cleared Invoices (Paid)
+                            </a>
+                            <a href="?BillStatus=All&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&CustomerId=@Model.CustomerId&BrokerFilter=@Model.BrokerFilter&SodaNo=@Model.SodaNo&SlabFilter=@Model.SlabFilter&SearchTerm=@Model.SearchTerm"
+                               class="btn btn-sm @(Model.BillStatus == "All" ? "btn-primary fw-bold" : "btn-outline-primary") px-3">
+                                <i class="bi bi-collection me-1"></i> All Invoices
+                            </a>
+                        </div>
+
+                        <div class="small fw-semibold text-muted">
+                            Active View: 
+                            @if (Model.BillStatus == "Cleared")
+                            {
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success"><i class="bi bi-check-circle-fill me-1"></i>Fully Cleared / Paid Bills Only</span>
+                            }
+                            else if (Model.BillStatus == "All")
+                            {
+                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary"><i class="bi bi-collection-fill me-1"></i>All Bills (Cleared + UnCleared)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger"><i class="bi bi-hourglass-split me-1"></i>UnCleared Bills Only (Outstanding)</span>
+                            }
                         </div>
                     </div>
                 </form>
@@ -413,7 +444,7 @@
                 <!-- Standard Header matching PDF -->
                 <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-3">
                     <div style="font-size: 11px; font-weight: 600;">
-                        @(Model.UnClearedOnly ? "UnCleared Bills Only" : "All Bills")
+                        @(Model.BillStatus == "Cleared" ? "Cleared / Paid Bills Only" : (Model.BillStatus == "All" || !Model.UnClearedOnly ? "All Bills" : "UnCleared Bills Only"))
                     </div>
                     <div class="text-center flex-grow-1">
                         <h5 class="fw-bold mb-0 text-uppercase" style="letter-spacing: 1px;">@Model.CompanyName</h5>
@@ -437,16 +468,17 @@
                                 <th style="width: 7%;">CONTRACT NUMBER</th>
                                 <th style="width: 6%;">INVOICE NUMBER</th>
                                 <th style="width: 5%;" class="text-end">QTY</th>
-                                <th style="width: 20%;" class="text-start">DESCRIPTION</th>
+                                <th style="width: 17%;" class="text-start">DESCRIPTION</th>
                                 <th style="width: 5%;" class="text-end">RATE</th>
-                                <th style="width: 6%;" class="text-end">AMOUNT</th>
-                                <th style="width: 6%;" class="text-end">GST</th>
+                                <th style="width: 6%;" class="text-end">AMOUNT (EXCL. GST)</th>
+                                <th style="width: 5%;" class="text-end">GST</th>
+                                <th style="width: 6%;" class="text-end">NET AMOUNT</th>
                                 <th style="width: 7%;" class="text-end">RECEIVED / PAID</th>
                                 <th style="width: 7%;" class="text-end">BALANCE</th>
                                 <th style="width: 4%;">CONT. DAYS</th>
                                 <th style="width: 4%;">TOTAL DAYS</th>
-                                <th style="width: 5%;" class="text-end">PDC AMOUNT</th>
-                                <th style="width: 5%;">PDC DT</th>
+                                <th style="width: 4%;" class="text-end">PDC AMOUNT</th>
+                                <th style="width: 4%;">PDC DT</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -455,7 +487,7 @@
                                 @foreach (var broker in Model.GroupedReport)
                                 {
                                     <tr class="broker-header-row">
-                                        <td colspan="15" class="px-3 py-2">
+                                        <td colspan="16" class="px-3 py-2">
                                             <i class="bi bi-person-badge me-1 no-print"></i> @broker.BrokerName
                                         </td>
                                     </tr>
@@ -463,7 +495,7 @@
                                     @foreach (var buyer in broker.Buyers)
                                     {
                                         <tr class="buyer-header-row">
-                                            <td colspan="15" class="px-3 py-1">
+                                            <td colspan="16" class="px-3 py-1">
                                                 @buyer.BuyerName
                                             </td>
                                         </tr>
@@ -471,21 +503,48 @@
                                         @foreach (var item in buyer.Items)
                                         {
                                             <tr class="searchable-row">
-                                                <td class="text-center font-monospace">@item.TransactionNumber</td>
+                                                <td class="text-center font-monospace">
+                                                    @if (!string.IsNullOrEmpty(item.TransactionUrl))
+                                                    {
+                                                        <a href="@item.TransactionUrl" target="_blank" class="text-decoration-none text-secondary" title="Open Sale Entry in new tab">
+                                                            @item.TransactionNumber <i class="bi bi-box-arrow-up-right small" style="font-size: 8px;"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        @item.TransactionNumber
+                                                    }
+                                                </td>
                                                 <td class="text-center">@item.Date?.ToString("dd-MM-yyyy")</td>
                                                 <td class="text-center font-monospace">
-                                                    <span class="badge bg-light text-dark border">@item.ContractNumber</span>
+                                                    @if (!string.IsNullOrEmpty(item.ContractUrl) && item.ContractNumber != "-")
+                                                    {
+                                                        <a href="@item.ContractUrl" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none" title="Open Soda Contract in new tab">
+                                                            @item.ContractNumber <i class="bi bi-box-arrow-up-right ms-1 small" style="font-size: 8px;"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-light text-dark border">@item.ContractNumber</span>
+                                                    }
                                                 </td>
                                                 <td class="text-center fw-semibold">
-                                                    <a href="/Sales/Entry?id=@item.EntryId" class="text-decoration-none text-dark" title="View Sale Entry">
-                                                        @item.InvoiceNumber
+                                                    <a href="/Sales/Entry?id=@item.EntryId" target="_blank" class="text-decoration-none text-primary" title="View Sale Entry in new tab">
+                                                        @item.InvoiceNumber <i class="bi bi-box-arrow-up-right ms-1 small" style="font-size: 8px;"></i>
                                                     </a>
+                                                    @if (!string.IsNullOrEmpty(item.InvoiceViewUrl))
+                                                    {
+                                                        <a href="@item.InvoiceViewUrl" target="_blank" class="badge bg-info bg-opacity-10 text-info border border-info ms-1 text-decoration-none" title="Print/View Invoice">
+                                                            <i class="bi bi-printer"></i>
+                                                        </a>
+                                                    }
                                                 </td>
                                                 <td class="text-end">@item.Qty.ToString("N2")</td>
                                                 <td class="text-start" style="font-size: 10px;">@item.Description</td>
                                                 <td class="text-end">@item.Rate.ToString("N2")</td>
-                                                <td class="text-end fw-semibold">@item.Amount.ToString("N2")</td>
+                                                <td class="text-end">@item.AmountWithoutGst.ToString("N2")</td>
                                                 <td class="text-end text-muted">@(item.GstAmount > 0 ? item.GstAmount.ToString("N2") : "-")</td>
+                                                <td class="text-end fw-semibold">@item.NetAmount.ToString("N2")</td>
                                                 <td class="text-end">
                                                     @{
                                                         var flowData = new {
@@ -495,9 +554,9 @@
                                                             contractNo = item.ContractNumber,
                                                             partyName = buyer.BuyerName,
                                                             brokerName = broker.BrokerName,
-                                                            amount = item.Amount,
+                                                            amount = item.AmountWithoutGst,
                                                             gst = item.GstAmount,
-                                                            netAmount = item.Amount + item.GstAmount,
+                                                            netAmount = item.NetAmount,
                                                             receivedPaid = item.ReceivedPaid,
                                                             balance = item.Balance,
                                                             isPurchase = false,
@@ -564,8 +623,9 @@
                                             <td colspan="7" class="text-end pe-3">
                                                 <strong>BUYER WISE SUB - TOTAL :</strong>
                                             </td>
-                                            <td class="text-end fw-bold">@buyer.SubTotalAmount.ToString("N2")</td>
+                                            <td class="text-end fw-bold">@buyer.SubTotalAmountWithoutGst.ToString("N2")</td>
                                             <td class="text-end fw-bold text-muted">@buyer.SubTotalGst.ToString("N2")</td>
+                                            <td class="text-end fw-bold">@buyer.SubTotalNetAmount.ToString("N2")</td>
                                             <td class="text-end fw-bold">
                                                 @(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00")
                                             </td>
@@ -581,8 +641,9 @@
                                         <td colspan="7" class="text-end pe-3">
                                             <strong>SUB - TOTAL OF SELLER / BROKER :</strong>
                                         </td>
-                                        <td class="text-end fw-bold">@broker.SubTotalAmount.ToString("N2")</td>
+                                        <td class="text-end fw-bold">@broker.SubTotalAmountWithoutGst.ToString("N2")</td>
                                         <td class="text-end fw-bold text-muted">@broker.SubTotalGst.ToString("N2")</td>
+                                        <td class="text-end fw-bold">@broker.SubTotalNetAmount.ToString("N2")</td>
                                         <td class="text-end fw-bold">
                                             @(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00")
                                         </td>
@@ -593,7 +654,7 @@
 
                                 <!-- Final Grand Total -->
                                 <tr>
-                                    <td colspan="10" class="text-end pe-3 py-3 border-0">
+                                    <td colspan="11" class="text-end pe-3 py-3 border-0">
                                         <strong style="font-size: 14px;">GRAND - TOTAL :</strong>
                                     </td>
                                     <td class="text-end py-3 border-0">
@@ -607,7 +668,7 @@
                             else
                             {
                                 <tr>
-                                    <td colspan="15" class="text-center py-5">
+                                    <td colspan="16" class="text-center py-5">
                                         <div class="py-4">
                                             <i class="bi bi-file-earmark-check text-muted" style="font-size: 3rem;"></i>
                                             <h5 class="mt-3 text-muted">No Invoices Found</h5>

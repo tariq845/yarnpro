@@ -23,7 +23,15 @@ namespace YIS.Pages.Purchase
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string SortDir { get; set; } = "desc";
+
+        public List<string> SearchSuggestions { get; set; } = new List<string>();
 
         public PaginationViewModel Pagination { get; set; } = default!;
 
@@ -65,23 +73,38 @@ namespace YIS.Pages.Purchase
 
                 if (!string.IsNullOrEmpty(SearchTerm))
                 {
-                    var term = SearchTerm.ToLower();
-                    // Filter by Entry Number
-                    // Since EntryNumber is nullable long, we handle it
+                    var smart = SmartSearchHelper.Parse(SearchTerm);
                     query = query.Where(e => 
-                        (e.EntryNumber != null && e.EntryNumber.ToString().Contains(term)) ||
-                        (_context.SupplierMasters.Any(s => s.SupplierId.ToString() == e.EntryAttribute1 && s.SupplierName.ToLower().Contains(term)))
+                        (smart.HasNumber && (e.EntryNumber == smart.ExtractedNumber.Value || e.EntryRefNo == smart.ExtractedNumber.Value)) ||
+                        (e.EntryNumber != null && e.EntryNumber.ToString().Contains(smart.CleanTerm)) ||
+                        (_context.SupplierMasters.Any(s => s.SupplierId.ToString() == e.EntryAttribute1 && s.SupplierName.ToLower().Contains(smart.CleanTerm)))
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
+
+                // Populate search suggestions (recent PSD numbers and supplier names)
+                var recentNumbers = await _context.Entries
+                    .Where(e => e.EntryType == "PSD" && e.UcpId == activeUcpId && e.EntryNumber != null)
+                    .OrderByDescending(e => e.EntryId)
+                    .Take(8)
+                    .Select(e => $"PSD-{e.EntryNumber}")
+                    .ToListAsync();
+                SearchSuggestions = recentNumbers
+                    .Concat(SupplierNames.Values.Take(6))
+                    .Distinct()
+                    .ToList();
+
+                var orderedQuery = (SortDir == "asc")
+                    ? query.OrderBy(e => e.EntryId)
+                    : query.OrderByDescending(e => e.EntryId);
 
                 // Get parent entries (PSD type only)
-                var parentEntries = await query
-                    .OrderByDescending(e => e.EntryId)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                var parentEntries = await orderedQuery
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
 
                 // Get child entries count per parent

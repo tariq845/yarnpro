@@ -158,14 +158,33 @@
                         <i class="bi bi-clock-history text-primary me-2"></i>Aging Analysis Report
                     </h5>
                     <div class="btn-group btn-group-sm" role="group">
-                        <a href="?AgingType=Receivables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly&SlabFilter=@Model.SlabFilter" 
+                        <a href="?AgingType=Receivables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&BillStatus=@Model.BillStatus&SlabFilter=@Model.SlabFilter" 
                            class="btn @(Model.AgingType == "Receivables" ? "btn-primary" : "btn-outline-primary") px-3 fw-bold">
                             <i class="bi bi-arrow-down-left-circle me-1"></i> Receivables (Customer)
                         </a>
-                        <a href="?AgingType=Payables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&UnClearedOnly=@Model.UnClearedOnly&SlabFilter=@Model.SlabFilter" 
+                        <a href="?AgingType=Payables&AsOfDate=@Model.AsOfDate?.ToString("yyyy-MM-dd")&BillStatus=@Model.BillStatus&SlabFilter=@Model.SlabFilter" 
                            class="btn @(Model.AgingType == "Payables" ? "btn-primary" : "btn-outline-primary") px-3 fw-bold">
                             <i class="bi bi-arrow-up-right-circle me-1"></i> Payables (Supplier)
                         </a>
+                    </div>
+
+                    <!-- Bill Status Tabs -->
+                    <div class="btn-group btn-group-sm ms-1" role="group">
+                        <button type="button" 
+                                class="btn @(Model.BillStatus == "UnCleared" ? "btn-danger fw-bold" : "btn-outline-danger") px-3"
+                                onclick="setBillStatus('UnCleared')">
+                            <i class="bi bi-clock-history me-1"></i> UnCleared Invoices
+                        </button>
+                        <button type="button" 
+                                class="btn @(Model.BillStatus == "Cleared" ? "btn-success fw-bold" : "btn-outline-success") px-3"
+                                onclick="setBillStatus('Cleared')">
+                            <i class="bi bi-check2-all me-1"></i> Cleared Invoices (Paid)
+                        </button>
+                        <button type="button" 
+                                class="btn @(Model.BillStatus == "All" ? "btn-secondary fw-bold" : "btn-outline-secondary") px-3"
+                                onclick="setBillStatus('All')">
+                            <i class="bi bi-list-nested me-1"></i> All Invoices
+                        </button>
                     </div>
                 </div>
                 <div class="d-flex gap-2">
@@ -177,6 +196,7 @@
                        asp-route-AsOfDate="@Model.AsOfDate?.ToString("yyyy-MM-dd")"
                        asp-route-PartyId="@Model.PartyId"
                        asp-route-BrokerFilter="@Model.BrokerFilter"
+                       asp-route-BillStatus="@Model.BillStatus"
                        asp-route-UnClearedOnly="@Model.UnClearedOnly"
                        asp-route-SearchTerm="@Model.SearchTerm"
                        asp-route-SlabFilter="@Model.SlabFilter"
@@ -189,6 +209,7 @@
             <!-- Filter Controls Form -->
             <form method="get" id="filterForm">
                 <input type="hidden" name="AgingType" value="@Model.AgingType" />
+                <input type="hidden" name="BillStatus" id="billStatusInput" value="@Model.BillStatus" />
                 <input type="hidden" name="SlabFilter" id="slabFilterInput" value="@Model.SlabFilter" />
                 <div class="row g-2 align-items-end">
                     <div class="col-md-2">
@@ -334,7 +355,7 @@
             <!-- Standard Header matching PDF -->
             <div class="d-flex justify-content-between align-items-start border-bottom pb-2 mb-2">
                 <div style="font-size: 11px; font-weight: 600;">
-                    @(Model.UnClearedOnly ? "UnCleared Bills Only" : "All Bills")
+                    @(Model.BillStatus == "Cleared" ? "Cleared / Paid Bills Only" : (Model.BillStatus == "All" || !Model.UnClearedOnly ? "All Bills" : "UnCleared Bills Only"))
                     @if (!string.IsNullOrEmpty(Model.SlabFilter))
                     {
                         <span class="text-primary ms-1">[@Model.SlabFilter Days]</span>
@@ -363,11 +384,12 @@
                             <th style="width: 6%;">CONTRACT NUMBER</th>
                             <th style="width: 6%;">INVOICE NUMBER</th>
                             <th style="width: 5%;">QTY</th>
-                            <th style="width: 19%;">DESCRIPTION</th>
+                            <th style="width: 17%;">DESCRIPTION</th>
                             <th style="width: 5%;">RATE</th>
-                            <th style="width: 7%;">AMOUNT</th>
-                            <th style="width: 6%;">GST</th>
-                            <th style="width: 9%;">RECEIVED / PAID</th>
+                            <th style="width: 6%;" class="text-end">AMOUNT (EXCL. GST)</th>
+                            <th style="width: 5%;" class="text-end">GST</th>
+                            <th style="width: 6%;" class="text-end">NET AMOUNT</th>
+                            <th style="width: 8%;">RECEIVED / PAID</th>
                             <th style="width: 8%;">BALANCE</th>
                             <th style="width: 4%;">CONT. DAYS</th>
                             <th style="width: 4%;">TOTAL DAYS</th>
@@ -382,7 +404,7 @@
                             {
                                 <!-- Broker Group Header -->
                                 <tr class="broker-header-row">
-                                    <td colspan="15" class="px-2 py-1">
+                                    <td colspan="16" class="px-2 py-1">
                                         <i class="bi bi-briefcase me-1 no-print"></i> @broker.BrokerName
                                     </td>
                                 </tr>
@@ -391,7 +413,7 @@
                                 {
                                     <!-- Buyer / Customer Header -->
                                     <tr class="buyer-header-row">
-                                        <td colspan="15" class="px-2 py-1">
+                                        <td colspan="16" class="px-2 py-1">
                                             @buyer.BuyerName
                                         </td>
                                     </tr>
@@ -399,9 +421,31 @@
                                     @foreach (var item in buyer.Items)
                                     {
                                         <tr>
-                                            <td class="text-center font-monospace">@item.TransactionNumber</td>
+                                            <td class="text-center font-monospace">
+                                                @if (!string.IsNullOrEmpty(item.TransactionUrl))
+                                                {
+                                                    <a href="@item.TransactionUrl" target="_blank" class="text-decoration-none text-secondary" title="Open Transaction in new tab">
+                                                        @item.TransactionNumber <i class="bi bi-box-arrow-up-right no-print" style="font-size: 8px;"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    @item.TransactionNumber
+                                                }
+                                            </td>
                                             <td class="text-center">@item.Date?.ToString("dd-MM-yyyy")</td>
-                                            <td class="text-center font-monospace">@item.ContractNumber</td>
+                                            <td class="text-center font-monospace">
+                                                @if (!string.IsNullOrEmpty(item.ContractUrl) && item.ContractNumber != "-")
+                                                {
+                                                    <a href="@item.ContractUrl" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none" title="Open Soda Contract in new tab">
+                                                        @item.ContractNumber <i class="bi bi-box-arrow-up-right ms-1 small" style="font-size: 8px;"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-light text-dark border">@item.ContractNumber</span>
+                                                }
+                                            </td>
                                             
                                             <!-- Clickable Invoice Link -->
                                             <td class="text-center font-monospace">
@@ -422,11 +466,16 @@
                                             <td class="text-end">@item.Qty.ToString("N2")</td>
                                             <td class="text-start" style="font-size: 10px;">@item.Description</td>
                                             <td class="text-end">@item.Rate.ToString("N2")</td>
-                                            <td class="text-end fw-semibold">@item.Amount.ToString("N2")</td>
+                                            <td class="text-end">@item.AmountWithoutGst.ToString("N2")</td>
                                             
                                             <!-- GST Column -->
                                             <td class="text-end text-muted">
                                                 @(item.GstAmount > 0 ? item.GstAmount.ToString("N2") : "-")
+                                            </td>
+
+                                            <!-- Net Amount Column -->
+                                            <td class="text-end fw-semibold">
+                                                @item.NetAmount.ToString("N2")
                                             </td>
 
                                             <!-- Clickable Received / Paid Link -->
@@ -440,9 +489,9 @@
                                                         contractNo = item.ContractNumber,
                                                         partyName = buyer.BuyerName,
                                                         brokerName = broker.BrokerName,
-                                                        amount = item.Amount,
+                                                        amount = item.AmountWithoutGst,
                                                         gst = item.GstAmount,
-                                                        netAmount = item.Amount + item.GstAmount,
+                                                        netAmount = item.NetAmount,
                                                         receivedPaid = item.ReceivedPaid,
                                                         balance = item.Balance,
                                                         isPurchase = isPurch,
@@ -516,10 +565,11 @@
                                         <td colspan="7" class="text-end pe-2">
                                             <strong>BUYER WISE SUB - TOTAL :</strong>
                                         </td>
-                                        <td class="text-end fw-bold">@buyer.SubTotalAmount.ToString("N2")</td>
+                                        <td class="text-end fw-bold">@buyer.SubTotalAmountWithoutGst.ToString("N2")</td>
                                         <td class="text-end fw-bold text-muted">
                                             @(buyer.SubTotalGst > 0 ? buyer.SubTotalGst.ToString("N2") : "-")
                                         </td>
+                                        <td class="text-end fw-bold">@buyer.SubTotalNetAmount.ToString("N2")</td>
                                         <td class="text-end fw-bold">
                                             @(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00")
                                         </td>
@@ -535,10 +585,11 @@
                                     <td colspan="7" class="text-end pe-2">
                                         <strong>SUB - TOTAL OF SELLER / BROKER :</strong>
                                     </td>
-                                    <td class="text-end fw-bold">@broker.SubTotalAmount.ToString("N2")</td>
+                                    <td class="text-end fw-bold">@broker.SubTotalAmountWithoutGst.ToString("N2")</td>
                                     <td class="text-end fw-bold text-muted">
                                         @(broker.SubTotalGst > 0 ? broker.SubTotalGst.ToString("N2") : "-")
                                     </td>
+                                    <td class="text-end fw-bold">@broker.SubTotalNetAmount.ToString("N2")</td>
                                     <td class="text-end fw-bold">
                                         @(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00")
                                     </td>
@@ -553,10 +604,13 @@
                                     <strong style="font-size: 13px;">GRAND - TOTAL :</strong>
                                 </td>
                                 <td class="text-end py-3 border-0 fw-bold">
-                                    @Model.GrandTotalAmount.ToString("N2")
+                                    @Model.GrandTotalAmountWithoutGst.ToString("N2")
                                 </td>
                                 <td class="text-end py-3 border-0 fw-bold text-muted">
                                     @(Model.GrandTotalGst > 0 ? Model.GrandTotalGst.ToString("N2") : "-")
+                                </td>
+                                <td class="text-end py-3 border-0 fw-bold">
+                                    @Model.GrandTotalNetAmount.ToString("N2")
                                 </td>
                                 <td class="text-end py-3 border-0 fw-bold">
                                     @(Model.GrandTotalReceived > 0 ? $"({Model.GrandTotalReceived:N2})" : "0.00")
@@ -572,7 +626,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="15" class="text-center py-5">
+                                <td colspan="16" class="text-center py-5">
                                     <div class="py-4 text-muted">
                                         <i class="bi bi-clipboard-check fs-1 text-muted"></i>
                                         <h6 class="mt-2 fw-bold">No Pending / Overdue Bills Found</h6>
@@ -621,6 +675,21 @@
 </div>
 
 <script>
+    function setBillStatus(status) {
+        var input = document.getElementById('billStatusInput');
+        if (input) {
+            input.value = status;
+        }
+        var chk = document.getElementById('chkUnCleared');
+        if (chk) {
+            chk.checked = (status === 'UnCleared');
+        }
+        var form = document.getElementById('filterForm');
+        if (form) {
+            form.submit();
+        }
+    }
+
     function filterSlab(slab) {
         var input = document.getElementById('slabFilterInput');
         if (input) {
