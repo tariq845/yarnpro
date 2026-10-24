@@ -3,7 +3,7 @@
 @if (Model.LedgerRows.Count == 0)
 {
     <tr>
-        <td colspan="8" class="text-center">No transactions found for the selected criteria.</td>
+        <td colspan="8" class="text-center py-4 text-muted">No transactions found for the selected criteria.</td>
     </tr>
 }
 else
@@ -11,14 +11,82 @@ else
     @foreach (var row in Model.LedgerRows)
     {
         <tr>
-            <td>@(row.Date.HasValue ? row.Date.Value.ToString("dd-MM-yyyy") : "")</td>
-            <td>@row.TransNo</td>
-            <td>@row.Type</td>
+            <td class="text-nowrap">@(row.Date.HasValue ? row.Date.Value.ToString("dd-MM-yyyy") : "")</td>
+            <td class="text-nowrap">
+                @if (!string.IsNullOrEmpty(row.TransactionUrl))
+                {
+                    <a href="@row.TransactionUrl" target="_blank" class="fw-semibold text-primary text-decoration-none" title="Open transaction in new tab">
+                        @row.TransNo <i class="bi bi-box-arrow-up-right small"></i>
+                    </a>
+                }
+                else
+                {
+                    <span class="text-muted">@row.TransNo</span>
+                }
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(row.Type))
+                {
+                    <span class="badge bg-light text-dark border">@row.Type</span>
+                }
+            </td>
             <td>@row.PartyNameString</td>
-            <td>@row.Remarks</td>
-            <td class="text-end">@row.Debit.ToString("N2")</td>
-            <td class="text-end">@row.Credit.ToString("N2")</td>
-            <td class="text-end fw-bold">@row.Balance.ToString("N2")</td>
+            <td>
+                @if (row.Items != null && row.Items.Count > 0)
+                {
+                    <div class="d-flex flex-column gap-1">
+                        @foreach (var item in row.Items)
+                        {
+                            <div class="d-flex flex-wrap align-items-center gap-2">
+                                <span class="fw-bold text-dark">@item.ItemName</span>
+                                @if (item.Qty.HasValue && item.Qty > 0)
+                                {
+                                    <span class="badge bg-light text-dark border"><i class="bi bi-box me-1"></i>@item.Qty?.ToString("N0") Bags</span>
+                                }
+                                @if (item.Lbs.HasValue && item.Lbs > 0)
+                                {
+                                    <span class="badge bg-light text-secondary border">@item.Lbs?.ToString("N2") Lbs</span>
+                                }
+                                @if (item.Rate.HasValue && item.Rate > 0)
+                                {
+                                    <span class="badge bg-light text-success border">Rate: @item.Rate?.ToString("N2")</span>
+                                }
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(row.SodaNo))
+                        {
+                            <div class="mt-1">
+                                <a href="@row.SodaUrl" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none" title="Open Purchase Soda Contract in new tab">
+                                    <i class="bi bi-file-earmark-text me-1"></i>Soda: @row.SodaNo <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                                </a>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(row.OriginalRemarks) && row.OriginalRemarks != "Purchase Invoice")
+                        {
+                            <div class="text-muted small mt-1 fst-italic">@row.OriginalRemarks</div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <span>@row.Remarks</span>
+                        @if (!string.IsNullOrEmpty(row.SodaNo))
+                        {
+                            <span class="ms-2">
+                                <a href="@row.SodaUrl" target="_blank" class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none" title="Open Purchase Soda Contract in new tab">
+                                    <i class="bi bi-file-earmark-text me-1"></i>Soda: @row.SodaNo <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                                </a>
+                            </span>
+                        }
+                    </div>
+                }
+            </td>
+            <td class="text-end text-nowrap">@(row.Debit > 0 ? row.Debit.ToString("N2") : "-")</td>
+            <td class="text-end text-nowrap">@(row.Credit > 0 ? row.Credit.ToString("N2") : "-")</td>
+            <td class="text-end text-nowrap fw-bold @(row.Balance >= 0 ? "text-dark" : "text-danger")">@row.Balance.ToString("N2")</td>
         </tr>
     }
 }

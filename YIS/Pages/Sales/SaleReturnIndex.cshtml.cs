@@ -22,7 +22,15 @@ namespace YIS.Pages.Sales
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string SortDir { get; set; } = "desc";
+
+        public List<string> SearchSuggestions { get; set; } = new();
 
         public PaginationViewModel Pagination { get; set; } = default!;
 
@@ -46,24 +54,59 @@ namespace YIS.Pages.Sales
                 var query = _context.Entries
                     .Where(e => e.EntryType == "CN" && e.UcpId == activeUcpId);
 
-                if (!string.IsNullOrEmpty(SearchTerm))
+                if (!string.IsNullOrWhiteSpace(SearchTerm))
                 {
-                    var term = SearchTerm.ToLower();
+                    var smart = SmartSearchHelper.Parse(SearchTerm);
+
+                    var matchedCustomerIds = await _context.CustomerMasters
+                        .Where(c => c.UcpId == activeUcpId && c.CustomerName.ToLower().Contains(smart.CleanTerm))
+                        .Select(c => c.CustomerId.ToString())
+                        .ToListAsync();
+
                     query = query.Where(e =>
-                        e.EntryNumber.ToString().Contains(term) ||
-                        (e.EntryAttribute1 != null && e.EntryAttribute1.ToLower().Contains(term)) ||
-                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(term))
+                        (smart.HasNumber && e.EntryNumber == smart.ExtractedNumber.Value) ||
+                        e.EntryNumber.ToString().Contains(smart.CleanTerm) ||
+                        (e.EntryAttribute1 != null && (matchedCustomerIds.Contains(e.EntryAttribute1) || e.EntryAttribute1.ToLower().Contains(smart.CleanTerm))) ||
+                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(smart.CleanTerm))
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
+
+                query = (SortDir == "asc")
+                    ? query.OrderBy(e => e.EntryNumber).ThenBy(e => e.EntryId)
+                    : query.OrderByDescending(e => e.EntryNumber).ThenByDescending(e => e.EntryId);
 
                 var parentEntries = await query
-                    .OrderByDescending(e => e.EntryId)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
+
+                // Live search suggestions
+                try
+                {
+                    var topReturns = await _context.Entries
+                        .Where(e => e.EntryType == "CN" && e.UcpId == activeUcpId && e.EntryNumber.HasValue)
+                        .OrderByDescending(e => e.EntryId)
+                        .Take(6)
+                        .Select(e => "CN-" + e.EntryNumber)
+                        .ToListAsync();
+
+                    var topCusts = await _context.CustomerMasters
+                        .Where(c => c.UcpId == activeUcpId && !string.IsNullOrEmpty(c.CustomerName))
+                        .OrderBy(c => c.CustomerName)
+                        .Take(6)
+                        .Select(c => c.CustomerName)
+                        .ToListAsync();
+
+                    SearchSuggestions = topReturns.Concat(topCusts).Distinct().ToList();
+                }
+                catch
+                {
+                    SearchSuggestions = new List<string>();
+                }
 
                 var entryIds = parentEntries.Select(e => e.EntryId).ToList();
                 var postedEntryIds = new HashSet<long>();

@@ -10,15 +10,19 @@ namespace YIS.Models
         public int TotalItems { get; set; }
         public string? BaseUrl { get; set; }
 
+        public int StartItem => TotalItems == 0 ? 0 : (CurrentPage - 1) * PageSize + 1;
+        public int EndItem => Math.Min(CurrentPage * PageSize, TotalItems);
+        public int[] PageSizeOptions { get; set; } = new[] { 10, 20, 25, 50, 100 };
+
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
 
-        public PaginationViewModel(int totalItems, int currentPage, int pageSize = 20, string? baseUrl = null)
+        public PaginationViewModel(int totalItems, int currentPage, int pageSize = 10, string? baseUrl = null)
         {
             TotalItems = totalItems;
-            PageSize = pageSize;
-            CurrentPage = currentPage;
-            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            PageSize = pageSize <= 0 ? 10 : pageSize;
+            CurrentPage = currentPage <= 0 ? 1 : currentPage;
+            TotalPages = (int)Math.Ceiling(totalItems / (double)PageSize);
             BaseUrl = baseUrl;
         }
     }

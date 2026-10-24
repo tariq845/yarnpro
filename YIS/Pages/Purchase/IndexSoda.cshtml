@@ -12,16 +12,46 @@
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-md-5">
-                    <form method="get">
-                        <div class="position-relative">
+                    <form method="get" id="purchaseSodaSearchForm" class="d-flex align-items-center gap-2">
+                        <input type="hidden" name="SortDir" id="sortDirInput" value="@Model.SortDir" />
+                        <input type="hidden" name="PageSize" value="@Model.PageSize" />
+
+                        <div class="position-relative flex-grow-1">
                             <i class="bi bi-search yis-cat-search-icon"></i>
                             <input type="text" 
                                    name="SearchTerm"
-                                   class="form-control yis-cat-search-input" 
+                                   class="form-control yis-cat-search-input pe-4" 
                                    id="purchaseSodaSearch" 
-                                   placeholder="Search purchases..."
-                                   value="@Model.SearchTerm">
+                                   list="purchaseSodaSearchDatalist"
+                                   placeholder="Search (e.g. psd-1, 1, supplier)..."
+                                   value="@Model.SearchTerm"
+                                   autocomplete="off">
+                            @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                            {
+                                <a href="javascript:void(0)" 
+                                   onclick="clearSearchInput('purchaseSodaSearch', 'purchaseSodaSearchForm')"
+                                   class="position-absolute end-0 top-50 translate-middle-y me-2 text-muted text-decoration-none"
+                                   title="Clear search">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                </a>
+                            }
+                            <datalist id="purchaseSodaSearchDatalist">
+                                @foreach (var item in Model.SearchSuggestions)
+                                {
+                                    <option value="@item">@item</option>
+                                }
+                            </datalist>
                         </div>
+
+                        <!-- Up to Down / Down to Up Sort Direction Button -->
+                        <button type="button" 
+                                class="btn btn-outline-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2 text-nowrap"
+                                id="btnToggleSort"
+                                onclick="toggleSortDirection('sortDirInput', 'purchaseSodaSearchForm')"
+                                title="@(Model.SortDir == "asc" ? "Sort: Oldest first (Up to Down). Click for Newest first." : "Sort: Newest first (Down to Up). Click for Oldest first.")">
+                            <i class="bi @(Model.SortDir == "asc" ? "bi-sort-up text-primary fw-bold" : "bi-sort-down text-dark fw-bold") fs-6"></i>
+                            <span class="small d-none d-lg-inline">@(Model.SortDir == "asc" ? "Oldest First" : "Newest First")</span>
+                        </button>
                     </form>
                 </div>
                 <div class="col-md-4">

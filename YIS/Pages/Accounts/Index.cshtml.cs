@@ -22,6 +22,9 @@ namespace YIS.Pages.Accounts
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
 
         public PaginationViewModel Pagination { get; set; } = default!;
@@ -46,13 +49,14 @@ namespace YIS.Pages.Accounts
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
 
                 Accounts = await query
                     .OrderBy(a => a.AccountName)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
             }
         }

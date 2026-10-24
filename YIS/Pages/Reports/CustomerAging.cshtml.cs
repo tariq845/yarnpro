@@ -29,6 +29,9 @@ namespace YIS.Pages.Reports
         public string? BrokerFilter { get; set; }
 
         [BindProperty(SupportsGet = true)]
+        public string BillStatus { get; set; } = "UnCleared"; // "UnCleared", "Cleared", "All"
+
+        [BindProperty(SupportsGet = true)]
         public bool UnClearedOnly { get; set; } = true;
 
         [BindProperty(SupportsGet = true)]
@@ -57,8 +60,10 @@ namespace YIS.Pages.Reports
         public CustomerMaster? SelectedCustomer { get; set; }
 
         // Metrics
-        public double GrandTotalAmount { get; set; }
+        public double GrandTotalAmountWithoutGst { get; set; }
         public double GrandTotalGst { get; set; }
+        public double GrandTotalNetAmount { get; set; }
+        public double GrandTotalAmount { get; set; }
         public double GrandTotalReceived { get; set; }
         public double GrandTotalBalance { get; set; }
         public double GrandTotalPdc { get; set; }
@@ -123,14 +128,20 @@ namespace YIS.Pages.Reports
         {
             public long EntryId { get; set; }
             public string TransactionNumber { get; set; } = "";
+            public string? TransactionUrl { get; set; }
             public DateTime? Date { get; set; }
+            public long? ContractId { get; set; }
             public string ContractNumber { get; set; } = "";
+            public string? ContractUrl { get; set; }
             public string InvoiceNumber { get; set; } = "";
+            public string? InvoiceViewUrl { get; set; }
             public double Qty { get; set; }
             public string Description { get; set; } = "";
             public double Rate { get; set; }
-            public double Amount { get; set; }
+            public double AmountWithoutGst { get; set; }
             public double GstAmount { get; set; }
+            public double NetAmount { get; set; }
+            public double Amount { get; set; }
             public double ReceivedPaid { get; set; }
             public double Balance { get; set; }
             public int ContDays { get; set; }
@@ -146,8 +157,10 @@ namespace YIS.Pages.Reports
         {
             public string BuyerName { get; set; } = "";
             public List<AgingItemRow> Items { get; set; } = new();
-            public double SubTotalAmount => Items.Sum(i => i.Amount);
+            public double SubTotalAmountWithoutGst => Items.Sum(i => i.AmountWithoutGst);
             public double SubTotalGst => Items.Sum(i => i.GstAmount);
+            public double SubTotalNetAmount => Items.Sum(i => i.NetAmount);
+            public double SubTotalAmount => Items.Sum(i => i.Amount);
             public double SubTotalReceived => Items.Sum(i => i.ReceivedPaid);
             public double SubTotalBalance => Items.Sum(i => i.Balance);
             public double SubTotalPdc => Items.Sum(i => i.PdcAmount);
@@ -157,8 +170,10 @@ namespace YIS.Pages.Reports
         {
             public string BrokerName { get; set; } = "";
             public List<BuyerAgingGroup> Buyers { get; set; } = new();
-            public double SubTotalAmount => Buyers.Sum(b => b.SubTotalAmount);
+            public double SubTotalAmountWithoutGst => Buyers.Sum(b => b.SubTotalAmountWithoutGst);
             public double SubTotalGst => Buyers.Sum(b => b.SubTotalGst);
+            public double SubTotalNetAmount => Buyers.Sum(b => b.SubTotalNetAmount);
+            public double SubTotalAmount => Buyers.Sum(b => b.SubTotalAmount);
             public double SubTotalReceived => Buyers.Sum(b => b.SubTotalReceived);
             public double SubTotalBalance => Buyers.Sum(b => b.SubTotalBalance);
             public double SubTotalPdc => Buyers.Sum(b => b.SubTotalPdc);
@@ -260,11 +275,34 @@ namespace YIS.Pages.Reports
                 .Where(i => itemIds.Contains(i.ItemId))
                 .ToDictionaryAsync(i => i.ItemId, i => i.ItemName ?? "");
 
+            // Synchronize BillStatus and UnClearedOnly
+            if (!string.IsNullOrEmpty(BillStatus))
+            {
+                if (BillStatus == "Cleared") UnClearedOnly = false;
+                else if (BillStatus == "All") UnClearedOnly = false;
+                else if (BillStatus == "UnCleared") UnClearedOnly = true;
+            }
+            else
+            {
+                BillStatus = UnClearedOnly ? "UnCleared" : "All";
+            }
+
             // 4. SSD Mapping (Contracts)
             var ssdIds = salesInvoices.Where(s => s.EntryRefId.HasValue).Select(s => s.EntryRefId!.Value).Distinct().ToList();
-            var ssdMap = await _context.Entries
-                .Where(e => e.EntryType == "SSD" && ssdIds.Contains(e.EntryId))
-                .ToDictionaryAsync(e => e.EntryId, e => e.EntryNumber ?? 0);
+            var ssdRefNos = salesInvoices.Where(s => s.EntryRefNo.HasValue).Select(s => s.EntryRefNo!.Value).Distinct().ToList();
+
+            var ssdEntries = await _context.Entries
+                .Where(e => e.EntryType == "SSD" && (ssdIds.Contains(e.EntryId) || ssdRefNos.Contains(e.EntryNumber ?? 0) || ssdRefNos.Contains(e.EntryId)))
+                .ToListAsync();
+
+            var ssdMap = ssdEntries
+                .GroupBy(e => e.EntryId)
+                .ToDictionary(g => g.Key, g => g.First().EntryNumber ?? 0);
+
+            var ssdIdByNumber = ssdEntries
+                .Where(e => e.EntryNumber.HasValue)
+                .GroupBy(e => e.EntryNumber!.Value)
+                .ToDictionary(g => g.Key, g => g.OrderByDescending(x => x.EntryId).First().EntryId);
 
             // 5. Total Receipts per Customer up to targetDate (RV, CN - Only GL-posted)
             var custIdStrings = salesInvoices.Select(s => s.EntryAttribute1).Where(a => !string.IsNullOrEmpty(a)).Distinct().ToList();
@@ -421,9 +459,13 @@ namespace YIS.Pages.Reports
 
                     double balance = invAmount - paidForThis;
 
-                    if (UnClearedOnly && balance <= 0.01)
+                    if (BillStatus == "Cleared")
                     {
-                        continue;
+                        if (balance > 0.01) continue; // Only show cleared / paid invoices!
+                    }
+                    else if (BillStatus == "UnCleared" || UnClearedOnly)
+                    {
+                        if (balance <= 0.01) continue; // Only show uncleared / outstanding invoices!
                     }
 
                     var lines = childLines.Where(c => c.EntryRefId == inv.EntryId).ToList();
@@ -431,11 +473,13 @@ namespace YIS.Pages.Reports
                     double totalQty = 0;
                     double rate = inv.Rate ?? 0;
                     double gstAmount = 0;
+                    double amountWithoutGst = 0;
 
                     if (lines.Any())
                     {
                         totalQty = lines.Sum(l => l.Qty ?? 0);
                         gstAmount = lines.Sum(l => l.TaxAmount ?? 0);
+                        amountWithoutGst = lines.Sum(l => l.Amount ?? 0);
                         var descList = lines.Select(l =>
                         {
                             string iName = (l.ItemId.HasValue && itemsMap.ContainsKey(l.ItemId.Value)) ? itemsMap[l.ItemId.Value] : "";
@@ -451,6 +495,7 @@ namespace YIS.Pages.Reports
                     {
                         totalQty = inv.Qty ?? 0;
                         gstAmount = inv.TaxAmount ?? 0;
+                        amountWithoutGst = invAmount - gstAmount;
                         if (inv.ItemId.HasValue && itemsMap.ContainsKey(inv.ItemId.Value))
                         {
                             desc = itemsMap[inv.ItemId.Value];
@@ -462,6 +507,15 @@ namespace YIS.Pages.Reports
                         gstAmount = inv.TaxAmount.Value;
                     }
 
+                    if (amountWithoutGst <= 0)
+                    {
+                        amountWithoutGst = invAmount - gstAmount;
+                    }
+                    if (amountWithoutGst < 0) amountWithoutGst = 0;
+
+                    double netAmount = amountWithoutGst + gstAmount;
+                    if (netAmount <= 0) netAmount = invAmount;
+
                     if (!string.IsNullOrWhiteSpace(inv.EntryRemarks))
                     {
                         desc = string.IsNullOrWhiteSpace(desc) ? inv.EntryRemarks : desc + " (" + inv.EntryRemarks + ")";
@@ -471,7 +525,33 @@ namespace YIS.Pages.Reports
                     int totalDays = inv.EntryDate.HasValue ? (int)(targetDate - inv.EntryDate.Value.Date).TotalDays : 0;
                     if (totalDays < 0) totalDays = 0;
 
-                    long contractNo = (inv.EntryRefId.HasValue && ssdMap.ContainsKey(inv.EntryRefId.Value)) ? ssdMap[inv.EntryRefId.Value] : (inv.EntryRefNo ?? 0);
+                    long contractNo = 0;
+                    long? contractId = null;
+
+                    if (inv.EntryRefId.HasValue && ssdMap.ContainsKey(inv.EntryRefId.Value))
+                    {
+                        contractNo = ssdMap[inv.EntryRefId.Value];
+                        contractId = inv.EntryRefId.Value;
+                    }
+                    else if (inv.EntryRefNo.HasValue && ssdMap.ContainsKey(inv.EntryRefNo.Value))
+                    {
+                        contractNo = ssdMap[inv.EntryRefNo.Value];
+                        contractId = inv.EntryRefNo.Value;
+                    }
+                    else if (inv.EntryRefNo.HasValue && ssdIdByNumber.ContainsKey(inv.EntryRefNo.Value))
+                    {
+                        contractNo = inv.EntryRefNo.Value;
+                        contractId = ssdIdByNumber[inv.EntryRefNo.Value];
+                    }
+                    else if (inv.EntryRefNo.HasValue)
+                    {
+                        contractNo = inv.EntryRefNo.Value;
+                        contractId = inv.EntryRefNo.Value;
+                    }
+
+                    string? contractUrl = contractId.HasValue && contractId.Value > 0 ? $"/Sales/Soda?id={contractId.Value}" : null;
+                    string contractNumberStr = contractNo > 0 ? contractNo.ToString("D7") : (contractId.HasValue && contractId.Value > 0 ? contractId.Value.ToString("D7") : "-");
+
                     string broker = string.IsNullOrWhiteSpace(inv.EntryAttribute4) ? "DIRECT / GENERAL SALE" : inv.EntryAttribute4.Trim();
 
                     // Optional Soda filter
@@ -484,14 +564,20 @@ namespace YIS.Pages.Reports
                     {
                         EntryId = inv.EntryId,
                         TransactionNumber = inv.EntryNumber.HasValue ? inv.EntryNumber.Value.ToString("D7") : inv.EntryId.ToString("D7"),
+                        TransactionUrl = $"/Sales/Entry?id={inv.EntryId}",
                         Date = inv.EntryDate,
-                        ContractNumber = contractNo > 0 ? contractNo.ToString("D7") : "-",
+                        ContractId = contractId,
+                        ContractUrl = contractUrl,
+                        ContractNumber = contractNumberStr,
                         InvoiceNumber = inv.EntryNumber.HasValue ? inv.EntryNumber.Value.ToString() : inv.EntryId.ToString(),
+                        InvoiceViewUrl = $"/Sales/InvoiceView/{inv.EntryId}",
                         Qty = totalQty,
                         Description = desc,
                         Rate = rate,
-                        Amount = invAmount,
+                        AmountWithoutGst = amountWithoutGst,
                         GstAmount = gstAmount,
+                        NetAmount = netAmount,
+                        Amount = amountWithoutGst,
                         ReceivedPaid = paidForThis,
                         Balance = balance,
                         ContDays = contDays,
@@ -593,11 +679,12 @@ namespace YIS.Pages.Reports
                 .ToList();
 
             // Metrics from currently filtered GroupedReport
-            GrandTotalAmount = GroupedReport.Sum(g => g.SubTotalAmount);
+            GrandTotalAmountWithoutGst = GroupedReport.Sum(g => g.SubTotalAmountWithoutGst);
             GrandTotalGst = GroupedReport.Sum(g => g.SubTotalGst);
+            GrandTotalNetAmount = GroupedReport.Sum(g => g.SubTotalNetAmount);
+            GrandTotalAmount = GrandTotalAmountWithoutGst;
             GrandTotalReceived = GroupedReport.Sum(g => g.SubTotalReceived);
             GrandTotalBalance = GroupedReport.Sum(g => g.SubTotalBalance);
-            GrandTotalPdc = GroupedReport.Sum(g => g.SubTotalPdc);
             TotalInvoicesCount = GroupedReport.Sum(g => g.Buyers.Sum(b => b.Items.Count));
         }
 
@@ -616,18 +703,18 @@ namespace YIS.Pages.Reports
             ws.Cell("A1").Value = CompanyName;
             ws.Cell("A1").Style.Font.Bold = true;
             ws.Cell("A1").Style.Font.FontSize = 14;
-            ws.Range("A1:O1").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range("A1:P1").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             ws.Cell("A2").Value = $"AGING REPORT (RECEIVABLES ONLY) UPTO {targetDate:dd-MM-yyyy}";
             ws.Cell("A2").Style.Font.Bold = true;
-            ws.Range("A2:O2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            ws.Range("A2:P2").Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-            ws.Cell("A3").Value = UnClearedOnly ? "UnCleared Bills Only" : "All Bills";
-            ws.Cell("O3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
+            ws.Cell("A3").Value = (BillStatus == "Cleared") ? "Cleared / Paid Bills Only" : (BillStatus == "All" || !UnClearedOnly ? "All Bills" : "UnCleared Bills Only");
+            ws.Cell("P3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
 
             string[] headers = {
                 "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER",
-                "QTY", "DESCRIPTION", "RATE", "AMOUNT", "GST",
+                "QTY", "DESCRIPTION", "RATE", "AMOUNT (EXCL. GST)", "GST", "NET AMOUNT",
                 "RECEIVED / PAID", "BALANCE", "CONT. DAYS", "TOTAL DAYS",
                 "PDC AMOUNT", "PDC DT"
             };
@@ -648,7 +735,7 @@ namespace YIS.Pages.Reports
             {
                 ws.Cell(rowIdx, 1).Value = broker.BrokerName;
                 ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-                ws.Range(rowIdx, 1, rowIdx, 15).Merge().Style.Fill.BackgroundColor = XLColor.FromHtml("#e8f4f8");
+                ws.Range(rowIdx, 1, rowIdx, 16).Merge().Style.Fill.BackgroundColor = XLColor.FromHtml("#e8f4f8");
                 rowIdx++;
 
                 foreach (var buyer in broker.Buyers)
@@ -656,7 +743,7 @@ namespace YIS.Pages.Reports
                     ws.Cell(rowIdx, 1).Value = buyer.BuyerName;
                     ws.Cell(rowIdx, 1).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 1).Style.Font.FontColor = XLColor.Red;
-                    ws.Range(rowIdx, 1, rowIdx, 15).Merge();
+                    ws.Range(rowIdx, 1, rowIdx, 16).Merge();
                     rowIdx++;
 
                     foreach (var item in buyer.Items)
@@ -668,16 +755,17 @@ namespace YIS.Pages.Reports
                         ws.Cell(rowIdx, 5).SetValue(item.Qty).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(rowIdx, 6).SetValue(item.Description);
                         ws.Cell(rowIdx, 7).SetValue(item.Rate).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 8).SetValue(item.Amount).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 8).SetValue(item.AmountWithoutGst).Style.NumberFormat.Format = "#,##0.00";
                         ws.Cell(rowIdx, 9).SetValue(item.GstAmount).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 10).SetValue(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "0.00");
-                        ws.Cell(rowIdx, 11).SetValue(item.Balance).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 12).SetValue(item.ContDays);
-                        ws.Cell(rowIdx, 13).SetValue(item.TotalDays);
-                        ws.Cell(rowIdx, 14).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
-                        ws.Cell(rowIdx, 15).SetValue(item.PdcDate?.ToString("dd-MM-yyyy") ?? "");
+                        ws.Cell(rowIdx, 10).SetValue(item.NetAmount).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 11).SetValue(item.ReceivedPaid > 0 ? $"({item.ReceivedPaid:N2})" : "0.00");
+                        ws.Cell(rowIdx, 12).SetValue(item.Balance).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 13).SetValue(item.ContDays);
+                        ws.Cell(rowIdx, 14).SetValue(item.TotalDays);
+                        ws.Cell(rowIdx, 15).SetValue(item.PdcAmount > 0 ? item.PdcAmount : 0).Style.NumberFormat.Format = "#,##0.00";
+                        ws.Cell(rowIdx, 16).SetValue(item.PdcDate?.ToString("dd-MM-yyyy") ?? "");
 
-                        for (int col = 1; col <= 15; col++)
+                        for (int col = 1; col <= 16; col++)
                         {
                             ws.Cell(rowIdx, col).Style.Border.OutsideBorder = XLBorderStyleValues.Hair;
                         }
@@ -688,18 +776,20 @@ namespace YIS.Pages.Reports
                     ws.Cell(rowIdx, 1).Style.Font.Bold = true;
                     ws.Range(rowIdx, 1, rowIdx, 7).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
                     
-                    ws.Cell(rowIdx, 8).SetValue(buyer.SubTotalAmount).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 8).SetValue(buyer.SubTotalAmountWithoutGst).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 8).Style.NumberFormat.Format = "#,##0.00";
                     ws.Cell(rowIdx, 9).SetValue(buyer.SubTotalGst).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(rowIdx, 10).SetValue(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 11).SetValue(buyer.SubTotalBalance).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
-                    ws.Cell(rowIdx, 14).SetValue(buyer.SubTotalPdc).Style.Font.Bold = true;
-                    ws.Cell(rowIdx, 14).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 10).SetValue(buyer.SubTotalNetAmount).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 11).SetValue(buyer.SubTotalReceived > 0 ? $"({buyer.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 12).SetValue(buyer.SubTotalBalance).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 12).Style.NumberFormat.Format = "#,##0.00";
+                    ws.Cell(rowIdx, 15).SetValue(buyer.SubTotalPdc).Style.Font.Bold = true;
+                    ws.Cell(rowIdx, 15).Style.NumberFormat.Format = "#,##0.00";
 
-                    ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     rowIdx++;
                 }
 
@@ -707,26 +797,37 @@ namespace YIS.Pages.Reports
                 ws.Cell(rowIdx, 1).Style.Font.Bold = true;
                 ws.Range(rowIdx, 1, rowIdx, 7).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
 
-                ws.Cell(rowIdx, 8).SetValue(broker.SubTotalAmount).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 8).SetValue(broker.SubTotalAmountWithoutGst).Style.Font.Bold = true;
                 ws.Cell(rowIdx, 8).Style.NumberFormat.Format = "#,##0.00";
                 ws.Cell(rowIdx, 9).SetValue(broker.SubTotalGst).Style.Font.Bold = true;
                 ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
-                ws.Cell(rowIdx, 10).SetValue(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
-                ws.Cell(rowIdx, 11).SetValue(broker.SubTotalBalance).Style.Font.Bold = true;
-                ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(rowIdx, 10).SetValue(broker.SubTotalNetAmount).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(rowIdx, 11).SetValue(broker.SubTotalReceived > 0 ? $"({broker.SubTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+                ws.Cell(rowIdx, 12).SetValue(broker.SubTotalBalance).Style.Font.Bold = true;
+                ws.Cell(rowIdx, 12).Style.NumberFormat.Format = "#,##0.00";
 
-                ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.BottomBorder = XLBorderStyleValues.Medium;
                 rowIdx += 2;
             }
 
             ws.Cell(rowIdx, 1).Value = "GRAND - TOTAL :";
             ws.Cell(rowIdx, 1).Style.Font.Bold = true;
-            ws.Range(rowIdx, 1, rowIdx, 10).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-            ws.Cell(rowIdx, 11).SetValue(GrandTotalBalance).Style.Font.Bold = true;
-            ws.Cell(rowIdx, 11).Style.NumberFormat.Format = "#,##0.00";
-            ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            ws.Range(rowIdx, 1, rowIdx, 15).Style.Border.BottomBorder = XLBorderStyleValues.Double;
+            ws.Range(rowIdx, 1, rowIdx, 7).Merge().Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+
+            ws.Cell(rowIdx, 8).SetValue(GrandTotalAmountWithoutGst).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 8).Style.NumberFormat.Format = "#,##0.00";
+            ws.Cell(rowIdx, 9).SetValue(GrandTotalGst).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 9).Style.NumberFormat.Format = "#,##0.00";
+            ws.Cell(rowIdx, 10).SetValue(GrandTotalNetAmount).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 10).Style.NumberFormat.Format = "#,##0.00";
+            ws.Cell(rowIdx, 11).SetValue(GrandTotalReceived > 0 ? $"({GrandTotalReceived:N2})" : "0.00").Style.Font.Bold = true;
+            ws.Cell(rowIdx, 12).SetValue(GrandTotalBalance).Style.Font.Bold = true;
+            ws.Cell(rowIdx, 12).Style.NumberFormat.Format = "#,##0.00";
+
+            ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            ws.Range(rowIdx, 1, rowIdx, 16).Style.Border.BottomBorder = XLBorderStyleValues.Double;
 
             ws.Columns().AdjustToContents();
 

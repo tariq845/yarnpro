@@ -23,10 +23,18 @@ namespace YIS.Pages.Purchase
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
 
         [BindProperty(SupportsGet = true)]
+        public string SortDir { get; set; } = "desc";
+
+        [BindProperty(SupportsGet = true)]
         public long? PsdId { get; set; }
+
+        public List<string> SearchSuggestions { get; set; } = new List<string>();
 
         public PaginationViewModel Pagination { get; set; } = default!;
 
@@ -67,23 +75,45 @@ namespace YIS.Pages.Purchase
 
                 if (!string.IsNullOrEmpty(SearchTerm))
                 {
-                    var term = SearchTerm.ToLower();
+                    var smart = SmartSearchHelper.Parse(SearchTerm);
+                    var matchingSupplierIds = SupplierNames
+                        .Where(kv => kv.Value.ToLower().Contains(smart.CleanTerm))
+                        .Select(kv => kv.Key.ToString())
+                        .ToList();
+
                     query = query.Where(e =>
-                        e.EntryNumber.ToString().Contains(term) ||
-                        (e.EntryAttribute1 != null && e.EntryAttribute1.ToLower().Contains(term)) ||
-                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(term)) ||
-                        (e.EntryRefNo != null && e.EntryRefNo.ToString().Contains(term))
+                        (smart.HasNumber && (e.EntryNumber == smart.ExtractedNumber.Value || e.EntryRefNo == smart.ExtractedNumber.Value)) ||
+                        e.EntryNumber.ToString().Contains(smart.CleanTerm) ||
+                        (e.EntryAttribute1 != null && (matchingSupplierIds.Contains(e.EntryAttribute1) || e.EntryAttribute1.ToLower().Contains(smart.CleanTerm))) ||
+                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(smart.CleanTerm)) ||
+                        (e.EntryRefNo != null && e.EntryRefNo.ToString().Contains(smart.CleanTerm))
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
+
+                // Populate search suggestions (recent PUR numbers and supplier names)
+                var recentNumbers = await _context.Entries
+                    .Where(e => e.EntryType == "PUR" && e.UcpId == activeUcpId && e.EntryNumber != null)
+                    .OrderByDescending(e => e.EntryId)
+                    .Take(8)
+                    .Select(e => $"PUR-{e.EntryNumber}")
+                    .ToListAsync();
+                SearchSuggestions = recentNumbers
+                    .Concat(SupplierNames.Values.Take(6))
+                    .Distinct()
+                    .ToList();
+
+                var orderedQuery = (SortDir == "asc")
+                    ? query.OrderBy(e => e.EntryId)
+                    : query.OrderByDescending(e => e.EntryId);
 
                 // Get Parent Entries
-                var parents = await query
-                    .OrderByDescending(e => e.EntryId)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                var parents = await orderedQuery
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
 
                 // Get Child Counts

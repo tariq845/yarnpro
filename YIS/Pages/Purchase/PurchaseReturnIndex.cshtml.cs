@@ -22,7 +22,15 @@ namespace YIS.Pages.Purchase
         public int CurrentPage { get; set; } = 1;
 
         [BindProperty(SupportsGet = true)]
+        public int PageSize { get; set; } = 10;
+
+        [BindProperty(SupportsGet = true)]
         public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string SortDir { get; set; } = "desc";
+
+        public List<string> SearchSuggestions { get; set; } = new();
 
         public PaginationViewModel Pagination { get; set; } = default!;
 
@@ -46,24 +54,59 @@ namespace YIS.Pages.Purchase
                 var query = _context.Entries
                     .Where(e => e.EntryType == "DN" && e.UcpId == activeUcpId);
 
-                if (!string.IsNullOrEmpty(SearchTerm))
+                if (!string.IsNullOrWhiteSpace(SearchTerm))
                 {
-                    var term = SearchTerm.ToLower();
+                    var smart = SmartSearchHelper.Parse(SearchTerm);
+
+                    var matchedSupplierIds = await _context.SupplierMasters
+                        .Where(s => s.UcpId == activeUcpId && s.SupplierName.ToLower().Contains(smart.CleanTerm))
+                        .Select(s => s.SupplierId.ToString())
+                        .ToListAsync();
+
                     query = query.Where(e =>
-                        e.EntryNumber.ToString().Contains(term) ||
-                        (e.EntryAttribute1 != null && e.EntryAttribute1.ToLower().Contains(term)) ||
-                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(term))
+                        (smart.HasNumber && e.EntryNumber == smart.ExtractedNumber.Value) ||
+                        e.EntryNumber.ToString().Contains(smart.CleanTerm) ||
+                        (e.EntryAttribute1 != null && (matchedSupplierIds.Contains(e.EntryAttribute1) || e.EntryAttribute1.ToLower().Contains(smart.CleanTerm))) ||
+                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(smart.CleanTerm))
                     );
                 }
 
+                if (PageSize <= 0) PageSize = 10;
                 int totalItems = await query.CountAsync();
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, 20);
+                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
+
+                query = (SortDir == "asc")
+                    ? query.OrderBy(e => e.EntryNumber).ThenBy(e => e.EntryId)
+                    : query.OrderByDescending(e => e.EntryNumber).ThenByDescending(e => e.EntryId);
 
                 var parentEntries = await query
-                    .OrderByDescending(e => e.EntryId)
-                    .Skip((CurrentPage - 1) * 20)
-                    .Take(20)
+                    .Skip((CurrentPage - 1) * PageSize)
+                    .Take(PageSize)
                     .ToListAsync();
+
+                // Live search suggestions
+                try
+                {
+                    var topReturns = await _context.Entries
+                        .Where(e => e.EntryType == "DN" && e.UcpId == activeUcpId && e.EntryNumber.HasValue)
+                        .OrderByDescending(e => e.EntryId)
+                        .Take(6)
+                        .Select(e => "DN-" + e.EntryNumber)
+                        .ToListAsync();
+
+                    var topSupps = await _context.SupplierMasters
+                        .Where(s => s.UcpId == activeUcpId && !string.IsNullOrEmpty(s.SupplierName))
+                        .OrderBy(s => s.SupplierName)
+                        .Take(6)
+                        .Select(s => s.SupplierName)
+                        .ToListAsync();
+
+                    SearchSuggestions = topReturns.Concat(topSupps).Distinct().ToList();
+                }
+                catch
+                {
+                    SearchSuggestions = new List<string>();
+                }
 
                 var entryIds = parentEntries.Select(e => e.EntryId).ToList();
                 var postedEntryIds = new HashSet<long>();
