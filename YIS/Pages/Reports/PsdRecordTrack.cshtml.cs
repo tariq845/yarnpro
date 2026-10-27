@@ -300,39 +300,46 @@ namespace YIS.Pages.Reports
             SalesSodaItems = ssdList;
             var ssdIds = ssdList.Select(x => x.SsdId).Distinct().ToList();
 
-            // 4. Sales Invoices Delivered (SAL & SALL) against linked SSDs or PSD
-            SalesInvoiceItems = await (from sal in _context.Entries
-                                       join sall in _context.Entries on sal.EntryId equals sall.EntryRefId
-                                       join ssd in _context.Entries.Where(e => e.EntryType == "SSD" && e.UcpId == activeUcpId)
-                                       on sal.EntryRefId equals ssd.EntryId into ssdJoin
-                                       from ssd in ssdJoin.DefaultIfEmpty()
-                                       join cust in _context.CustomerMasters.Where(cm => cm.UcpId == activeUcpId)
-                                       on sal.EntryAttribute1 equals cust.CustomerId.ToString() into custJoin
-                                       from cust in custJoin.DefaultIfEmpty()
-                                       join item in _context.ItemMasters.Where(im => im.UcpId == activeUcpId)
-                                       on sall.ItemId equals item.ItemId into itemJoin
-                                       from item in itemJoin.DefaultIfEmpty()
-                                       where sal.EntryType == "SAL" && sall.EntryType == "SALL" &&
-                                             sal.UcpId == activeUcpId && sall.UcpId == activeUcpId &&
-                                             ((sal.EntryRefId.HasValue && ssdIds.Contains(sal.EntryRefId.Value)) || sal.EntryRefNo == id)
-                                       orderby sal.EntryDate, sal.EntryNumber, sall.EntryId
-                                       select new SalesInvoiceMovementItemViewModel
-                                       {
-                                           SalId = sal.EntryId,
-                                           SalNumber = sal.EntryNumber,
-                                           SalDate = sal.EntryDate,
-                                           RefSsdNumber = ssd != null ? ssd.EntryNumber : null,
-                                           CustomerName = cust != null ? cust.CustomerName : "Unknown Customer",
-                                           Remarks = sal.EntryRemarks,
-                                           ItemId = sall.ItemId,
-                                           ItemName = item != null ? item.ItemName : "Unknown Item",
-                                           Qty = sall.Qty ?? 0,
-                                           Lbs = sall.Lbs ?? 0,
-                                           Rate = sall.Rate ?? 0,
-                                           Amount = sall.Amount ?? 0,
-                                           TaxAmount = sall.TaxAmount ?? 0,
-                                           NetAmount = (sall.Amount ?? 0) + (sall.TaxAmount ?? 0)
-                                       }).ToListAsync();
+            // 4. Sales Invoices Delivered (SAL & SALL) against linked SSDs
+            if (ssdIds.Any())
+            {
+                SalesInvoiceItems = await (from sal in _context.Entries
+                                           join sall in _context.Entries on sal.EntryId equals sall.EntryRefId
+                                           join ssd in _context.Entries.Where(e => e.EntryType == "SSD" && e.UcpId == activeUcpId)
+                                           on sal.EntryRefId equals ssd.EntryId into ssdJoin
+                                           from ssd in ssdJoin.DefaultIfEmpty()
+                                           join cust in _context.CustomerMasters.Where(cm => cm.UcpId == activeUcpId)
+                                           on sal.EntryAttribute1 equals cust.CustomerId.ToString() into custJoin
+                                           from cust in custJoin.DefaultIfEmpty()
+                                           join item in _context.ItemMasters.Where(im => im.UcpId == activeUcpId)
+                                           on sall.ItemId equals item.ItemId into itemJoin
+                                           from item in itemJoin.DefaultIfEmpty()
+                                           where sal.EntryType == "SAL" && sall.EntryType == "SALL" &&
+                                                 sal.UcpId == activeUcpId && sall.UcpId == activeUcpId &&
+                                                 sal.EntryRefId.HasValue && ssdIds.Contains(sal.EntryRefId.Value)
+                                           orderby sal.EntryDate, sal.EntryNumber, sall.EntryId
+                                           select new SalesInvoiceMovementItemViewModel
+                                           {
+                                               SalId = sal.EntryId,
+                                               SalNumber = sal.EntryNumber,
+                                               SalDate = sal.EntryDate,
+                                               RefSsdNumber = ssd != null ? ssd.EntryNumber : null,
+                                               CustomerName = cust != null ? cust.CustomerName : "Unknown Customer",
+                                               Remarks = sal.EntryRemarks,
+                                               ItemId = sall.ItemId,
+                                               ItemName = item != null ? item.ItemName : "Unknown Item",
+                                               Qty = sall.Qty ?? 0,
+                                               Lbs = sall.Lbs ?? 0,
+                                               Rate = sall.Rate ?? 0,
+                                               Amount = sall.Amount ?? 0,
+                                               TaxAmount = sall.TaxAmount ?? 0,
+                                               NetAmount = (sall.Amount ?? 0) + (sall.TaxAmount ?? 0)
+                                           }).ToListAsync();
+            }
+            else
+            {
+                SalesInvoiceItems = new List<SalesInvoiceMovementItemViewModel>();
+            }
 
             // 5. Populate Movement Summary
             Summary = new MovementSummaryViewModel
