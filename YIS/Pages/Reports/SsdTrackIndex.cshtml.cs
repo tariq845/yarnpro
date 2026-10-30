@@ -29,6 +29,8 @@ namespace YIS.Pages.Reports
             public string? CustomerName { get; set; }
             public string? LinkedPsdNumber { get; set; }
             public long? LinkedPsdId { get; set; }
+            public bool IsCommissionBased { get; set; }
+            public string ContractBasis => IsCommissionBased ? "Commission Based" : "Net Based";
             public int ItemCount { get; set; }
             public double ContractQty { get; set; }
             public double ContractLbs { get; set; }
@@ -72,6 +74,7 @@ namespace YIS.Pages.Reports
                                         CustomerName = c != null ? c.CustomerName : "Unknown",
                                         LinkedPsdNumber = psd != null ? ("PSD-" + psd.EntryNumber) : (e.EntryRefId.HasValue ? ("PSD-" + e.EntryRefId) : "-"),
                                         LinkedPsdId = psd != null ? psd.EntryId : e.EntryRefId,
+                                        IsCommissionBased = (e.EntryAttribute5 != null && e.EntryAttribute5.ToLower() == "yes") || ((e.EntryCommAmt ?? 0) > 0),
                                         HeaderQty = e.Qty ?? 0,
                                         HeaderLbs = e.Lbs ?? 0,
                                         HeaderAmount = e.Amount ?? 0
@@ -137,6 +140,7 @@ namespace YIS.Pages.Reports
                     CustomerName = h.CustomerName,
                     LinkedPsdNumber = h.LinkedPsdNumber,
                     LinkedPsdId = h.LinkedPsdId,
+                    IsCommissionBased = h.IsCommissionBased,
                     ItemCount = ssdl?.ItemCount ?? (cQty > 0 ? 1 : 0),
                     ContractQty = cQty,
                     ContractLbs = cLbs,

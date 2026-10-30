@@ -237,6 +237,11 @@
                 </div>
                 <div class="col-4 text-end">
                     <div class="fs-5 fw-bold text-dark">SSD-@Model.SsdHeader?.EntryNumber</div>
+                    <div class="my-1">
+                        <span class="badge @(Model.IsCommissionBased ? "bg-success-subtle text-success border border-success-subtle" : "bg-secondary-subtle text-secondary border border-secondary-subtle") px-2 py-1">
+                            @Model.ContractBasis
+                        </span>
+                    </div>
                     <div class="text-muted small">Date: @Model.SsdHeader?.EntryDate?.ToString("dd-MM-yyyy")</div>
                     <div class="text-muted small">Generated: @DateTime.Now.ToString("dd-MM-yyyy hh:mm tt")</div>
                 </div>
@@ -277,6 +282,37 @@
                 </td>
                 <td class="label">Payment Mode:</td>
                 <td class="value">@(string.IsNullOrEmpty(Model.PaymentMode) ? "Credit" : Model.PaymentMode)</td>
+            </tr>
+            <tr>
+                <td class="label">Contract Basis:</td>
+                <td class="value fw-bold @(Model.IsCommissionBased ? "text-success" : "text-dark")">
+                    @Model.ContractBasis
+                </td>
+                <td class="label">Commission Details:</td>
+                <td class="value">
+                    @if (Model.IsCommissionBased)
+                    {
+                        <span class="fw-semibold text-dark">
+                            Commission Based
+                            @if (Model.SsdHeader?.EntryCommPer.HasValue == true && Model.SsdHeader.EntryCommPer > 0)
+                            {
+                                <span>(@Model.SsdHeader.EntryCommPer.Value.ToString("0.##")%)</span>
+                            }
+                            @if (Model.SsdHeader?.EntryCommAmt.HasValue == true && Model.SsdHeader.EntryCommAmt > 0)
+                            {
+                                <span>- PKR @Model.SsdHeader.EntryCommAmt.Value.ToString("N2")</span>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.SsdHeader?.EntryAttribute4))
+                            {
+                                <span class="text-muted">| Agent: @Model.SsdHeader.EntryAttribute4</span>
+                            }
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="fw-semibold text-secondary">Net Based</span>
+                    }
+                </td>
             </tr>
             <tr>
                 <td class="label">Owner / Signatory:</td>
@@ -355,6 +391,7 @@
                         <th style="width: 100px;">SAL #</th>
                         <th style="width: 100px;">Delivery Date</th>
                         <th>Item Description</th>
+                        <th style="width: 125px;">Basis</th>
                         <th>Remarks / Gate Pass</th>
                         <th class="text-num" style="width: 110px;">Delivered Qty</th>
                         <th class="text-num" style="width: 110px;">Delivered LBS</th>
@@ -387,6 +424,7 @@
                             </td>
                             <td>@d.SalDate?.ToString("dd-MM-yyyy")</td>
                             <td class="fw-semibold">@d.ItemName</td>
+                            <td class="small fw-semibold @(d.IsCommissionBased ? "text-primary" : "text-secondary")">@d.BasisText</td>
                             <td class="text-muted small">@(string.IsNullOrEmpty(d.Remarks) ? "-" : d.Remarks)</td>
                             <td class="text-num fw-bold text-primary">@d.Qty.ToString("N2")</td>
                             <td class="text-num">@d.Lbs.ToString("N2")</td>
@@ -398,7 +436,7 @@
                         dIdx++;
                     }
                     <tr class="table-light fw-bold border-top border-2">
-                        <td colspan="5" class="text-uppercase text-center">Total Delivered</td>
+                        <td colspan="6" class="text-uppercase text-center">Total Delivered</td>
                         <td class="text-num text-primary">@sumDQty.ToString("N2")</td>
                         <td class="text-num">@sumDLbs.ToString("N2")</td>
                         <td class="text-num">@((sumDLbs > 0 ? (sumDAmt / (sumDLbs / 10.0)) : (sumDQty > 0 ? sumDAmt / sumDQty : 0)).ToString("F4"))</td>
