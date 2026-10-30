@@ -93,6 +93,7 @@
                             <th>Contract / PSD #</th>
                             <th>Date</th>
                             <th>Supplier Name</th>
+                            <th class="text-center">Basis</th>
                             <th class="text-end bg-light">Contract Qty (Bags)</th>
                             <th class="text-end bg-light">Contract Lbs</th>
                             <th class="text-end bg-light">Contract Amount</th>
@@ -129,6 +130,11 @@
                                     </td>
                                     <td>@item.EntryDate?.ToString("dd-MM-yyyy")</td>
                                     <td class="fw-semibold text-dark">@item.SupplierName</td>
+                                    <td class="text-center">
+                                        <span class="badge @(item.IsCommissionBased ? "bg-primary-subtle text-primary border border-primary-subtle" : "bg-secondary-subtle text-secondary border border-secondary-subtle") px-2 py-1">
+                                            @item.ContractBasis
+                                        </span>
+                                    </td>
                                     <td class="text-end fw-bold">@item.ContractQty.ToString("N2")</td>
                                     <td class="text-end text-muted">@item.ContractLbs.ToString("N2")</td>
                                     <td class="text-end fw-semibold">@item.ContractAmount.ToString("N2")</td>
@@ -158,7 +164,7 @@
                                 rowIdx++;
                             }
                             <tr class="table-light fw-bold border-top border-2">
-                                <td colspan="4" class="text-center text-uppercase">Total</td>
+                                <td colspan="5" class="text-center text-uppercase">Total</td>
                                 <td class="text-end">@sumContractQty.ToString("N2")</td>
                                 <td class="text-end">@sumContractLbs.ToString("N2")</td>
                                 <td class="text-end">@sumContractAmt.ToString("N2")</td>
@@ -172,7 +178,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="12" class="text-center py-4 text-muted">
+                                <td colspan="13" class="text-center py-4 text-muted">
                                     <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
                                     No purchase contract movement records found.
                                 </td>

@@ -29,6 +29,10 @@ namespace YIS.Pages.Reports
         public string? CompanyTermsDetails { get; set; }
         public int? TermsDays => PsdHeader?.EntryTermsDays;
         public string? PaymentMode => PsdHeader?.EntryAttribute2;
+        public bool IsCommissionBased =>
+            string.Equals(PsdHeader?.EntryAttribute5, "Yes", StringComparison.OrdinalIgnoreCase) ||
+            ((PsdHeader?.EntryCommAmt ?? 0) > 0);
+        public string ContractBasis => IsCommissionBased ? "Commission Based" : "Net Based";
 
         // 1. Contract Lines
         public List<PsdContractItemViewModel> ContractItems { get; set; } = new();
@@ -64,6 +68,8 @@ namespace YIS.Pages.Reports
             public long? PurNumber { get; set; }
             public DateTime? PurDate { get; set; }
             public string? Remarks { get; set; }
+            public bool IsCommissionBased { get; set; }
+            public string BasisText => IsCommissionBased ? "Commission Based" : "Net Based";
             public long? ItemId { get; set; }
             public string ItemName { get; set; } = "Unknown Item";
             public double Qty { get; set; }
@@ -81,6 +87,8 @@ namespace YIS.Pages.Reports
             public DateTime? SsdDate { get; set; }
             public string CustomerName { get; set; } = "Unknown Customer";
             public string? Remarks { get; set; }
+            public bool IsCommissionBased { get; set; }
+            public string BasisText => IsCommissionBased ? "Commission Based" : "Net Based";
             public long? ItemId { get; set; }
             public string ItemName { get; set; } = "Unknown Item";
             public double Qty { get; set; }
@@ -99,6 +107,8 @@ namespace YIS.Pages.Reports
             public long? RefSsdNumber { get; set; }
             public string CustomerName { get; set; } = "Unknown Customer";
             public string? Remarks { get; set; }
+            public bool IsCommissionBased { get; set; }
+            public string BasisText => IsCommissionBased ? "Commission Based" : "Net Based";
             public long? ItemId { get; set; }
             public string ItemName { get; set; } = "Unknown Item";
             public double Qty { get; set; }
@@ -257,6 +267,7 @@ namespace YIS.Pages.Reports
                                        PurNumber = pur.EntryNumber,
                                        PurDate = pur.EntryDate,
                                        Remarks = !string.IsNullOrEmpty(pur.EntryRemarks) ? pur.EntryRemarks : pur.EntryAttribute3,
+                                       IsCommissionBased = (pur.EntryAttribute5 != null && pur.EntryAttribute5.ToLower() == "yes") || ((pur.EntryCommAmt ?? 0) > 0),
                                        ItemId = purl.ItemId,
                                        ItemName = item != null ? item.ItemName : "Unknown Item",
                                        Qty = purl.Qty ?? 0,
@@ -287,6 +298,7 @@ namespace YIS.Pages.Reports
                                      SsdDate = ssd.EntryDate,
                                      CustomerName = cust != null ? cust.CustomerName : "Unknown Customer",
                                      Remarks = ssd.EntryRemarks,
+                                     IsCommissionBased = (ssd.EntryAttribute5 != null && ssd.EntryAttribute5.ToLower() == "yes") || ((ssd.EntryCommAmt ?? 0) > 0),
                                      ItemId = ssdl.ItemId,
                                      ItemName = item != null ? item.ItemName : "Unknown Item",
                                      Qty = ssdl.Qty ?? 0,
@@ -326,6 +338,7 @@ namespace YIS.Pages.Reports
                                                RefSsdNumber = ssd != null ? ssd.EntryNumber : null,
                                                CustomerName = cust != null ? cust.CustomerName : "Unknown Customer",
                                                Remarks = sal.EntryRemarks,
+                                               IsCommissionBased = (sal.EntryAttribute5 != null && sal.EntryAttribute5.ToLower() == "yes") || ((sal.EntryCommAmt ?? 0) > 0),
                                                ItemId = sall.ItemId,
                                                ItemName = item != null ? item.ItemName : "Unknown Item",
                                                Qty = sall.Qty ?? 0,

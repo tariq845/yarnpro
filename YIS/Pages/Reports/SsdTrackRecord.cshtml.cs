@@ -29,6 +29,10 @@ namespace YIS.Pages.Reports
         public string? CompanyTermsDetails { get; set; }
         public int? TermsDays => SsdHeader?.EntryTermsDays;
         public string? PaymentMode => SsdHeader?.EntryAttribute2;
+        public bool IsCommissionBased =>
+            string.Equals(SsdHeader?.EntryAttribute5, "Yes", StringComparison.OrdinalIgnoreCase) ||
+            ((SsdHeader?.EntryCommAmt ?? 0) > 0);
+        public string ContractBasis => IsCommissionBased ? "Commission Based" : "Net Based";
 
         // Parent PSD Contract Info (if linked)
         public LinkedPsdViewModel? ParentPsd { get; set; }
@@ -73,6 +77,8 @@ namespace YIS.Pages.Reports
             public long? SalNumber { get; set; }
             public DateTime? SalDate { get; set; }
             public string? Remarks { get; set; }
+            public bool IsCommissionBased { get; set; }
+            public string BasisText => IsCommissionBased ? "Commission Based" : "Net Based";
             public long? ItemId { get; set; }
             public string ItemName { get; set; } = "Unknown Item";
             public double Qty { get; set; }
@@ -244,6 +250,7 @@ namespace YIS.Pages.Reports
                                        SalNumber = sal.EntryNumber,
                                        SalDate = sal.EntryDate,
                                        Remarks = sal.EntryRemarks,
+                                       IsCommissionBased = (sal.EntryAttribute5 != null && sal.EntryAttribute5.ToLower() == "yes") || ((sal.EntryCommAmt ?? 0) > 0),
                                        ItemId = sall.ItemId,
                                        ItemName = item != null ? item.ItemName : "Unknown Item",
                                        Qty = sall.Qty ?? 0,

@@ -27,6 +27,8 @@ namespace YIS.Pages.Reports
             public long? EntryNumber { get; set; }
             public DateTime? EntryDate { get; set; }
             public string? SupplierName { get; set; }
+            public bool IsCommissionBased { get; set; }
+            public string ContractBasis => IsCommissionBased ? "Commission Based" : "Net Based";
             public int ItemCount { get; set; }
             public double ContractQty { get; set; }
             public double ContractLbs { get; set; }
@@ -67,6 +69,7 @@ namespace YIS.Pages.Reports
                                         e.EntryNumber,
                                         e.EntryDate,
                                         SupplierName = s != null ? s.SupplierName : "Unknown",
+                                        IsCommissionBased = (e.EntryAttribute5 != null && e.EntryAttribute5.ToLower() == "yes") || ((e.EntryCommAmt ?? 0) > 0),
                                         HeaderQty = e.Qty ?? 0,
                                         HeaderLbs = e.Lbs ?? 0,
                                         HeaderAmount = e.Amount ?? 0
@@ -144,6 +147,7 @@ namespace YIS.Pages.Reports
                     EntryNumber = h.EntryNumber,
                     EntryDate = h.EntryDate,
                     SupplierName = h.SupplierName,
+                    IsCommissionBased = h.IsCommissionBased,
                     ItemCount = psdl?.ItemCount ?? (cQty > 0 ? 1 : 0),
                     ContractQty = cQty,
                     ContractLbs = cLbs,
