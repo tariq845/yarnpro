@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initHtmxEvents();
     initFormSubmitLoaders();
     initLinkLoaders();
+    initSmartSelects();
     processToastData(); // Initial check on page load
 });
 
@@ -362,8 +363,16 @@ function getButtonLoadingText(btn, form) {
         return `<span class="btn-loader-spinner"></span> ${rawText || 'Adding'}...`;
     }
 
-    if (lower.includes('search') || lower.includes('filter') || lower.includes('apply')) {
-        return '<span class="btn-loader-spinner"></span> Filtering...';
+    if (lower.includes('filter')) {
+        return '<span class="btn-loader-spinner"></span> Filter';
+    }
+
+    if (lower.includes('search')) {
+        return '<span class="btn-loader-spinner"></span> Search';
+    }
+
+    if (lower.includes('apply')) {
+        return '<span class="btn-loader-spinner"></span> Applying...';
     }
 
     if (lower.includes('post') || lower.includes('submit')) {
@@ -388,6 +397,7 @@ function applyButtonLoader(btn, form) {
     if (rect.width > 0) {
         btn.style.minWidth = `${rect.width}px`;
     }
+    btn.style.whiteSpace = 'nowrap';
 
     btn.innerHTML = getButtonLoadingText(btn, form);
     btn.disabled = true;
@@ -406,6 +416,7 @@ function restoreButtonLoader(btn) {
     btn.classList.remove('disabled');
     btn.style.pointerEvents = '';
     btn.style.minWidth = '';
+    btn.style.whiteSpace = '';
 }
 
 // ============================================
@@ -459,6 +470,7 @@ function initHtmxEvents() {
     // After swap - reinitialize components
     document.addEventListener('htmx:afterSwap', function (evt) {
         initDropdowns();
+        initSmartSelects(evt.target);
         processToastData();
     });
 
@@ -640,3 +652,76 @@ function initFormSubmitLoaders() {
         });
     });
 }
+
+
+// ============================================
+// Smart Searchable Select System (TomSelect)
+// ============================================
+
+function initSmartSelects(container) {
+    if (typeof TomSelect === 'undefined') return;
+
+    const root = container || document;
+    const selects = root.querySelectorAll('select:not(.no-smart-search):not(.mui-pagination-select):not(.tomselected)');
+
+    selects.forEach(function (select) {
+        if (select.closest('template')) return;
+
+        const isSmall = select.classList.contains('form-select-sm') || select.closest('.input-group-sm') !== null;
+        const placeholderOption = select.querySelector('option[value=""]');
+        const placeholder = select.getAttribute('placeholder') || 
+                            (placeholderOption ? placeholderOption.textContent.trim() : 'Type to search...');
+
+        try {
+            const ts = new TomSelect(select, {
+                create: false,
+                sortField: { field: "text", direction: "asc" },
+                placeholder: placeholder,
+                allowEmptyOption: true,
+                maxOptions: 1000,
+                render: {
+                    no_results: function (data, escape) {
+                        return '<div class="no-results">No matches found for "' + escape(data.input) + '"</div>';
+                    }
+                }
+            });
+
+            if (isSmall && ts.control) {
+                ts.control.classList.add('form-select-sm');
+            }
+
+            ts.on('change', function () {
+                const event = new Event('change', { bubbles: true });
+                select.dispatchEvent(event);
+            });
+
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function () {
+                    if (select.tomselect) {
+                        select.tomselect.sync();
+                    }
+                });
+                observer.observe(select, { childList: true });
+            }
+        } catch (e) {
+            // Silently ignore already initialized or detached elements
+        }
+    });
+}
+
+// Reactivity triggers for dynamic elements
+document.addEventListener('shown.bs.collapse', function (e) {
+    initSmartSelects(e.target);
+});
+document.addEventListener('shown.bs.modal', function (e) {
+    initSmartSelects(e.target);
+});
+document.addEventListener('click', function (e) {
+    if (e.target.closest('#btnAddRow, .add-row-btn, .btn-add-row, #btn-add-row')) {
+        setTimeout(function () {
+            initSmartSelects();
+        }, 60);
+    }
+});
+
+window.initSmartSelects = initSmartSelects;

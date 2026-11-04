@@ -76,9 +76,6 @@ namespace YIS.Pages.Ledger
                 preQuery = preQuery.Where(x => x.AccountId == AccountId.Value);
             }
 
-            // Filter by date < StartDate
-            // Note: If EntryDate is null, we assume it's NOT before StartDate unless we have other logic.
-            // For now, only include valid dates.
             var preTransactions = await preQuery
                 .Where(x => x.EntryDate < StartDate)
                 .ToListAsync();
@@ -97,7 +94,18 @@ namespace YIS.Pages.Ledger
                             TransNo = entry != null ? entry.EntryNumber : t.TransNo,
                             t.TransType,
                             t.AccountId,
-                            t.Remarks,
+                            t.EntryId,
+                            TransRemarks = t.Remarks,
+                            EntryRemarks = entry != null ? entry.EntryRemarks : null,
+                            EntryAttribute1 = entry != null ? entry.EntryAttribute1 : null,
+                            EntryAttribute2 = entry != null ? entry.EntryAttribute2 : null,
+                            EntryAttribute3 = entry != null ? entry.EntryAttribute3 : null,
+                            EntryRefId = entry != null ? entry.EntryRefId : null,
+                            EntryRefNo = entry != null ? entry.EntryRefNo : null,
+                            ItemId = entry != null ? entry.ItemId : null,
+                            Qty = entry != null ? entry.Qty : null,
+                            Lbs = entry != null ? entry.Lbs : null,
+                            Rate = entry != null ? entry.Rate : null,
                             t.Debit,
                             t.Credit,
                             AccountName = a.AccountName,
@@ -123,6 +131,46 @@ namespace YIS.Pages.Ledger
                 .ThenBy(x => x.TransNo)
                 .ThenBy(x => x.TransId)
                 .ToListAsync();
+
+            // Collect Entry IDs for batch lookup of lines, items, sodas, and parties
+            var entryIds = transactions.Where(x => x.EntryId.HasValue).Select(x => x.EntryId!.Value).Distinct().ToList();
+
+            // Load child lines (SALL, PURL, CNL, DNL, JVL)
+            var childLines = await _context.Entries
+                .Where(e => (e.EntryType == "SALL" || e.EntryType == "PURL" || e.EntryType == "CNL" || e.EntryType == "DNL" || e.EntryType == "JVL") &&
+                            entryIds.Contains(e.EntryRefId ?? 0))
+                .ToListAsync();
+
+            // Collect Item IDs
+            var itemIds = childLines.Where(c => c.ItemId.HasValue).Select(c => c.ItemId!.Value)
+                .Concat(transactions.Where(t => t.ItemId.HasValue).Select(t => t.ItemId!.Value))
+                .Distinct().ToList();
+
+            var itemMap = await _context.ItemMasters
+                .Where(i => itemIds.Contains(i.ItemId))
+                .ToDictionaryAsync(i => i.ItemId, i => i.ItemName ?? "");
+
+            // Look up linked Soda contracts (SSD or PSD)
+            var sodaRefIds = transactions.Where(t => t.EntryRefId.HasValue).Select(t => t.EntryRefId!.Value)
+                .Concat(transactions.Where(t => t.EntryRefNo.HasValue).Select(t => t.EntryRefNo!.Value))
+                .Distinct().ToList();
+
+            var sodaEntries = await _context.Entries
+                .Where(e => (e.EntryType == "SSD" || e.EntryType == "PSD") &&
+                            (sodaRefIds.Contains(e.EntryId) || sodaRefIds.Contains(e.EntryNumber ?? 0)))
+                .ToListAsync();
+
+            var sodaById = sodaEntries.ToDictionary(e => e.EntryId, e => e);
+            var sodaByNumber = sodaEntries.Where(e => e.EntryNumber.HasValue).ToDictionary(e => e.EntryNumber!.Value, e => e);
+
+            // Customers and Suppliers for party names
+            var customers = await _context.CustomerMasters
+                .Where(c => c.UcpId == ucpId)
+                .ToDictionaryAsync(c => c.CustomerId.ToString(), c => c.CustomerName ?? "");
+
+            var suppliers = await _context.SupplierMasters
+                .Where(s => s.UcpId == ucpId)
+                .ToDictionaryAsync(s => s.SupplierId.ToString(), s => s.SupplierName ?? "");
 
             // Add Opening Balance Row
             LedgerRows.Add(new GeneralLedgerRow
@@ -150,13 +198,183 @@ namespace YIS.Pages.Ledger
                 TotalDebit += debit;
                 TotalCredit += credit;
 
+                // Determine transaction URL & invoice view URL
+                string? transUrl = null;
+                string? invoiceViewUrl = null;
+                string typeCode = t.TransType ?? "";
+
+                if (t.EntryId.HasValue && t.EntryId.Value > 0)
+                {
+                    long eid = t.EntryId.Value;
+                    switch (typeCode.ToUpper())
+                    {
+                        case "SAL":
+                            transUrl = $"/Sales/Entry?id={eid}";
+                            invoiceViewUrl = $"/Sales/InvoiceView/{eid}";
+                            break;
+                        case "PUR":
+                            transUrl = $"/Purchase/Entry?id={eid}";
+                            break;
+                        case "RV":
+                            transUrl = $"/Vouchers/ReceiptVoucher?id={eid}";
+                            break;
+                        case "PV":
+                            transUrl = $"/Vouchers/PaymentVoucher?id={eid}";
+                            break;
+                        case "JV":
+                            transUrl = $"/Vouchers/JournalVoucher?id={eid}";
+                            break;
+                        case "CN":
+                            transUrl = $"/Sales/SaleReturn?id={eid}";
+                            break;
+                        case "DN":
+                            transUrl = $"/Purchase/PurchaseReturn?id={eid}";
+                            break;
+                    }
+                }
+
+                // Determine linked Soda
+                string? sodaNo = null;
+                string? sodaUrl = null;
+                long? sodaEntryId = null;
+
+                if (t.EntryRefId.HasValue && sodaById.TryGetValue(t.EntryRefId.Value, out var s1))
+                {
+                    sodaNo = $"{s1.EntryType}-{s1.EntryNumber}";
+                    sodaEntryId = s1.EntryId;
+                    sodaUrl = s1.EntryType == "SSD" ? $"/Sales/Soda?id={s1.EntryId}" : $"/Purchase/Soda?id={s1.EntryId}";
+                }
+                else if (t.EntryRefNo.HasValue && sodaById.TryGetValue(t.EntryRefNo.Value, out var s2))
+                {
+                    sodaNo = $"{s2.EntryType}-{s2.EntryNumber}";
+                    sodaEntryId = s2.EntryId;
+                    sodaUrl = s2.EntryType == "SSD" ? $"/Sales/Soda?id={s2.EntryId}" : $"/Purchase/Soda?id={s2.EntryId}";
+                }
+                else if (t.EntryRefNo.HasValue && sodaByNumber.TryGetValue(t.EntryRefNo.Value, out var s3))
+                {
+                    sodaNo = $"{s3.EntryType}-{s3.EntryNumber}";
+                    sodaEntryId = s3.EntryId;
+                    sodaUrl = s3.EntryType == "SSD" ? $"/Sales/Soda?id={s3.EntryId}" : $"/Purchase/Soda?id={s3.EntryId}";
+                }
+                else if (t.EntryRefNo.HasValue && t.EntryRefNo > 0)
+                {
+                    if (typeCode == "SAL")
+                    {
+                        sodaNo = $"SSD-{t.EntryRefNo}";
+                        sodaUrl = $"/Sales/Soda?id={t.EntryRefNo}";
+                    }
+                    else if (typeCode == "PUR")
+                    {
+                        sodaNo = $"PSD-{t.EntryRefNo}";
+                        sodaUrl = $"/Purchase/Soda?id={t.EntryRefNo}";
+                    }
+                }
+
+                // Resolve line items
+                var items = new List<LedgerItemDetail>();
+                if (t.EntryId.HasValue)
+                {
+                    var lines = childLines.Where(c => c.EntryRefId == t.EntryId.Value).ToList();
+                    if (lines.Any())
+                    {
+                        foreach (var l in lines)
+                        {
+                            string name = l.ItemId.HasValue && itemMap.ContainsKey(l.ItemId.Value)
+                                ? itemMap[l.ItemId.Value]
+                                : (!string.IsNullOrWhiteSpace(l.EntryRemarks) ? l.EntryRemarks : "Item");
+
+                            items.Add(new LedgerItemDetail
+                            {
+                                ItemName = name,
+                                Qty = l.Qty,
+                                Lbs = l.Lbs,
+                                Rate = l.Rate
+                            });
+                        }
+                    }
+                    else if (t.ItemId.HasValue || (t.Qty ?? 0) > 0 || (t.Rate ?? 0) > 0)
+                    {
+                        string name = t.ItemId.HasValue && itemMap.ContainsKey(t.ItemId.Value)
+                            ? itemMap[t.ItemId.Value]
+                            : "Item";
+
+                        items.Add(new LedgerItemDetail
+                        {
+                            ItemName = name,
+                            Qty = t.Qty,
+                            Lbs = t.Lbs,
+                            Rate = t.Rate
+                        });
+                    }
+                }
+
+                // Determine party name if applicable
+                string? partyName = null;
+                if (!string.IsNullOrEmpty(t.EntryAttribute1))
+                {
+                    if (customers.TryGetValue(t.EntryAttribute1, out var cName)) partyName = cName;
+                    else if (suppliers.TryGetValue(t.EntryAttribute1, out var supName)) partyName = supName;
+                }
+                if (string.IsNullOrEmpty(partyName) && !string.IsNullOrEmpty(t.EntryAttribute2))
+                {
+                    if (customers.TryGetValue(t.EntryAttribute2, out var cName2)) partyName = cName2;
+                    else if (suppliers.TryGetValue(t.EntryAttribute2, out var supName2)) partyName = supName2;
+                }
+
+                // Build detailed compiled narration for Excel and tooltips
+                var itemParts = new List<string>();
+                foreach (var itm in items)
+                {
+                    var sub = new List<string>();
+                    if (itm.Qty.HasValue && itm.Qty > 0) sub.Add($"{itm.Qty:N0} Bags");
+                    if (itm.Lbs.HasValue && itm.Lbs > 0) sub.Add($"{itm.Lbs:N2} Lbs");
+                    if (itm.Rate.HasValue && itm.Rate > 0) sub.Add($"@{itm.Rate:N2}");
+                    string p = itm.ItemName;
+                    if (sub.Any()) p += $" ({string.Join(", ", sub)})";
+                    itemParts.Add(p);
+                }
+
+                string compiledItems = string.Join("; ", itemParts);
+                string narration = compiledItems;
+
+                if (!string.IsNullOrEmpty(sodaNo))
+                {
+                    narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
+                }
+                if (!string.IsNullOrEmpty(partyName))
+                {
+                    narration = string.IsNullOrEmpty(narration) ? $"Party: {partyName}" : $"{narration} | Party: {partyName}";
+                }
+
+                string displayRemarks = !string.IsNullOrWhiteSpace(t.TransRemarks)
+                    ? t.TransRemarks
+                    : (!string.IsNullOrWhiteSpace(t.EntryRemarks) ? t.EntryRemarks : "");
+
+                if (!string.IsNullOrWhiteSpace(displayRemarks) && displayRemarks != "Sales Invoice" && displayRemarks != "Purchase Invoice")
+                {
+                    narration = string.IsNullOrEmpty(narration) ? displayRemarks : $"{narration} - {displayRemarks}";
+                }
+
+                if (string.IsNullOrEmpty(narration))
+                {
+                    narration = $"{typeCode} #{t.TransNo}";
+                }
+
                 LedgerRows.Add(new GeneralLedgerRow
                 {
                     Date = t.EntryDate,
                     TransNo = t.TransNo?.ToString() ?? "-",
-                    Type = t.TransType ?? "-",
+                    Type = typeCode,
                     AccountName = t.AccountName ?? "-",
-                    Remarks = t.Remarks ?? "",
+                    Remarks = narration,
+                    OriginalRemarks = displayRemarks,
+                    PartyName = partyName,
+                    EntryId = t.EntryId,
+                    TransactionUrl = transUrl,
+                    InvoiceViewUrl = invoiceViewUrl,
+                    SodaNo = sodaNo,
+                    SodaUrl = sodaUrl,
+                    Items = items,
                     Debit = debit,
                     Credit = credit,
                     Balance = currentBalance
@@ -200,7 +418,7 @@ namespace YIS.Pages.Ledger
                 worksheet.Cell(4, 2).Value = "Trans No";
                 worksheet.Cell(4, 3).Value = "Type";
                 worksheet.Cell(4, 4).Value = "Account";
-                worksheet.Cell(4, 5).Value = "Remarks";
+                worksheet.Cell(4, 5).Value = "Narration / Details";
                 worksheet.Cell(4, 6).Value = "Debit";
                 worksheet.Cell(4, 7).Value = "Credit";
                 worksheet.Cell(4, 8).Value = "Balance";
@@ -232,13 +450,29 @@ namespace YIS.Pages.Ledger
             }
         }
 
+        public class LedgerItemDetail
+        {
+            public string ItemName { get; set; } = "Item";
+            public double? Qty { get; set; }
+            public double? Lbs { get; set; }
+            public double? Rate { get; set; }
+        }
+
         public class GeneralLedgerRow
         {
+            public long? EntryId { get; set; }
             public DateTime? Date { get; set; }
             public string TransNo { get; set; } = "";
             public string Type { get; set; } = "";
             public string AccountName { get; set; } = "";
             public string Remarks { get; set; } = "";
+            public string? OriginalRemarks { get; set; }
+            public string? PartyName { get; set; }
+            public string? TransactionUrl { get; set; }
+            public string? InvoiceViewUrl { get; set; }
+            public string? SodaNo { get; set; }
+            public string? SodaUrl { get; set; }
+            public List<LedgerItemDetail> Items { get; set; } = new();
             public double Debit { get; set; }
             public double Credit { get; set; }
             public double Balance { get; set; }

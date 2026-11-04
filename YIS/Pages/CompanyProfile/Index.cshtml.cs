@@ -1,195 +1,1595 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using YIS.Data;
-using YIS.Models;
-using YIS.Helpers;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-
-namespace YIS.Pages.CompanyProfile
-{
-    public class IndexModel : PageModel
-    {
-        private readonly ApplicationDbContext _context;
-        private readonly IWebHostEnvironment _environment;
-
-        public IndexModel(ApplicationDbContext context, IWebHostEnvironment environment)
-        {
-            _context = context;
-            _environment = environment;
-        }
-
-        public IList<UserCompanyProfile> Profiles { get; set; } = default!;
-        public SellerMaster? Seller { get; set; }
-        public long? CurrentUcpId { get; set; }
-
-        [BindProperty]
-        public UserCompanyProfile Input { get; set; } = new();
-
-        [BindProperty]
-        public IFormFile? ProfileImage { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string? SearchTerm { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(long? id)
-        {
-            var userId = AuthHelper.GetUserId(User);
-            var user = await _context.UserMasters.FindAsync(userId);
-            CurrentUcpId = user?.UcpId;
-
-            Seller = await _context.SellerMasters.FirstOrDefaultAsync();
-
-            if (Seller == null)
-            {
-                TempData["ErrorMessage"] = "Please create a seller first from the Sellers section.";
-                return RedirectToPage("/Sellers/Index");
-            }
-
-            // Load profiles with search
-            var query = _context.UserCompanyProfiles
-                .Where(c => c.SellerId == Seller.SellerId)
-                .AsQueryable();
-
-            if (!string.IsNullOrEmpty(SearchTerm))
-            {
-                query = query.Where(c => c.UcpCompanyName.Contains(SearchTerm) ||
-                                       (c.UcpOwnerName != null && c.UcpOwnerName.Contains(SearchTerm)) ||
-                                       (c.UcpCompanyNtn != null && c.UcpCompanyNtn.Contains(SearchTerm)));
-            }
-
-            Profiles = await query
-                .OrderBy(c => c.UcpCompanyName)
-                .ToListAsync();
-
-            // Load profile for editing if id is provided
-            if (id.HasValue)
-            {
-                var profile = await _context.UserCompanyProfiles.FindAsync(id.Value);
-                if (profile != null && profile.SellerId == Seller.SellerId)
-                {
-                    Input = profile;
-                }
-            }
-            else
-            {
-                Input.SellerId = Seller.SellerId;
-            }
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            var seller = await _context.SellerMasters.FirstOrDefaultAsync();
-            if (seller == null) return RedirectToPage("/Sellers/Index");
-
-            if (!ModelState.IsValid)
-            {
-                Seller = seller;
-                Profiles = await _context.UserCompanyProfiles.Where(c => c.SellerId == seller.SellerId).ToListAsync();
-                return Page();
-            }
-
-            string? uploadedImagePath = null;
-            if (ProfileImage != null && ProfileImage.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "profiles");
-                Directory.CreateDirectory(uploadsFolder);
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ProfileImage.FileName);
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await ProfileImage.CopyToAsync(fileStream);
-                }
-                uploadedImagePath = "/images/profiles/" + uniqueFileName;
-            }
-
-            if (Input.UcpId > 0)
-            {
-                // Update existing
-                var existing = await _context.UserCompanyProfiles.FindAsync(Input.UcpId);
-                if (existing == null) return NotFound();
-
-                existing.UcpIsActive = Input.UcpIsActive;
-                if (uploadedImagePath != null)
-                {
-                    Input.UcpPath = uploadedImagePath;
-                }
-                else
-                {
-                    // keep existing if no new image uploaded
-                    Input.UcpPath = existing.UcpPath;
-                }
-
-                _context.Entry(existing).CurrentValues.SetValues(Input);
-                existing.UcpEditStamp = DateTime.Now;
-                existing.UcpEditTag = User.Identity?.Name ?? "System";
-
-                TempData["StatusMessage"] = $"Profile '{Input.UcpCompanyName}' updated successfully.";
-            }
-            else
-            {
-                // Create new
-                if (uploadedImagePath != null)
-                {
-                    Input.UcpPath = uploadedImagePath;
-                }
-                Input.SellerId = seller.SellerId;
-                Input.UcpAddStamp = DateTime.Now;
-                Input.UcpAddTag = User.Identity?.Name ?? "System";
-
-                // If first profile or marked active, handle activation
-                Input.UcpIsActive = true;
-
-                _context.UserCompanyProfiles.Add(Input);
-                TempData["StatusMessage"] = $"Profile '{Input.UcpCompanyName}' created successfully.";
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostDeleteAsync(long id)
-        {
-            var profile = await _context.UserCompanyProfiles.FindAsync(id);
-            if (profile != null)
-            {
-                _context.UserCompanyProfiles.Remove(profile);
-                await _context.SaveChangesAsync();
-                TempData["StatusMessage"] = $"Profile '{profile.UcpCompanyName}' deleted successfully.";
-            }
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostSetActiveAsync(long id)
-        {
-            var userId = AuthHelper.GetUserId(User);
-            if (userId <= 0) return RedirectToPage("/Login");
-
-            var profile = await _context.UserCompanyProfiles.FindAsync(id);
-            if (profile != null)
-            {
-                // Update user's active company choice
-                await _context.UserMasters
-                    .Where(u => u.UmId == userId)
-                    .ExecuteUpdateAsync(s => s.SetProperty(u => u.UcpId, id));
-
-                // Update session
-                HttpContext.Session.SetString("ActiveUcpId", id.ToString());
-                HttpContext.Session.SetString("ActiveCompanyName", profile.UcpCompanyName ?? "Unknown");
-
-                TempData["StatusMessage"] = $"Profile '{profile.UcpCompanyName}' is now your active company.";
-            }
-            return RedirectToPage();
-        }
-
-        // Legacy helper kept for potential private use, removed body content to prevent global side effects
-        private async Task DeactivateAllExcept(long activeId, long sellerId)
-        {
-            await Task.CompletedTask;
-        }
-    }
-}
+using YIS.Services;
+
+
+
+using ClosedXML.Excel;
+
+
+
+using Microsoft.AspNetCore.Mvc;
+
+
+
+
+
+
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+
+
+
+
+
+
+using Microsoft.EntityFrameworkCore;
+
+
+
+
+
+
+
+using YIS.Data;
+
+
+
+
+
+
+
+using YIS.Models;
+
+
+
+
+
+
+
+using YIS.Helpers;
+
+
+
+
+
+
+
+using Microsoft.AspNetCore.Http;
+
+
+
+
+
+
+
+using System.IO;
+
+
+
+
+
+
+
+using Microsoft.AspNetCore.Hosting;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+namespace YIS.Pages.CompanyProfile
+
+
+
+
+
+
+
+{
+
+
+
+
+
+
+
+    public class IndexModel : PageModel
+
+
+
+
+
+
+
+    {
+
+
+
+
+
+
+
+        private readonly ApplicationDbContext _context;
+
+
+
+
+
+
+
+        private readonly IWebHostEnvironment _environment;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public IndexModel(ApplicationDbContext context, IWebHostEnvironment environment)
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            _context = context;
+
+
+
+
+
+
+
+            _environment = environment;
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public IList<UserCompanyProfile> Profiles { get; set; } = default!;
+
+
+
+
+
+
+
+        public SellerMaster? Seller { get; set; }
+
+
+
+
+
+
+
+        public long? CurrentUcpId { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [BindProperty]
+
+
+
+
+
+
+
+        public UserCompanyProfile Input { get; set; } = new();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [BindProperty]
+
+
+
+
+
+
+
+        public IFormFile? ProfileImage { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        [BindProperty(SupportsGet = true)]
+
+
+
+
+
+
+
+        public string? SearchTerm { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> OnGetAsync(long? id)
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            var userId = AuthHelper.GetUserId(User);
+
+
+
+
+
+
+
+            var user = await _context.UserMasters.FindAsync(userId);
+
+
+
+
+
+
+
+            CurrentUcpId = user?.UcpId;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            Seller = await _context.SellerMasters.FirstOrDefaultAsync();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if (Seller == null)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                TempData["ErrorMessage"] = "Please create a seller first from the Sellers section.";
+
+
+
+
+
+
+
+                return RedirectToPage("/Sellers/Index");
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // Load profiles with search
+
+
+
+
+
+
+
+            var query = _context.UserCompanyProfiles
+
+
+
+
+
+
+
+                .Where(c => c.SellerId == Seller.SellerId)
+
+
+
+
+
+
+
+                .AsQueryable();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if (!string.IsNullOrEmpty(SearchTerm))
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                query = query.Where(c => c.UcpCompanyName.Contains(SearchTerm) ||
+
+
+
+
+
+
+
+                                       (c.UcpOwnerName != null && c.UcpOwnerName.Contains(SearchTerm)) ||
+
+
+
+
+
+
+
+                                       (c.UcpCompanyNtn != null && c.UcpCompanyNtn.Contains(SearchTerm)));
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            Profiles = await query
+
+
+
+
+
+
+
+                .OrderBy(c => c.UcpCompanyName)
+
+
+
+
+
+
+
+                .ToListAsync();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // Load profile for editing if id is provided
+
+
+
+
+
+
+
+            if (id.HasValue)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                var profile = await _context.UserCompanyProfiles.FindAsync(id.Value);
+
+
+
+
+
+
+
+                if (profile != null && profile.SellerId == Seller.SellerId)
+
+
+
+
+
+
+
+                {
+
+
+
+
+
+
+
+                    Input = profile;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            else
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                Input.SellerId = Seller.SellerId;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            return Page();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> OnPostAsync()
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            var seller = await _context.SellerMasters.FirstOrDefaultAsync();
+
+
+
+
+
+
+
+            if (seller == null) return RedirectToPage("/Sellers/Index");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if (!ModelState.IsValid)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                Seller = seller;
+
+
+
+
+
+
+
+                Profiles = await _context.UserCompanyProfiles.Where(c => c.SellerId == seller.SellerId).ToListAsync();
+
+
+
+
+
+
+
+                return Page();
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            string? uploadedImagePath = null;
+
+
+
+
+
+
+
+            if (ProfileImage != null && ProfileImage.Length > 0)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "images", "profiles");
+
+
+
+
+
+
+
+                Directory.CreateDirectory(uploadsFolder);
+
+
+
+
+
+
+
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ProfileImage.FileName);
+
+
+
+
+
+
+
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+
+
+
+
+
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+
+
+
+
+
+
+
+                {
+
+
+
+
+
+
+
+                    await ProfileImage.CopyToAsync(fileStream);
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+                uploadedImagePath = "/images/profiles/" + uniqueFileName;
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            if (Input.UcpId > 0)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                // Update existing
+
+
+
+
+
+
+
+                var existing = await _context.UserCompanyProfiles.FindAsync(Input.UcpId);
+
+
+
+
+
+
+
+                if (existing == null) return NotFound();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                existing.UcpIsActive = Input.UcpIsActive;
+
+
+
+
+
+
+
+                if (uploadedImagePath != null)
+
+
+
+
+
+
+
+                {
+
+
+
+
+
+
+
+                    Input.UcpPath = uploadedImagePath;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+                else
+
+
+
+
+
+
+
+                {
+
+
+
+
+
+
+
+                    // keep existing if no new image uploaded
+
+
+
+
+
+
+
+                    Input.UcpPath = existing.UcpPath;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                _context.Entry(existing).CurrentValues.SetValues(Input);
+
+
+
+
+
+
+
+                existing.UcpEditStamp = DateTime.Now;
+
+
+
+
+
+
+
+                existing.UcpEditTag = User.Identity?.Name ?? "System";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                TempData["StatusMessage"] = $"Profile '{Input.UcpCompanyName}' updated successfully.";
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            else
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                // Create new
+
+
+
+
+
+
+
+                if (uploadedImagePath != null)
+
+
+
+
+
+
+
+                {
+
+
+
+
+
+
+
+                    Input.UcpPath = uploadedImagePath;
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+                Input.SellerId = seller.SellerId;
+
+
+
+
+
+
+
+                Input.UcpAddStamp = DateTime.Now;
+
+
+
+
+
+
+
+                Input.UcpAddTag = User.Identity?.Name ?? "System";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // If first profile or marked active, handle activation
+
+
+
+
+
+
+
+                Input.UcpIsActive = true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                _context.UserCompanyProfiles.Add(Input);
+
+
+
+
+
+
+
+                TempData["StatusMessage"] = $"Profile '{Input.UcpCompanyName}' created successfully.";
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            await _context.SaveChangesAsync();
+
+
+
+
+
+
+
+            return RedirectToPage();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> OnPostDeleteAsync(long id)
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            var profile = await _context.UserCompanyProfiles.FindAsync(id);
+
+
+
+
+
+
+
+            if (profile != null)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                _context.UserCompanyProfiles.Remove(profile);
+
+
+
+
+
+
+
+                await _context.SaveChangesAsync();
+
+
+
+
+
+
+
+                TempData["StatusMessage"] = $"Profile '{profile.UcpCompanyName}' deleted successfully.";
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            return RedirectToPage();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public async Task<IActionResult> OnPostSetActiveAsync(long id)
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            var userId = AuthHelper.GetUserId(User);
+
+
+
+
+
+
+
+            if (userId <= 0) return RedirectToPage("/Login");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var profile = await _context.UserCompanyProfiles.FindAsync(id);
+
+
+
+
+
+
+
+            if (profile != null)
+
+
+
+
+
+
+
+            {
+
+
+
+
+
+
+
+                // Update user's active company choice
+
+
+
+
+
+
+
+                await _context.UserMasters
+
+
+
+
+
+
+
+                    .Where(u => u.UmId == userId)
+
+
+
+
+
+
+
+                    .ExecuteUpdateAsync(s => s.SetProperty(u => u.UcpId, id));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // Update session
+
+
+
+
+
+
+
+                HttpContext.Session.SetString("ActiveUcpId", id.ToString());
+
+
+
+
+
+
+
+                HttpContext.Session.SetString("ActiveCompanyName", profile.UcpCompanyName ?? "Unknown");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                TempData["StatusMessage"] = $"Profile '{profile.UcpCompanyName}' is now your active company.";
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+            return RedirectToPage();
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // Legacy helper kept for potential private use, removed body content to prevent global side effects
+
+
+
+
+
+
+
+        private async Task DeactivateAllExcept(long activeId, long sellerId)
+
+
+
+
+
+
+
+        {
+
+
+
+
+
+
+
+            await Task.CompletedTask;
+
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+                public async Task<IActionResult> OnGetDownloadExcelAsync()
+        {
+            var seller = await _context.SellerMasters.FirstOrDefaultAsync();
+            if (seller == null || _context.UserCompanyProfiles == null) return RedirectToPage();
+
+            var query = _context.UserCompanyProfiles
+                .Where(c => c.SellerId == seller.SellerId)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(SearchTerm))
+            {
+                query = query.Where(c => c.UcpCompanyName.Contains(SearchTerm) ||
+                                       (c.UcpOwnerName != null && c.UcpOwnerName.Contains(SearchTerm)) ||
+                                       (c.UcpCompanyNtn != null && c.UcpCompanyNtn.Contains(SearchTerm)));
+            }
+
+            var list = await query.OrderBy(c => c.UcpCompanyName).ToListAsync();
+
+            var columns = new List<ExcelColumn<dynamic>>
+            {
+                new("Company Name", x => x.Name),
+                new("Owner / Proprietor", x => x.Owner),
+                new("NTN", x => x.Ntn),
+                new("Province", x => x.Province),
+                new("Address", x => x.Address),
+                new("Status", x => x.Status, null, XLAlignmentHorizontalValues.Center)
+            };
+
+            var exportList = list.Select(c => new
+            {
+                Name = c.UcpCompanyName,
+                Owner = c.UcpOwnerName ?? "-",
+                Ntn = c.UcpCompanyNtn ?? "-",
+                Province = c.UcpCompanyProvince ?? "-",
+                Address = c.UcpCompanyAddress ?? "-",
+                Status = c.UcpIsActive ? "Active" : "Inactive"
+            }).ToList();
+
+            var bytes = ExcelExportHelper.ExportToExcel("Company Profiles", columns, exportList, filterInfo: SearchTerm);
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Company_Profiles_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+        }
+    }
+}
