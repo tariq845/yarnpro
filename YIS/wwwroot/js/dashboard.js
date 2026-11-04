@@ -662,10 +662,12 @@ function initSmartSelects(container) {
     if (typeof TomSelect === 'undefined') return;
 
     const root = container || document;
-    const selects = root.querySelectorAll('select:not(.no-smart-search):not(.mui-pagination-select):not(.tomselected)');
+    // Exclude pagination dropdowns and elements with .no-smart-search
+    const selects = root.querySelectorAll('select:not(.no-smart-search):not(.mui-pagination-select)');
 
     selects.forEach(function (select) {
-        if (select.closest('template')) return;
+        // Skip template selects or already initialized instances
+        if (select.closest('template') || select.tomselect) return;
 
         const isSmall = select.classList.contains('form-select-sm') || select.closest('.input-group-sm') !== null;
         const placeholderOption = select.querySelector('option[value=""]');
@@ -678,7 +680,8 @@ function initSmartSelects(container) {
                 sortField: { field: "text", direction: "asc" },
                 placeholder: placeholder,
                 allowEmptyOption: true,
-                maxOptions: 1000,
+                maxOptions: 500,
+                plugins: ['clear_button'],
                 render: {
                     no_results: function (data, escape) {
                         return '<div class="no-results">No matches found for "' + escape(data.input) + '"</div>';
@@ -688,20 +691,6 @@ function initSmartSelects(container) {
 
             if (isSmall && ts.control) {
                 ts.control.classList.add('form-select-sm');
-            }
-
-            ts.on('change', function () {
-                const event = new Event('change', { bubbles: true });
-                select.dispatchEvent(event);
-            });
-
-            if (window.MutationObserver) {
-                const observer = new MutationObserver(function () {
-                    if (select.tomselect) {
-                        select.tomselect.sync();
-                    }
-                });
-                observer.observe(select, { childList: true });
             }
         } catch (e) {
             // Silently ignore already initialized or detached elements

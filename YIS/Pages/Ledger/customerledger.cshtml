@@ -1,95 +1,69 @@
-@page
-@model YIS.Pages.Ledger.CustomerLedgerModel
-@{
-    ViewData["Title"] = "Customer Ledger";
-}
-
-@section Styles {
-                        <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
-                        <style>
-                            .ts-control {
-                                border-radius: 0.375rem !important;
-                            }
-                        </style>
-}
-
-<div class="card mb-4">
-    <div class="card-body">
-        <form method="get">
-            <div class="row g-3">
-                <div class="col-md-5">
-                    <label class="form-label">Customer</label>
-                    <select asp-for="CustomerId" class="form-select" id="customer-select"
-                        asp-items="@(new SelectList(Model.Customers, "CustomerId", "CustomerName"))">
-                        <option value="">-- Select Customer --</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" name="StartDate" class="form-control"
-                        value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">End Date</label>
-                    <input type="date" name="EndDate" class="form-control"
-                        value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
-                </div>
-                <div class="col-md-3 d-flex align-items-end gap-2">
-                    <button type="submit" class="btn btn-primary px-3 text-nowrap" data-loading-text="Filter" style="min-width: 95px;">
-                        <i class="bi bi-funnel me-1"></i>Filter
-                    </button>
-                    @if (Model.CustomerId.HasValue)
-                    {
-                        <a asp-page-handler="DownloadExcel" asp-route-CustomerId="@Model.CustomerId"
-                            asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
-                            asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")" class="btn btn-success border-0 px-3 text-nowrap"
-                            title="Export to Excel">
-                            <i class="bi bi-file-earmark-excel me-1"></i>Excel
-                        </a>
-                    }
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="card">
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead class="table-light">
-                    <tr>
-                        <th>Date</th>
-                        <th>Transc #</th>
-                        <th>Type</th>
-                        <th>Customer</th>
-                        <th>Narration / Details</th>
-                        <th class="text-end">Debit</th>
-                        <th class="text-end">Credit</th>
-                        <th class="text-end">Balance</th>
-                    </tr>
-                </thead>
-                <tbody id="ledger-body">
-                    <partial name="_CustomerLedgerTableRows" model="Model" />
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-                        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function () {
-                                new TomSelect("#customer-select", {
-                                    create: false,
-                                    sortField: {
-                                        field: "text",
-                                        direction: "asc"
-                                    },
-                                    placeholder: "-- Select Customer --",
-                                    allowEmptyOption: true
-                                });
-                            });
-                        </script>
-}
+@page
+@model YIS.Pages.Ledger.CustomerLedgerModel
+@{
+    ViewData["Title"] = "Customer Ledger";
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label">Customer</label>
+                    <select asp-for="CustomerId" class="form-select" id="customer-select"
+                        asp-items="@(new SelectList(Model.Customers, "CustomerId", "CustomerName"))">
+                        <option value="">-- Select Customer --</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="StartDate" class="form-control"
+                        value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="EndDate" class="form-control"
+                        value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary px-3 text-nowrap" data-loading-text="Filter" style="min-width: 95px;">
+                        <i class="bi bi-funnel me-1"></i>Filter
+                    </button>
+                    @if (Model.CustomerId.HasValue)
+                    {
+                        <a asp-page-handler="DownloadExcel" asp-route-CustomerId="@Model.CustomerId"
+                            asp-route-StartDate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+                            asp-route-EndDate="@Model.EndDate?.ToString("yyyy-MM-dd")" class="btn btn-success border-0 px-3 text-nowrap"
+                            title="Export to Excel">
+                            <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                        </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Transc #</th>
+                        <th>Type</th>
+                        <th>Customer</th>
+                        <th>Narration / Details</th>
+                        <th class="text-end">Debit</th>
+                        <th class="text-end">Credit</th>
+                        <th class="text-end">Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="ledger-body">
+                    <partial name="_CustomerLedgerTableRows" model="Model" />
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
