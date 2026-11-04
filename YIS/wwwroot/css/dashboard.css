@@ -1345,3 +1345,8 @@ button.disabled[data-loading-active="true"],
     opacity: 0.9 !important;
     color: #dc3545 !important;
 }
+
+/* Hide current selected item label while user is actively typing a search query */
+.ts-wrapper.single.is-typing .ts-control > .item {
+    display: none !important;
+}
