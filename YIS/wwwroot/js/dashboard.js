@@ -658,47 +658,159 @@ function initFormSubmitLoaders() {
 // Smart Searchable Select System (TomSelect)
 // ============================================
 
+function getSelectOptionsSignature(select) {
+    let sig = '';
+    const opts = select.options;
+    for (let i = 0; i < opts.length; i++) {
+        const o = opts[i];
+        const hidden = (o.style && o.style.display === 'none') || o.hidden ? '1' : '0';
+        sig += o.value + ':' + o.textContent + ':' + (o.disabled ? '1' : '0') + ':' + hidden + ';';
+    }
+    return sig;
+}
+
+function rebuildTomSelectOptions(select) {
+    const ts = select.tomselect;
+    if (!ts) return;
+
+    const currentVal = select.value;
+    ts.clear(true);
+    ts.clearOptions();
+    ts.sync();
+
+    Array.from(select.options).forEach(function (opt) {
+        if ((opt.style && opt.style.display === 'none') || opt.hidden) {
+            if (opt.value !== '') {
+                ts.removeOption(opt.value);
+            }
+        }
+    });
+
+    ts.refreshOptions(false);
+    ts.setValue(currentVal, true);
+    select._tsOptsSignature = getSelectOptionsSignature(select);
+}
+
+function initSingleSmartSelect(select) {
+    if (select.closest('template') || select.tomselect) return;
+
+    const isSmall = select.classList.contains('form-select-sm') || select.closest('.input-group-sm') !== null;
+    const placeholderOption = select.querySelector('option[value=""]');
+    const placeholder = select.getAttribute('placeholder') ||
+                        select.getAttribute('data-placeholder') ||
+                        (placeholderOption ? placeholderOption.textContent.trim() : 'Type to search...');
+
+    try {
+        const ts = new TomSelect(select, {
+            create: false,
+            sortField: { field: "text", direction: "asc" },
+            placeholder: placeholder,
+            allowEmptyOption: true,
+            maxOptions: 500,
+            dropdownParent: 'body',
+            plugins: ['clear_button'],
+            render: {
+                no_results: function (data, escape) {
+                    return '<div class="no-results">No matches found for "' + escape(data.input) + '"</div>';
+                }
+            }
+        });
+
+        if (isSmall && ts.control) {
+            ts.control.classList.add('form-select-sm');
+        }
+
+        // Hide the current selected item text while actively typing a search query
+        if (ts.control_input) {
+            ts.control_input.addEventListener('input', function () {
+                ts.wrapper.classList.toggle('is-typing', this.value.length > 0);
+            });
+        }
+        ts.on('blur', function () {
+            ts.wrapper.classList.remove('is-typing');
+        });
+        ts.on('change', function () {
+            ts.wrapper.classList.remove('is-typing');
+        });
+
+        const hasHiddenOptions = Array.from(select.options).some(function (o) {
+            return (o.style && o.style.display === 'none') || o.hidden;
+        });
+        if (hasHiddenOptions) {
+            rebuildTomSelectOptions(select);
+        } else {
+            select._tsOptsSignature = getSelectOptionsSignature(select);
+        }
+    } catch (e) {
+        // Silently ignore already initialized or detached elements
+    }
+}
+
 function initSmartSelects(container) {
     if (typeof TomSelect === 'undefined') return;
 
     const root = container || document;
-    // Exclude pagination dropdowns and elements with .no-smart-search
     const selects = root.querySelectorAll('select:not(.no-smart-search):not(.mui-pagination-select)');
 
     selects.forEach(function (select) {
-        // Skip template selects or already initialized instances
-        if (select.closest('template') || select.tomselect) return;
+        initSingleSmartSelect(select);
+    });
+}
 
-        const isSmall = select.classList.contains('form-select-sm') || select.closest('.input-group-sm') !== null;
-        const placeholderOption = select.querySelector('option[value=""]');
-        const placeholder = select.getAttribute('placeholder') || 
-                            (placeholderOption ? placeholderOption.textContent.trim() : 'Type to search...');
+function syncSmartSelects(container) {
+    if (typeof TomSelect === 'undefined') return;
 
-        try {
-            const ts = new TomSelect(select, {
-                create: false,
-                sortField: { field: "text", direction: "asc" },
-                placeholder: placeholder,
-                allowEmptyOption: true,
-                maxOptions: 500,
-                plugins: ['clear_button'],
-                render: {
-                    no_results: function (data, escape) {
-                        return '<div class="no-results">No matches found for "' + escape(data.input) + '"</div>';
-                    }
-                }
-            });
+    const root = container || document;
+    const selects = root.querySelectorAll('select:not(.no-smart-search):not(.mui-pagination-select)');
 
-            if (isSmall && ts.control) {
-                ts.control.classList.add('form-select-sm');
+    selects.forEach(function (select) {
+        if (select.closest('template')) return;
+
+        if (!select.tomselect) {
+            initSingleSmartSelect(select);
+            return;
+        }
+
+        const ts = select.tomselect;
+
+        // 1. Sync disabled state
+        if (select.disabled !== ts.isDisabled) {
+            if (select.disabled) {
+                ts.disable();
+            } else {
+                ts.enable();
             }
-        } catch (e) {
-            // Silently ignore already initialized or detached elements
+        }
+
+        // 2. Sync options if DOM options/visibility/disabled state changed
+        const currentSig = getSelectOptionsSignature(select);
+        if (currentSig !== select._tsOptsSignature) {
+            rebuildTomSelectOptions(select);
+            return;
+        }
+
+        // 3. Sync selected value if changed programmatically by page scripts
+        const tsVal = String(ts.getValue() ?? '');
+        const domVal = String(select.value ?? '');
+        if (tsVal !== domVal) {
+            ts.setValue(domVal, true);
         }
     });
 }
 
-// Reactivity triggers for dynamic elements
+// Reactivity triggers for dynamic elements & cascading dropdowns
+document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+        syncSmartSelects();
+    }, 30);
+});
+document.addEventListener('change', function (e) {
+    if (e.target && e.target.tagName === 'SELECT') {
+        setTimeout(function () {
+            syncSmartSelects();
+        }, 15);
+    }
+});
 document.addEventListener('shown.bs.collapse', function (e) {
     initSmartSelects(e.target);
 });
@@ -706,11 +818,12 @@ document.addEventListener('shown.bs.modal', function (e) {
     initSmartSelects(e.target);
 });
 document.addEventListener('click', function (e) {
-    if (e.target.closest('#btnAddRow, .add-row-btn, .btn-add-row, #btn-add-row')) {
+    if (e.target.closest('#btnAddRow, #addRowBtn, .add-row-btn, .btn-add-row, #btn-add-row, .remove-row-btn, .remove-row')) {
         setTimeout(function () {
-            initSmartSelects();
-        }, 60);
+            syncSmartSelects();
+        }, 30);
     }
 });
 
 window.initSmartSelects = initSmartSelects;
+window.syncSmartSelects = syncSmartSelects;
