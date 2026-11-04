@@ -12,7 +12,7 @@ namespace YIS.Models
 
         public int StartItem => TotalItems == 0 ? 0 : (CurrentPage - 1) * PageSize + 1;
         public int EndItem => Math.Min(CurrentPage * PageSize, TotalItems);
-        public int[] PageSizeOptions { get; set; } = new[] { 10, 20, 25, 50, 100 };
+        public int[] PageSizeOptions { get; set; } = new[] { 10, 25, 50, 100, 250, 500, 1000 };
 
         public bool HasPreviousPage => CurrentPage > 1;
         public bool HasNextPage => CurrentPage < TotalPages;
