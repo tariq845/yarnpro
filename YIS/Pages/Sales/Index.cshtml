@@ -3,10 +3,8 @@
 @{
     ViewData["Title"] = "Sales Invoices";
 }
-
 <link rel="stylesheet" href="~/css/categories.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <div>
     <!-- Search and Filter Bar -->
     <div class="card shadow-sm mb-4 border-0">
@@ -20,7 +18,6 @@
                         {
                             <input type="hidden" name="SsdId" value="@Model.SsdId" />
                         }
-
                         <div class="position-relative flex-grow-1">
                             <i class="bi bi-search yis-cat-search-icon"></i>
                             <input type="text" 
@@ -53,7 +50,6 @@
                                 }
                             </datalist>
                         </div>
-
                         <!-- Up to Down / Down to Up Sort Direction Button -->
                         <button type="button" 
                                 class="btn btn-outline-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2 text-nowrap"
@@ -93,7 +89,6 @@
             </div>
         </div>
     </div>
-
     <!-- Table Card -->
     <div class="card shadow-sm border-0" id="table-container">
         <div class="card-body p-0">
@@ -101,14 +96,14 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="border-0 px-4 py-3" style="width: 12%;">Invoice #</th>
-                            <th class="border-0 px-4 py-3" style="width: 12%;">Date</th>
-                            <th class="border-0 px-4 py-3" style="width: 15%;">Customer</th>
-                            <th class="border-0 px-4 py-3" style="width: 12%;">Status</th>
-                            <th class="border-0 px-4 py-3 text-end" style="width: 10%;">Tax</th>
-                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Net Amount</th>
-                            <th class="border-0 px-4 py-3" style="width: 12%;">Ref SSD</th>
-                            <th class="border-0 px-4 py-3 text-end" style="width: 15%;">Actions</th>
+                            <th class="border-0 px-4 py-3" style="width: 10%;">Invoice #</th>
+                            <th class="border-0 px-4 py-3" style="width: 10%;">Date</th>
+                            <th class="border-0 px-4 py-3" style="width: 14%;">Customer</th>
+                            <th class="border-0 px-4 py-3">Narration / Details</th>
+                            <th class="border-0 px-4 py-3" style="width: 10%;">Status</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 8%;">Tax</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 10%;">Net Amount</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -130,6 +125,66 @@
                                         <span class="fw-medium text-dark">@item.CustomerName</span>
                                     </td>
                                     <td class="px-4 py-3">
+                                        @if (item.LineDetails != null && item.LineDetails.Any())
+                                        {
+                                            <div class="d-flex flex-column gap-1">
+                                                @foreach (var line in item.LineDetails)
+                                                {
+                                                    <div class="small">
+                                                        <span class="fw-semibold text-dark">@line.ItemName</span>
+                                                        @if (line.Qty.HasValue && line.Qty > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">@line.Qty.Value.ToString("N0") Bags</span>
+                                                        }
+                                                        @if (line.Lbs.HasValue && line.Lbs > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">@line.Lbs.Value.ToString("N2") Lbs</span>
+                                                        }
+                                                        @if (line.Rate.HasValue && line.Rate > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">Rate: @line.Rate.Value.ToString("N2")</span>
+                                                        }
+                                                    </div>
+                                                }
+                                                @if (item.SsdNumber.HasValue && item.SsdNumber > 0)
+                                                {
+                                                    <div class="mt-1">
+                                                        <a href="/Sales/SodaView/@(item.RefSsdId ?? item.SsdNumber)" target="_blank"
+                                                           class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none"
+                                                           title="Open Soda Contract">
+                                                            <i class="bi bi-file-earmark-text me-1"></i>Soda: SSD-@item.SsdNumber <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 9px;"></i>
+                                                        </a>
+                                                    </div>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(item.Remarks) && item.Remarks != "Sales Invoice")
+                                                {
+                                                    <div class="text-muted small fst-italic">@item.Remarks</div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                @if (item.SsdNumber.HasValue && item.SsdNumber > 0)
+                                                {
+                                                    <a href="/Sales/SodaView/@(item.RefSsdId ?? item.SsdNumber)" target="_blank"
+                                                       class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none"
+                                                       title="Open Soda Contract">
+                                                        <i class="bi bi-file-earmark-text me-1"></i>Soda: SSD-@item.SsdNumber <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 9px;"></i>
+                                                    </a>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(item.Remarks))
+                                                {
+                                                    <div class="text-muted small fst-italic">@item.Remarks</div>
+                                                }
+                                                else if (!item.SsdNumber.HasValue)
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="px-4 py-3">
                                         <div class="d-flex flex-column gap-1">
                                             <!-- Ledger Status -->
                                             @if (item.IsLedgerPosted)
@@ -144,7 +199,6 @@
                                                     <i class="bi bi-bank me-1"></i> Ledger Draft
                                                 </span>
                                             }
-
                                             <!-- FBR Status -->
                                             @if (item.IsFbrPosted)
                                             {
@@ -166,15 +220,11 @@
                                     <td class="px-4 py-3 text-end">
                                         <span class="fw-bold text-success">@item.Amount.ToString("N2")</span>
                                     </td>
-                                    <td class="px-4 py-3">
-                                        <span class="text-muted">@item.RefSsdNo</span>
-                                    </td>
                                     <td class="px-4 py-3 text-end">
                                         <div class="d-flex justify-content-end gap-2 align-items-center">
                                             <a href="/Sales/InvoiceView/@item.EntryId" class="btn btn-sm btn-outline-info" title="View Invoice" target="_blank">
                                                 <i class="bi bi-file-earmark-pdf"></i>
                                             </a>
-
                                             @if (item.IsLedgerPosted && !item.IsFbrPosted)
                                             {
                                                 <form method="post" asp-page-handler="PostToFbr" asp-route-id="@item.EntryId" 
@@ -184,7 +234,6 @@
                                                     </button>
                                                 </form>
                                             }
-
                                             @if (!item.IsLedgerPosted)
                                             {
                                                 <form method="post" asp-page-handler="PostToLedger" asp-route-id="@item.EntryId" 
@@ -193,7 +242,6 @@
                                                         <i class="bi bi-send-fill"></i>
                                                     </button>
                                                 </form>
-
                                                 <form method="post" 
                                                       asp-page-handler="Delete" 
                                                       asp-route-id="@item.EntryId" 
@@ -250,13 +298,11 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
     <script>
         document.addEventListener('submit', function (e) {
             const form = e.target;
             const btn = form.querySelector('button[type="submit"]');
-
             if (btn && (btn.title === 'Post to Ledger' || 
                         btn.title === 'Unpost from Ledger' ||
                         btn.title === 'Post to FBR' || 

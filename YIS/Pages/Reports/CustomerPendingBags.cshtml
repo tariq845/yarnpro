@@ -70,7 +70,7 @@
                             <input type="date" name="ToDate" class="form-control form-control-sm"
                                    value="@Model.ToDate?.ToString("yyyy-MM-dd")" />
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label text-muted small text-uppercase fw-bold mb-1" style="font-size: 0.7rem;">Customer</label>
                             <select name="CustomerId" class="form-select form-select-sm">
                                 <option value="">-- All Customers --</option>
@@ -87,10 +87,18 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-2 d-flex gap-2">
-                            <button type="submit" class="btn btn-sm btn-primary flex-fill">
+                        <div class="col-md-3 d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary flex-fill" data-loading-text="Filter">
                                 <i class="bi bi-funnel me-1"></i> Filter
                             </button>
+                            <a asp-page-handler="DownloadExcel"
+                               asp-route-FromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                               asp-route-ToDate="@Model.ToDate?.ToString("yyyy-MM-dd")"
+                               asp-route-CustomerId="@Model.CustomerId"
+                               class="btn btn-sm btn-success text-nowrap px-3"
+                               title="Export to Excel">
+                                <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                            </a>
                             @if (Model.FromDate.HasValue || Model.ToDate.HasValue || Model.CustomerId.HasValue)
                             {
                                 <a href="/Reports/CustomerPendingBags" class="btn btn-sm btn-outline-secondary" title="Reset Filters">

@@ -3,9 +3,7 @@
 @{
     ViewData["Title"] = "Sale SODA";
 }
-
 <link rel="stylesheet" href="~/css/categories.css" />
-
 <div>
     <!-- Search and Filter Bar -->
     <div class="card shadow-sm mb-4">
@@ -15,7 +13,6 @@
                     <form method="get" id="saleSodaSearchForm" class="d-flex align-items-center gap-2">
                         <input type="hidden" name="SortDir" id="sortDirInput" value="@Model.SortDir" />
                         <input type="hidden" name="PageSize" value="@Model.PageSize" />
-
                         <div class="position-relative flex-grow-1">
                             <i class="bi bi-search yis-cat-search-icon"></i>
                             <input type="text" 
@@ -42,7 +39,6 @@
                                 }
                             </datalist>
                         </div>
-
                         <!-- Up to Down / Down to Up Sort Direction Button -->
                         <button type="button" 
                                 class="btn btn-outline-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2 text-nowrap"
@@ -82,7 +78,6 @@
             </div>
         </div>
     </div>
-
     <!-- Table Card -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
@@ -90,15 +85,13 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="border-0 px-4 py-3">SSD #</th>
-                            <th class="border-0 px-4 py-3">Date</th>
-                            <th class="border-0 px-4 py-3">Customer</th>
-                            <th class="border-0 px-4 py-3 text-center">No. of Items</th>
-                            <th class="border-0 px-4 py-3 text-end">Total Qty</th>
-                            <th class="border-0 px-4 py-3 text-end">Grand Total</th>
-                            <th class="border-0 px-4 py-3 text-center">Invoices</th>
-                            <th class="border-0 px-4 py-3">Ref Purchase</th>
-                            <th class="border-0 px-4 py-3 text-end">Actions</th>
+                            <th class="border-0 px-4 py-3" style="width: 10%;">SSD #</th>
+                            <th class="border-0 px-4 py-3" style="width: 10%;">Date</th>
+                            <th class="border-0 px-4 py-3" style="width: 14%;">Customer</th>
+                            <th class="border-0 px-4 py-3">Narration / Details</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Grand Total</th>
+                            <th class="border-0 px-4 py-3 text-center" style="width: 8%;">Invoices</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -119,11 +112,65 @@
                                     <td class="px-4 py-3">
                                         <span class="fw-medium text-dark">@item.CustomerName</span>
                                     </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <span class="fw-medium text-dark ">@item.ItemCount</span>
-                                    </td>
-                                    <td class="px-4 py-3 text-end">
-                                        <span class="fw-medium text-dark">@item.TotalQty</span>
+                                    <td class="px-4 py-3">
+                                        @if (item.LineDetails != null && item.LineDetails.Any())
+                                        {
+                                            <div class="d-flex flex-column gap-1">
+                                                @foreach (var line in item.LineDetails)
+                                                {
+                                                    <div class="small">
+                                                        <span class="fw-semibold text-dark">@line.ItemName</span>
+                                                        @if (line.Qty.HasValue && line.Qty > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">@line.Qty.Value.ToString("N0") Bags</span>
+                                                        }
+                                                        @if (line.Lbs.HasValue && line.Lbs > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">@line.Lbs.Value.ToString("N2") Lbs</span>
+                                                        }
+                                                        @if (line.Rate.HasValue && line.Rate > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">Rate: @line.Rate.Value.ToString("N2")</span>
+                                                        }
+                                                    </div>
+                                                }
+                                                @if (item.PsdNumber.HasValue && item.PsdNumber > 0)
+                                                {
+                                                    <div class="mt-1">
+                                                        <a href="/Purchase/SodaView/@(item.RefPsdId ?? item.PsdNumber)" target="_blank"
+                                                           class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none"
+                                                           title="Open Referenced Purchase Soda Contract">
+                                                            <i class="bi bi-file-earmark-text me-1"></i>Soda: PSD-@item.PsdNumber <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 9px;"></i>
+                                                        </a>
+                                                    </div>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(item.Remarks) && item.Remarks != "Sales Soda")
+                                                {
+                                                    <div class="text-muted small fst-italic">@item.Remarks</div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                @if (item.PsdNumber.HasValue && item.PsdNumber > 0)
+                                                {
+                                                    <a href="/Purchase/SodaView/@(item.RefPsdId ?? item.PsdNumber)" target="_blank"
+                                                       class="badge bg-primary bg-opacity-10 text-primary border border-primary text-decoration-none"
+                                                       title="Open Referenced Purchase Soda Contract">
+                                                        <i class="bi bi-file-earmark-text me-1"></i>Soda: PSD-@item.PsdNumber <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 9px;"></i>
+                                                    </a>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(item.Remarks))
+                                                {
+                                                    <div class="text-muted small fst-italic">@item.Remarks</div>
+                                                }
+                                                else if (!item.PsdNumber.HasValue)
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </div>
+                                        }
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         <span class="fw-bold text-success">@item.GrandTotal?.ToString("N2")</span>
@@ -141,9 +188,6 @@
                                         {
                                             <span class="text-muted">0</span>
                                         }
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="text-muted">@item.RefPurchaseNo</span>
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         <div class="d-flex justify-content-end gap-2 align-items-center">
@@ -181,7 +225,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="9" class="text-center py-5">
+                                <td colspan="7" class="text-center py-5">
                                     <div class="py-4">
                                         <i class="bi bi-receipt-cutoff text-muted" style="font-size: 3rem;"></i>
                                         <h5 class="mt-3 text-muted">No Sale Soda Entries Found</h5>
@@ -197,5 +241,4 @@
         </div>
     </div>
 </div>
-
 @* Server-side search implemented *@

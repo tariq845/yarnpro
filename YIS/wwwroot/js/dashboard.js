@@ -686,9 +686,38 @@ function rebuildTomSelectOptions(select) {
         }
     });
 
+    const emptyOpt = select.querySelector('option[value=""]');
+    if (emptyOpt && !ts.options['']) {
+        ts.addOption({ value: '', text: emptyOpt.textContent.trim(), $option: emptyOpt });
+    }
+
     ts.refreshOptions(false);
     ts.setValue(currentVal, true);
     select._tsOptsSignature = getSelectOptionsSignature(select);
+}
+
+// Re-sync one TomSelect instance with its underlying <select> if page scripts changed
+// its options (hidden / disabled / added / removed) or its value programmatically.
+function refreshSmartSelectIfStale(select) {
+    const ts = select && select.tomselect;
+    if (!ts) return;
+    try {
+        if (select.disabled !== ts.isDisabled) {
+            if (select.disabled) { ts.disable(); } else { ts.enable(); }
+        }
+        const sig = getSelectOptionsSignature(select);
+        if (sig !== select._tsOptsSignature) {
+            rebuildTomSelectOptions(select);
+            return;
+        }
+        const tsVal = String(ts.getValue() ?? '');
+        const domVal = String(select.value ?? '');
+        if (tsVal !== domVal) {
+            ts.setValue(domVal, true);
+        }
+    } catch (e) {
+        // never let one broken select block the others
+    }
 }
 
 function initSingleSmartSelect(select) {
@@ -708,6 +737,7 @@ function initSingleSmartSelect(select) {
             allowEmptyOption: true,
             maxOptions: 500,
             dropdownParent: 'body',
+            copyClassesToDropdown: false,
             plugins: ['clear_button'],
             render: {
                 no_results: function (data, escape) {
@@ -720,6 +750,21 @@ function initSingleSmartSelect(select) {
             ts.control.classList.add('form-select-sm');
         }
 
+        // TomSelect copies every class of the original <select> onto its wrapper <div>.
+        // Page scripts query things like document.querySelectorAll('.item-select') and expect real
+        // <select> elements (.options / .value), so keep only pure styling classes on the wrapper.
+        const keepClasses = ['form-select', 'form-select-sm', 'form-select-lg', 'form-control',
+                             'form-control-sm', 'is-valid', 'is-invalid', 'fs-6', 'single', 'multi'];
+        Array.from(select.classList).forEach(function (cls) {
+            if (keepClasses.indexOf(cls) === -1) {
+                ts.wrapper.classList.remove(cls);
+            }
+        });
+
+        // Always show up-to-date (filtered) options at the moment the user opens the dropdown
+        ts.on('focus', function () { refreshSmartSelectIfStale(select); });
+        ts.on('dropdown_open', function () { refreshSmartSelectIfStale(select); });
+
         // Hide the current selected item text while actively typing a search query
         if (ts.control_input) {
             ts.control_input.addEventListener('input', function () {
@@ -731,6 +776,17 @@ function initSingleSmartSelect(select) {
         });
         ts.on('change', function () {
             ts.wrapper.classList.remove('is-typing');
+            if (select._tsRedispatching) return;
+            // Page scripts use delegated listeners (body.addEventListener('change', ...)).
+            // Make sure a bubbling native change event always reaches them.
+            setTimeout(function () {
+                if (!select._tsBubbled) {
+                    select._tsRedispatching = true;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                    select._tsRedispatching = false;
+                }
+                select._tsBubbled = false;
+            }, 0);
         });
 
         const hasHiddenOptions = Array.from(select.options).some(function (o) {
@@ -765,35 +821,14 @@ function syncSmartSelects(container) {
 
     selects.forEach(function (select) {
         if (select.closest('template')) return;
-
-        if (!select.tomselect) {
-            initSingleSmartSelect(select);
-            return;
-        }
-
-        const ts = select.tomselect;
-
-        // 1. Sync disabled state
-        if (select.disabled !== ts.isDisabled) {
-            if (select.disabled) {
-                ts.disable();
-            } else {
-                ts.enable();
+        try {
+            if (!select.tomselect) {
+                initSingleSmartSelect(select);
+                return;
             }
-        }
-
-        // 2. Sync options if DOM options/visibility/disabled state changed
-        const currentSig = getSelectOptionsSignature(select);
-        if (currentSig !== select._tsOptsSignature) {
-            rebuildTomSelectOptions(select);
-            return;
-        }
-
-        // 3. Sync selected value if changed programmatically by page scripts
-        const tsVal = String(ts.getValue() ?? '');
-        const domVal = String(select.value ?? '');
-        if (tsVal !== domVal) {
-            ts.setValue(domVal, true);
+            refreshSmartSelectIfStale(select);
+        } catch (e) {
+            // ignore and continue with remaining selects
         }
     });
 }
@@ -824,6 +859,13 @@ document.addEventListener('click', function (e) {
         }, 30);
     }
 });
+
+// Track whether a bubbling native change event was already emitted for a TomSelect-managed select
+document.addEventListener('change', function (e) {
+    if (e.bubbles && e.target && e.target.tomselect) {
+        e.target._tsBubbled = true;
+    }
+}, true);
 
 window.initSmartSelects = initSmartSelects;
 window.syncSmartSelects = syncSmartSelects;

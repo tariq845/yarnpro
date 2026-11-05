@@ -28,10 +28,34 @@ namespace YIS.Services
             IEnumerable<ExcelColumn<T>> columns,
             IEnumerable<T> data,
             string companyName = "Yarn Pro",
-            string? filterInfo = null)
+            string? filterInfo = null,
+            bool addTotalsRow = false)
+        {
+            return CreateMultiSheetWorkbook(workbook =>
+            {
+                var worksheet = workbook.Worksheets.Add(SanitizeSheetName(title));
+                PopulateWorksheet(worksheet, title, columns, data, companyName, filterInfo, addTotalsRow);
+            });
+        }
+
+        public static byte[] CreateMultiSheetWorkbook(Action<XLWorkbook> configure)
         {
             using var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add(SanitizeSheetName(title));
+            configure(workbook);
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            return stream.ToArray();
+        }
+
+        public static void PopulateWorksheet<T>(
+            IXLWorksheet worksheet,
+            string title,
+            IEnumerable<ExcelColumn<T>> columns,
+            IEnumerable<T> data,
+            string companyName = "Yarn Pro",
+            string? filterInfo = null,
+            bool addTotalsRow = false)
+        {
             worksheet.ShowGridLines = true;
 
             var columnList = new List<ExcelColumn<T>>(columns);
@@ -161,15 +185,54 @@ namespace YIS.Services
                 rowIdx++;
             }
 
+            // 5. Totals Row
+            if (addTotalsRow && rowIdx > 0)
+            {
+                worksheet.Row(currentRow).Height = 22;
+                var totalLabel = worksheet.Cell(currentRow, 1);
+                totalLabel.Value = "Total";
+                totalLabel.Style.Font.Bold = true;
+                totalLabel.Style.Font.FontSize = 10;
+                totalLabel.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                totalLabel.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                totalLabel.Style.Fill.BackgroundColor = XLColor.FromHtml("#F1F5F9");
+                totalLabel.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                totalLabel.Style.Border.BottomBorder = XLBorderStyleValues.Double;
+
+                int startDataRow = headerRow + 1;
+                int endDataRow = currentRow - 1;
+
+                for (int i = 0; i < columnList.Count; i++)
+                {
+                    var col = columnList[i];
+                    var cell = worksheet.Cell(currentRow, i + 1);
+                    cell.Style.Font.Bold = true;
+                    cell.Style.Font.FontSize = 10;
+                    cell.Style.Alignment.Horizontal = col.Alignment;
+                    cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+                    cell.Style.Fill.BackgroundColor = XLColor.FromHtml("#F1F5F9");
+                    cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    cell.Style.Border.BottomBorder = XLBorderStyleValues.Double;
+
+                    if (i > 0 && !string.IsNullOrEmpty(col.NumberFormat) && (col.NumberFormat.Contains("0") || col.NumberFormat.Contains("#")))
+                    {
+                        string startCell = worksheet.Cell(startDataRow, i + 1).Address.ToString();
+                        string endCell = worksheet.Cell(endDataRow, i + 1).Address.ToString();
+                        cell.FormulaA1 = $"SUM({startCell}:{endCell})";
+                        cell.Style.NumberFormat.Format = col.NumberFormat;
+                    }
+                    else if (i > 0)
+                    {
+                        cell.Value = "";
+                    }
+                }
+            }
+
             // Auto-fit column widths with breathing room
             worksheet.Columns().AdjustToContents(1, 5, 10, 50);
-
-            using var stream = new MemoryStream();
-            workbook.SaveAs(stream);
-            return stream.ToArray();
         }
 
-        private static string SanitizeSheetName(string name)
+        public static string SanitizeSheetName(string name)
         {
             if (string.IsNullOrWhiteSpace(name)) return "Sheet1";
             var invalidChars = new[] { ':', '\\', '/', '?', '*', '[', ']' };
@@ -183,4 +246,3 @@ namespace YIS.Services
         }
     }
 }
-
