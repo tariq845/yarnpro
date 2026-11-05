@@ -3,9 +3,7 @@
 @{
     ViewData["Title"] = "Purchase SODA";
 }
-
 <link rel="stylesheet" href="~/css/categories.css" />
-
 <div>
     <!-- Search and Filter Bar -->
     <div class="card shadow-sm mb-4">
@@ -15,7 +13,6 @@
                     <form method="get" id="purchaseSodaSearchForm" class="d-flex align-items-center gap-2">
                         <input type="hidden" name="SortDir" id="sortDirInput" value="@Model.SortDir" />
                         <input type="hidden" name="PageSize" value="@Model.PageSize" />
-
                         <div class="position-relative flex-grow-1">
                             <i class="bi bi-search yis-cat-search-icon"></i>
                             <input type="text" 
@@ -42,7 +39,6 @@
                                 }
                             </datalist>
                         </div>
-
                         <!-- Up to Down / Down to Up Sort Direction Button -->
                         <button type="button" 
                                 class="btn btn-outline-secondary d-inline-flex align-items-center gap-1 shadow-sm px-2 text-nowrap"
@@ -82,7 +78,6 @@
             </div>
         </div>
     </div>
-
     <!-- Table Card -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
@@ -90,13 +85,13 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="border-0 px-4 py-3">PSD #</th>
-                            <th class="border-0 px-4 py-3">Date</th>
-                            <th class="border-0 px-4 py-3">Supplier</th>
-                            <th class="border-0 px-4 py-3 text-center">No. of Items</th>
-                            <th class="border-0 px-4 py-3 text-end">Grand Total</th>
-                            <th class="border-0 px-4 py-3 text-center">Invoices</th>
-                            <th class="border-0 px-4 py-3 text-end">Actions</th>
+                            <th class="border-0 px-4 py-3" style="width: 12%;">PSD #</th>
+                            <th class="border-0 px-4 py-3" style="width: 12%;">Date</th>
+                            <th class="border-0 px-4 py-3" style="width: 15%;">Supplier</th>
+                            <th class="border-0 px-4 py-3">Narration / Details</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Grand Total</th>
+                            <th class="border-0 px-4 py-3 text-center" style="width: 10%;">Invoices</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,8 +112,47 @@
                                     <td class="px-4 py-3">
                                         <span class="fw-medium text-dark">@item.SupplierName</span>
                                     </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <span class="fw-medium text-dark">@item.ItemCount</span>
+                                    <td class="px-4 py-3">
+                                        @if (item.LineDetails != null && item.LineDetails.Any())
+                                        {
+                                            <div class="d-flex flex-column gap-1">
+                                                @foreach (var line in item.LineDetails)
+                                                {
+                                                    <div class="small">
+                                                        <span class="fw-semibold text-dark">@line.ItemName</span>
+                                                        @if (line.Qty.HasValue && line.Qty > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">@line.Qty.Value.ToString("N0") Bags</span>
+                                                        }
+                                                        @if (line.Lbs.HasValue && line.Lbs > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">@line.Lbs.Value.ToString("N2") Lbs</span>
+                                                        }
+                                                        @if (line.Rate.HasValue && line.Rate > 0)
+                                                        {
+                                                            <span class="badge bg-light text-secondary border ms-1">Rate: @line.Rate.Value.ToString("N2")</span>
+                                                        }
+                                                    </div>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(item.Remarks) && item.Remarks != "Purchase Soda")
+                                                {
+                                                    <div class="text-muted small fst-italic">@item.Remarks</div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
+                                                @if (!string.IsNullOrWhiteSpace(item.Remarks))
+                                                {
+                                                    <div class="text-muted small fst-italic">@item.Remarks</div>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </div>
+                                        }
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         <span class="fw-bold text-success">@item.GrandTotal?.ToString("N2")</span>
@@ -189,5 +223,4 @@
         </div>
     </div>
 </div>
-
 @* Server-side search implemented *@

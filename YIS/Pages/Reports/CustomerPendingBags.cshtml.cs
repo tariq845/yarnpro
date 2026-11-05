@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using YIS.Data;
 using YIS.Models;
 using YIS.Helpers;
+using YIS.Services;
+using ClosedXML.Excel;
 
 namespace YIS.Pages.Reports
 {
@@ -55,9 +57,74 @@ namespace YIS.Pages.Reports
             public double PendingQty { get; set; }
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+            if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
+
+            await LoadPendingBagsDataAsync(activeUcpId.Value);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnGetDownloadExcelAsync()
+        {
+            var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+            if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
+
+            await LoadPendingBagsDataAsync(activeUcpId.Value);
+
+            var companyProfile = await _context.UserCompanyProfiles.FirstOrDefaultAsync(c => c.UcpId == activeUcpId.Value);
+            string companyName = companyProfile?.UcpCompanyName ?? "Yarn Pro";
+
+            var filterParts = new List<string>();
+            if (FromDate.HasValue) filterParts.Add($"From: {FromDate.Value:dd-MM-yyyy}");
+            if (ToDate.HasValue) filterParts.Add($"To: {ToDate.Value:dd-MM-yyyy}");
+            if (CustomerId.HasValue)
+            {
+                var custName = Customers.FirstOrDefault(c => c.CustomerId == CustomerId.Value)?.CustomerName;
+                if (!string.IsNullOrEmpty(custName)) filterParts.Add($"Customer: {custName}");
+            }
+            string filterInfo = filterParts.Any() ? string.Join(" | ", filterParts) : "All Records";
+
+            // Define Summary Sheet Columns
+            var summaryColumns = new List<ExcelColumn<ItemSummaryViewModel>>
+            {
+                new ExcelColumn<ItemSummaryViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
+                new ExcelColumn<ItemSummaryViewModel>("Total Dispatched (Bags)", x => x.TotalDispatched, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Total Invoiced (Bags)", x => x.TotalInvoiced, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Pending Bags", x => x.Balance, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Active SSD Count", x => x.SsdLines.Count, "#,##0", XLAlignmentHorizontalValues.Center)
+            };
+
+            // Define Detail Sheet Columns
+            var detailColumns = new List<ExcelColumn<PendingRowViewModel>>
+            {
+                new ExcelColumn<PendingRowViewModel>("SSD #", x => $"SSD-{x.SsdNumber ?? x.SsdId}", null, XLAlignmentHorizontalValues.Center),
+                new ExcelColumn<PendingRowViewModel>("SSD Date", x => x.SsdDate, "dd-MM-yyyy", XLAlignmentHorizontalValues.Center),
+                new ExcelColumn<PendingRowViewModel>("Customer Name", x => x.CustomerName, null, XLAlignmentHorizontalValues.Left),
+                new ExcelColumn<PendingRowViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
+                new ExcelColumn<PendingRowViewModel>("Dispatched Qty", x => x.DispatchedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Invoiced Qty", x => x.InvoicedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Pending Qty", x => x.PendingQty, "#,##0", XLAlignmentHorizontalValues.Right)
+            };
+
+            var bytes = ExcelExportHelper.CreateMultiSheetWorkbook(workbook =>
+            {
+                // Sheet 1: Summary
+                var summarySheet = workbook.Worksheets.Add("Item Summary");
+                ExcelExportHelper.PopulateWorksheet(summarySheet, "Customer Pending Bags Summary", summaryColumns, ItemSummaries, companyName, filterInfo, addTotalsRow: true);
+
+                // Sheet 2: Detailed Drilldown
+                var detailSheet = workbook.Worksheets.Add("Detailed Pending Dispatches");
+                ExcelExportHelper.PopulateWorksheet(detailSheet, "Customer Pending Bags Detailed", detailColumns, Rows, companyName, filterInfo, addTotalsRow: true);
+            });
+
+            string fileName = $"Customer_Pending_Bags_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        private async Task LoadPendingBagsDataAsync(long activeUcpId)
+        {
             if (_context.Entries == null) return;
 
             // Load customers for filter dropdown
@@ -108,7 +175,6 @@ namespace YIS.Pages.Reports
                                    }).ToListAsync();
 
             // --- Step 3: SAL entries linked to SSDs (invoiced qty per SSD per item) ---
-            // SAL.EntryRefId = SSD.EntryId
             var salItems = await (from sal in _context.Entries
                                   join sall in _context.Entries on sal.EntryId equals sall.EntryRefId
                                   where sal.EntryType == "SAL"

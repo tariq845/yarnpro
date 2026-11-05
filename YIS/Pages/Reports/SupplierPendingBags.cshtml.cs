@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using YIS.Data;
 using YIS.Models;
 using YIS.Helpers;
+using YIS.Services;
+using ClosedXML.Excel;
 
 namespace YIS.Pages.Reports
 {
@@ -55,9 +57,74 @@ namespace YIS.Pages.Reports
             public double PendingQty { get; set; }
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+            if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
+
+            await LoadPendingBagsDataAsync(activeUcpId.Value);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnGetDownloadExcelAsync()
+        {
+            var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+            if (!activeUcpId.HasValue) return RedirectToPage("/SelectCompany");
+
+            await LoadPendingBagsDataAsync(activeUcpId.Value);
+
+            var companyProfile = await _context.UserCompanyProfiles.FirstOrDefaultAsync(c => c.UcpId == activeUcpId.Value);
+            string companyName = companyProfile?.UcpCompanyName ?? "Yarn Pro";
+
+            var filterParts = new List<string>();
+            if (FromDate.HasValue) filterParts.Add($"From: {FromDate.Value:dd-MM-yyyy}");
+            if (ToDate.HasValue) filterParts.Add($"To: {ToDate.Value:dd-MM-yyyy}");
+            if (SupplierId.HasValue)
+            {
+                var suppName = Suppliers.FirstOrDefault(s => s.SupplierId == SupplierId.Value)?.SupplierName;
+                if (!string.IsNullOrEmpty(suppName)) filterParts.Add($"Supplier: {suppName}");
+            }
+            string filterInfo = filterParts.Any() ? string.Join(" | ", filterParts) : "All Records";
+
+            // Define Summary Sheet Columns
+            var summaryColumns = new List<ExcelColumn<ItemSummaryViewModel>>
+            {
+                new ExcelColumn<ItemSummaryViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
+                new ExcelColumn<ItemSummaryViewModel>("Total Ordered (PSD Bags)", x => x.TotalOrdered, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Received (PUR Bags)", x => x.TotalReceived, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Pending Bags", x => x.Balance, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Active PSD Count", x => x.PsdLines.Count, "#,##0", XLAlignmentHorizontalValues.Center)
+            };
+
+            // Define Detail Sheet Columns
+            var detailColumns = new List<ExcelColumn<PendingRowViewModel>>
+            {
+                new ExcelColumn<PendingRowViewModel>("PSD #", x => $"PSD-{x.PsdNumber ?? x.PsdId}", null, XLAlignmentHorizontalValues.Center),
+                new ExcelColumn<PendingRowViewModel>("PSD Date", x => x.PsdDate, "dd-MM-yyyy", XLAlignmentHorizontalValues.Center),
+                new ExcelColumn<PendingRowViewModel>("Supplier Name", x => x.SupplierName, null, XLAlignmentHorizontalValues.Left),
+                new ExcelColumn<PendingRowViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
+                new ExcelColumn<PendingRowViewModel>("Ordered Qty", x => x.OrderedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Received Qty", x => x.ReceivedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Pending Qty", x => x.PendingQty, "#,##0", XLAlignmentHorizontalValues.Right)
+            };
+
+            var bytes = ExcelExportHelper.CreateMultiSheetWorkbook(workbook =>
+            {
+                // Sheet 1: Summary
+                var summarySheet = workbook.Worksheets.Add("Item Summary");
+                ExcelExportHelper.PopulateWorksheet(summarySheet, "Supplier Pending Bags Summary", summaryColumns, ItemSummaries, companyName, filterInfo, addTotalsRow: true);
+
+                // Sheet 2: Detailed Drilldown
+                var detailSheet = workbook.Worksheets.Add("Detailed Pending Orders");
+                ExcelExportHelper.PopulateWorksheet(detailSheet, "Supplier Pending Bags Detailed", detailColumns, Rows, companyName, filterInfo, addTotalsRow: true);
+            });
+
+            string fileName = $"Supplier_Pending_Bags_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+
+        private async Task LoadPendingBagsDataAsync(long activeUcpId)
+        {
             if (_context.Entries == null) return;
 
             // Load suppliers for filter dropdown
@@ -221,13 +288,13 @@ namespace YIS.Pages.Reports
 
             // Received qty per item (via PUR → PURL)
             var purlData = await (from pur in _context.Entries
-                                  join purl in _context.Entries on pur.EntryId equals purl.EntryRefId
-                                  where pur.EntryType == "PUR" && purl.EntryType == "PURL"
-                                        && pur.UcpId == activeUcpId && purl.UcpId == activeUcpId
-                                        && pur.EntryRefNo == psdId
-                                  group purl by purl.ItemId into g
-                                  select new { ItemId = g.Key, Received = g.Sum(x => x.Qty ?? 0) })
-                                 .ToListAsync();
+                                   join purl in _context.Entries on pur.EntryId equals purl.EntryRefId
+                                   where pur.EntryType == "PUR" && purl.EntryType == "PURL"
+                                         && pur.UcpId == activeUcpId && purl.UcpId == activeUcpId
+                                         && pur.EntryRefNo == psdId
+                                   group purl by purl.ItemId into g
+                                   select new { ItemId = g.Key, Received = g.Sum(x => x.Qty ?? 0) })
+                                  .ToListAsync();
 
             var receivedMap = purlData.ToDictionary(x => x.ItemId ?? 0, x => x.Received);
 
