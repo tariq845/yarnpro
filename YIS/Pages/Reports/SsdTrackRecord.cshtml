@@ -454,6 +454,71 @@
             </div>
         }
 
+        <!-- 3. Sales Returns (Credit Notes) -->
+        @if (Model.ReturnItems.Any())
+        {
+            <div class="section-heading mt-4">
+                <span>2B. SALES RETURNS (CREDIT NOTES - CN)</span>
+                <span class="fs-6 text-muted">Returns Against Above Deliveries</span>
+            </div>
+            <table class="report-table mb-4">
+                <thead>
+                    <tr>
+                        <th style="width: 4%;">#</th>
+                        <th style="width: 10%;">CN No</th>
+                        <th style="width: 10%;">Date</th>
+                        <th style="width: 12%;">Against SAL</th>
+                        <th style="width: 22%;">Item Description</th>
+                        <th class="text-num" style="width: 9%;">Qty (Bags)</th>
+                        <th class="text-num" style="width: 9%;">Weight (Lbs)</th>
+                        <th class="text-num" style="width: 8%;">Rate</th>
+                        <th class="text-num" style="width: 8%;">Amount</th>
+                        <th class="text-num" style="width: 8%;">Net Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int rIdx = 1;
+                        double sumRQty = 0, sumRLbs = 0, sumRAmt = 0, sumRNet = 0;
+                    }
+                    @foreach (var r in Model.ReturnItems)
+                    {
+                        sumRQty += r.Qty;
+                        sumRLbs += r.Lbs;
+                        sumRAmt += r.Amount;
+                        sumRNet += r.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@rIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Sales/SaleReturn?id=@r.CnId" class="text-decoration-none text-danger d-print-none" target="_blank">
+                                    CN-@r.CnNumber
+                                </a>
+                                <span class="d-none d-print-inline text-dark">CN-@r.CnNumber</span>
+                            </td>
+                            <td>@r.CnDate?.ToString("dd-MM-yyyy")</td>
+                            <td class="text-muted">@(r.AgainstSalNumber.HasValue ? $"SAL-{r.AgainstSalNumber}" : "-")</td>
+                            <td>@r.ItemName</td>
+                            <td class="text-num fw-bold text-danger">@r.Qty.ToString("N2")</td>
+                            <td class="text-num text-danger">@r.Lbs.ToString("N2")</td>
+                            <td class="text-num">@r.Rate.ToString("F4")</td>
+                            <td class="text-num">@r.Amount.ToString("N2")</td>
+                            <td class="text-num fw-bold text-danger">@r.NetAmount.ToString("N2")</td>
+                        </tr>
+                        rIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="5" class="text-uppercase text-center">Total Returns</td>
+                        <td class="text-num text-danger">@sumRQty.ToString("N2")</td>
+                        <td class="text-num text-danger">@sumRLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumRLbs > 0 ? (sumRAmt / (sumRLbs / 10.0)) : (sumRQty > 0 ? sumRAmt / sumRQty : 0)).ToString("F4"))</td>
+                        <td class="text-num text-danger">@sumRAmt.ToString("N2")</td>
+                        <td class="text-num text-danger">@sumRNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+
         <!-- 4. Movement & Delivery Summary Ledger -->
         <div class="section-heading">
             <span>3. MOVEMENT & DELIVERY SUMMARY LEDGER</span>
@@ -484,8 +549,25 @@
                     <td class="text-num">@Model.Summary.DeliveredAvgRate.ToString("F4")</td>
                     <td class="text-num fw-bold text-primary">@Model.Summary.DeliveredAmount.ToString("N2")</td>
                 </tr>
+                @if (Model.Summary.ReturnedQty > 0)
+                {
+                    <tr>
+                        <td class="fw-bold text-danger">C. Returned by Customer (CN)</td>
+                        <td class="text-num fw-bold text-danger">-@Model.Summary.ReturnedQty.ToString("N2")</td>
+                        <td class="text-num text-danger">-@Model.Summary.ReturnedLbs.ToString("N2")</td>
+                        <td class="text-num">@Model.Summary.ReturnedAvgRate.ToString("F4")</td>
+                        <td class="text-num fw-bold text-danger">-@Model.Summary.ReturnedAmount.ToString("N2")</td>
+                    </tr>
+                    <tr class="table-info">
+                        <td class="fw-bold text-primary">D. Net Delivered to Customer (B - C)</td>
+                        <td class="text-num fw-bold text-primary">@Model.Summary.NetDeliveredQty.ToString("N2")</td>
+                        <td class="text-num text-primary">@Model.Summary.NetDeliveredLbs.ToString("N2")</td>
+                        <td class="text-num">@Model.Summary.NetDeliveredAvgRate.ToString("F4")</td>
+                        <td class="text-num fw-bold text-primary">@Model.Summary.NetDeliveredAmount.ToString("N2")</td>
+                    </tr>
+                }
                 <tr class="table-warning">
-                    <td class="fw-bold text-danger">C. Pending Delivery Balance (A - B)</td>
+                    <td class="fw-bold text-danger">@(Model.Summary.ReturnedQty > 0 ? "E. Pending Delivery Balance (A - D)" : "C. Pending Delivery Balance (A - B)")</td>
                     <td class="text-num fw-bold text-danger">@Model.Summary.PendingDeliveryQty.ToString("N2")</td>
                     <td class="text-num text-danger">@Model.Summary.PendingDeliveryLbs.ToString("N2")</td>
                     <td class="text-num">-</td>

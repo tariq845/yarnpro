@@ -4,165 +4,63 @@ using ClosedXML.Excel;
 
 using Microsoft.AspNetCore.Mvc;
 
-
-
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
-
 
 using Microsoft.EntityFrameworkCore;
 
-
-
 using YIS.Data;
-
-
 
 using YIS.Models;
 
-
-
 using YIS.Helpers;
-
-
-
-
-
-
 
 namespace YIS.Pages.Purchase
 
+{
 
+public class IndexModel : PageModel
 
 {
 
+private readonly ApplicationDbContext _context;
 
+public IndexModel(ApplicationDbContext context)
 
-    public class IndexModel : PageModel
+{
 
+_context = context;
 
+}
 
-    {
+public IList<PurchaseViewModel> Entries { get; set; } = new List<PurchaseViewModel>();
 
+public Dictionary<long, string> SupplierNames { get; set; } = new Dictionary<long, string>();
 
+[BindProperty(SupportsGet = true)]
 
-        private readonly ApplicationDbContext _context;
+public int CurrentPage { get; set; } = 1;
 
+[BindProperty(SupportsGet = true)]
 
+public int PageSize { get; set; } = 10;
 
+[BindProperty(SupportsGet = true)]
 
+public string? SearchTerm { get; set; }
 
+[BindProperty(SupportsGet = true)]
 
+public string SortDir { get; set; } = "desc";
 
-        public IndexModel(ApplicationDbContext context)
+[BindProperty(SupportsGet = true)]
 
+public long? PsdId { get; set; }
 
+public List<string> SearchSuggestions { get; set; } = new List<string>();
 
-        {
+public PaginationViewModel Pagination { get; set; } = default!;
 
-
-
-            _context = context;
-
-
-
-        }
-
-
-
-
-
-
-
-        public IList<PurchaseViewModel> Entries { get; set; } = new List<PurchaseViewModel>();
-
-
-
-        public Dictionary<long, string> SupplierNames { get; set; } = new Dictionary<long, string>();
-
-
-
-
-
-
-
-        [BindProperty(SupportsGet = true)]
-
-
-
-        public int CurrentPage { get; set; } = 1;
-
-
-
-
-
-
-
-        [BindProperty(SupportsGet = true)]
-
-
-
-        public int PageSize { get; set; } = 10;
-
-
-
-
-
-
-
-        [BindProperty(SupportsGet = true)]
-
-
-
-        public string? SearchTerm { get; set; }
-
-
-
-
-
-
-
-        [BindProperty(SupportsGet = true)]
-
-
-
-        public string SortDir { get; set; } = "desc";
-
-
-
-
-
-
-
-        [BindProperty(SupportsGet = true)]
-
-
-
-        public long? PsdId { get; set; }
-
-
-
-
-
-
-
-        public List<string> SearchSuggestions { get; set; } = new List<string>();
-
-
-
-
-
-
-
-        public PaginationViewModel Pagination { get; set; } = default!;
-
-
-
-
-
-
-
-        public class PurchaseViewModel
+public class PurchaseViewModel
         {
             public long EntryId { get; set; }
             public long? EntryNumber { get; set; }
@@ -177,6 +75,11 @@ namespace YIS.Pages.Purchase
             public string? Remarks { get; set; }
             public string CompiledNarration { get; set; } = "";
             public List<InvoiceLineDetail> LineDetails { get; set; } = new();
+            public string? ReturnNumber { get; set; }
+            public long? ReturnEntryId { get; set; }
+            public double ReturnAmount { get; set; }
+            public double ReturnQty { get; set; }
+            public bool HasReturn => ReturnAmount > 0 || ReturnQty > 0;
         }
 
         public class InvoiceLineDetail
@@ -188,417 +91,179 @@ namespace YIS.Pages.Purchase
             public double? Amount { get; set; }
         }
 
+public async Task OnGetAsync()
 
+{
 
+var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
 
+if (_context.SupplierMasters != null)
 
+{
 
+SupplierNames = await _context.SupplierMasters
 
-        public async Task OnGetAsync()
+.Where(s => s.UcpId == activeUcpId)
 
+.ToDictionaryAsync(s => s.SupplierId, s => s.SupplierName ?? "Unknown");
 
+}
 
-        {
+if (_context.Entries != null)
 
+{
 
+var query = _context.Entries
 
-            var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+.Where(e => e.EntryType == "PUR" && e.UcpId == activeUcpId);
 
+if (PsdId.HasValue)
 
+{
 
+query = query.Where(e => e.EntryRefNo == PsdId.Value);
 
+}
 
+if (!string.IsNullOrEmpty(SearchTerm))
 
+{
 
-            if (_context.SupplierMasters != null)
+var smart = SmartSearchHelper.Parse(SearchTerm);
 
+var matchingSupplierIds = SupplierNames
 
+.Where(kv => kv.Value.ToLower().Contains(smart.CleanTerm))
 
-            {
+.Select(kv => kv.Key.ToString())
 
+.ToList();
 
+query = query.Where(e =>
 
-                SupplierNames = await _context.SupplierMasters
+(smart.HasNumber && (e.EntryNumber == smart.ExtractedNumber.Value || e.EntryRefNo == smart.ExtractedNumber.Value)) ||
 
+e.EntryNumber.ToString().Contains(smart.CleanTerm) ||
 
+(e.EntryAttribute1 != null && (matchingSupplierIds.Contains(e.EntryAttribute1) || e.EntryAttribute1.ToLower().Contains(smart.CleanTerm))) ||
 
-                    .Where(s => s.UcpId == activeUcpId)
+(e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(smart.CleanTerm)) ||
 
+(e.EntryRefNo != null && e.EntryRefNo.ToString().Contains(smart.CleanTerm))
 
+);
 
-                    .ToDictionaryAsync(s => s.SupplierId, s => s.SupplierName ?? "Unknown");
+}
 
+if (PageSize <= 0) PageSize = 10;
 
+int totalItems = await query.CountAsync();
 
-            }
+Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
 
+// Populate search suggestions (recent PUR numbers and supplier names)
 
+var recentNumbers = await _context.Entries
 
+.Where(e => e.EntryType == "PUR" && e.UcpId == activeUcpId && e.EntryNumber != null)
 
+.OrderByDescending(e => e.EntryId)
 
+.Take(8)
 
+.Select(e => $"PUR-{e.EntryNumber}")
 
-            if (_context.Entries != null)
+.ToListAsync();
 
+SearchSuggestions = recentNumbers
 
+.Concat(SupplierNames.Values.Take(6))
 
-            {
+.Distinct()
 
+.ToList();
 
+var orderedQuery = (SortDir == "asc")
 
-                var query = _context.Entries
+? query.OrderBy(e => e.EntryId)
 
+: query.OrderByDescending(e => e.EntryId);
 
+// Get Parent Entries
 
-                    .Where(e => e.EntryType == "PUR" && e.UcpId == activeUcpId);
+var parents = await orderedQuery
 
+.Skip((CurrentPage - 1) * PageSize)
 
+.Take(PageSize)
 
+.ToListAsync();
 
+// Get Child Counts
 
+var childCounts = await _context.Entries
 
+.Where(e => e.EntryType == "PURL")
 
-                if (PsdId.HasValue)
+.GroupBy(e => e.EntryRefId)
 
+.Select(g => new { pId = g.Key, Count = g.Count() })
 
+.ToDictionaryAsync(k => k.pId ?? 0, v => v.Count);
 
-                {
+// Check which entries are posted
 
+var entryIds = parents.Select(e => e.EntryId).ToList();
 
+var postedEntryIds = new HashSet<long>();
 
-                    query = query.Where(e => e.EntryRefNo == PsdId.Value);
+if (entryIds.Any())
 
+{
 
+// Use Raw SQL to avoid EF Core generating OPENJSON/WITH syntax not supported by older SQL levels
 
-                }
+var idsString = string.Join(",", entryIds);
 
+var sql = $"SELECT * FROM TRANS WHERE ENTRY_ID IN ({idsString})";
 
+var transactions = await _context.Transactions
 
+.FromSqlRaw(sql)
 
+.AsNoTracking()
 
+.ToListAsync();
 
+foreach (var t in transactions)
 
-                if (!string.IsNullOrEmpty(SearchTerm))
+{
 
+if (t.EntryId.HasValue) postedEntryIds.Add(t.EntryId.Value);
 
+}
 
-                {
+}
 
+// Get PSD Numbers mapping
 
+var psdIds = parents.Where(e => e.EntryRefNo.HasValue).Select(e => e.EntryRefNo!.Value).Distinct().ToList();
 
-                    var smart = SmartSearchHelper.Parse(SearchTerm);
+var psdNumberMap = new Dictionary<long, long>();
 
+if (psdIds.Any())
 
+{
 
-                    var matchingSupplierIds = SupplierNames
+psdNumberMap = await _context.Entries
 
+.Where(e => e.EntryType == "PSD" && psdIds.Contains(e.EntryId))
 
+.ToDictionaryAsync(e => e.EntryId, e => e.EntryNumber ?? 0);
 
-                        .Where(kv => kv.Value.ToLower().Contains(smart.CleanTerm))
+}
 
-
-
-                        .Select(kv => kv.Key.ToString())
-
-
-
-                        .ToList();
-
-
-
-
-
-
-
-                    query = query.Where(e =>
-
-
-
-                        (smart.HasNumber && (e.EntryNumber == smart.ExtractedNumber.Value || e.EntryRefNo == smart.ExtractedNumber.Value)) ||
-
-
-
-                        e.EntryNumber.ToString().Contains(smart.CleanTerm) ||
-
-
-
-                        (e.EntryAttribute1 != null && (matchingSupplierIds.Contains(e.EntryAttribute1) || e.EntryAttribute1.ToLower().Contains(smart.CleanTerm))) ||
-
-
-
-                        (e.EntryAttribute2 != null && e.EntryAttribute2.ToLower().Contains(smart.CleanTerm)) ||
-
-
-
-                        (e.EntryRefNo != null && e.EntryRefNo.ToString().Contains(smart.CleanTerm))
-
-
-
-                    );
-
-
-
-                }
-
-
-
-
-
-
-
-                if (PageSize <= 0) PageSize = 10;
-
-
-
-                int totalItems = await query.CountAsync();
-
-
-
-                Pagination = new PaginationViewModel(totalItems, CurrentPage, PageSize);
-
-
-
-
-
-
-
-                // Populate search suggestions (recent PUR numbers and supplier names)
-
-
-
-                var recentNumbers = await _context.Entries
-
-
-
-                    .Where(e => e.EntryType == "PUR" && e.UcpId == activeUcpId && e.EntryNumber != null)
-
-
-
-                    .OrderByDescending(e => e.EntryId)
-
-
-
-                    .Take(8)
-
-
-
-                    .Select(e => $"PUR-{e.EntryNumber}")
-
-
-
-                    .ToListAsync();
-
-
-
-                SearchSuggestions = recentNumbers
-
-
-
-                    .Concat(SupplierNames.Values.Take(6))
-
-
-
-                    .Distinct()
-
-
-
-                    .ToList();
-
-
-
-
-
-
-
-                var orderedQuery = (SortDir == "asc")
-
-
-
-                    ? query.OrderBy(e => e.EntryId)
-
-
-
-                    : query.OrderByDescending(e => e.EntryId);
-
-
-
-
-
-
-
-                // Get Parent Entries
-
-
-
-                var parents = await orderedQuery
-
-
-
-                    .Skip((CurrentPage - 1) * PageSize)
-
-
-
-                    .Take(PageSize)
-
-
-
-                    .ToListAsync();
-
-
-
-
-
-
-
-                // Get Child Counts
-
-
-
-                var childCounts = await _context.Entries
-
-
-
-                    .Where(e => e.EntryType == "PURL")
-
-
-
-                    .GroupBy(e => e.EntryRefId)
-
-
-
-                    .Select(g => new { pId = g.Key, Count = g.Count() })
-
-
-
-                    .ToDictionaryAsync(k => k.pId ?? 0, v => v.Count);
-
-
-
-
-
-
-
-                // Check which entries are posted
-
-
-
-                var entryIds = parents.Select(e => e.EntryId).ToList();
-
-
-
-                var postedEntryIds = new HashSet<long>();
-
-
-
-                if (entryIds.Any())
-
-
-
-                {
-
-
-
-                    // Use Raw SQL to avoid EF Core generating OPENJSON/WITH syntax not supported by older SQL levels
-
-
-
-                    var idsString = string.Join(",", entryIds);
-
-
-
-                    var sql = $"SELECT * FROM TRANS WHERE ENTRY_ID IN ({idsString})";
-
-
-
-
-
-
-
-                    var transactions = await _context.Transactions
-
-
-
-                        .FromSqlRaw(sql)
-
-
-
-                        .AsNoTracking()
-
-
-
-                        .ToListAsync();
-
-
-
-
-
-
-
-                    foreach (var t in transactions)
-
-
-
-                    {
-
-
-
-                        if (t.EntryId.HasValue) postedEntryIds.Add(t.EntryId.Value);
-
-
-
-                    }
-
-
-
-                }
-
-
-
-
-
-
-
-                // Get PSD Numbers mapping
-
-
-
-                var psdIds = parents.Where(e => e.EntryRefNo.HasValue).Select(e => e.EntryRefNo!.Value).Distinct().ToList();
-
-
-
-                var psdNumberMap = new Dictionary<long, long>();
-
-
-
-                if (psdIds.Any())
-
-
-
-                {
-
-
-
-                    psdNumberMap = await _context.Entries
-
-
-
-                        .Where(e => e.EntryType == "PSD" && psdIds.Contains(e.EntryId))
-
-
-
-                        .ToDictionaryAsync(e => e.EntryId, e => e.EntryNumber ?? 0);
-
-
-
-                }
-
-
-
-                
-
-
-
-                                // Fetch PURL line items with item names for narration
+// Fetch PURL line items with item names for narration
                 var parentEntryIds = parents.Select(e => (long?)e.EntryId).ToList();
                 var lineItemsRaw = await (from l in _context.Entries
                                           join i in _context.ItemMasters on l.ItemId equals i.ItemId into itemJoin
@@ -625,47 +290,61 @@ namespace YIS.Pages.Purchase
                         Amount = x.Amount
                     }).ToList());
 
-                Entries = parents.Select(e =>
+                // Fetch DN Returns linked to these purchase invoices
+                var purEntryNumbers = parents.Where(p => p.EntryNumber.HasValue).Select(p => p.EntryNumber!.Value).ToList();
+                var dnReturns = await (from dn in _context.Entries
+                                       where dn.EntryType == "DN" && dn.UcpId == activeUcpId &&
+                                             ((dn.EntryRefId.HasValue && entryIds.Contains(dn.EntryRefId.Value)) ||
+                                              (dn.EntryRefNo.HasValue && purEntryNumbers.Contains(dn.EntryRefNo.Value)))
+                                       select new
+                                       {
+                                           DnId = dn.EntryId,
+                                           DnNumber = dn.EntryNumber,
+                                           dn.EntryRefId,
+                                           dn.EntryRefNo,
+                                           dn.Amount,
+                                           dn.Qty
+                                       }).ToListAsync();
 
-
-
+                var dnByPurId = new Dictionary<long, (string ReturnNumber, long ReturnId, double Amount, double Qty)>();
+                foreach (var dn in dnReturns)
                 {
-
-
-
-                    string supName = "Unknown";
-
-
-
-                    if (!string.IsNullOrEmpty(e.EntryAttribute1) && long.TryParse(e.EntryAttribute1, out long sId))
-
-
-
+                    long? purId = null;
+                    if (dn.EntryRefId.HasValue && entryIds.Contains(dn.EntryRefId.Value))
                     {
-
-
-
-                        if (SupplierNames.ContainsKey(sId)) supName = SupplierNames[sId];
-
-
-
+                        purId = dn.EntryRefId.Value;
+                    }
+                    else if (dn.EntryRefNo.HasValue)
+                    {
+                        var match = parents.FirstOrDefault(p => p.EntryNumber == dn.EntryRefNo.Value);
+                        if (match != null) purId = match.EntryId;
                     }
 
+                    if (purId.HasValue)
+                    {
+                        string rNum = $"DN-{dn.DnNumber ?? dn.DnId}";
+                        var cur = dnByPurId.TryGetValue(purId.Value, out var c) ? c : (rNum, dn.DnId, 0.0, 0.0);
+                        dnByPurId[purId.Value] = (cur.Item1, cur.Item2, cur.Item3 + (dn.Amount ?? 0), cur.Item4 + (dn.Qty ?? 0));
+                    }
+                }
 
+                Entries = parents.Select(e =>
 
+{
 
+string supName = "Unknown";
 
+if (!string.IsNullOrEmpty(e.EntryAttribute1) && long.TryParse(e.EntryAttribute1, out long sId))
 
+{
 
-                    double.TryParse(e.EntryAttribute3, out double netAmt);
+if (SupplierNames.ContainsKey(sId)) supName = SupplierNames[sId];
 
+}
 
+double.TryParse(e.EntryAttribute3, out double netAmt);
 
-
-
-
-
-                    var lines = lineItemsMap.TryGetValue(e.EntryId, out var lList) ? lList : new List<InvoiceLineDetail>();
+var lines = lineItemsMap.TryGetValue(e.EntryId, out var lList) ? lList : new List<InvoiceLineDetail>();
                     var itemParts = new List<string>();
                     foreach (var itm in lines)
                     {
@@ -688,6 +367,8 @@ namespace YIS.Pages.Purchase
                         narration = string.IsNullOrEmpty(narration) ? e.EntryRemarks : $"{narration} - {e.EntryRemarks}";
                     }
 
+                    dnByPurId.TryGetValue(e.EntryId, out var dnInfo);
+
                     return new PurchaseViewModel
                     {
                         EntryId = e.EntryId,
@@ -701,1704 +382,766 @@ namespace YIS.Pages.Purchase
                         IsPosted = postedEntryIds.Contains(e.EntryId),
                         Remarks = e.EntryRemarks,
                         CompiledNarration = narration,
-                        LineDetails = lines
+                        LineDetails = lines,
+                        ReturnNumber = dnInfo.Item1,
+                        ReturnEntryId = dnInfo.Item2 > 0 ? dnInfo.Item2 : null,
+                        ReturnAmount = dnInfo.Item3,
+                        ReturnQty = dnInfo.Item4
                     };
 
+}).ToList();
 
+}
 
-                }).ToList();
+}
 
+public async Task<IActionResult> OnPostDeleteAsync(long id)
 
+{
 
-            }
+var path = HttpContext.Request.Path.Value ?? "";
 
+if (!AuthHelper.CanDelete(HttpContext, path))
 
+{
 
-        }
+TempData["ErrorMessage"] = "Access Denied: You do not have permission to delete Purchase entries.";
 
+return RedirectToPage();
 
+}
 
+if (_context.Entries == null) return NotFound();
 
+// Check if posted
 
+bool isPosted = await _context.Transactions.AnyAsync(t => t.EntryId == id);
 
+if (isPosted)
 
-        public async Task<IActionResult> OnPostDeleteAsync(long id)
+{
 
+TempData["ErrorMessage"] = "Cannot delete: This purchase entry has already been posted to the ledger.";
 
+return RedirectToPage();
 
-        {
+}
 
+// Delete Children
 
+var children = await _context.Entries
 
-            var path = HttpContext.Request.Path.Value ?? "";
+.Where(e => e.EntryRefId == id && e.EntryType == "PURL")
 
+.ToListAsync();
 
+_context.Entries.RemoveRange(children);
 
-            if (!AuthHelper.CanDelete(HttpContext, path))
+// Delete Parent
 
+var entry = await _context.Entries.FindAsync(id);
 
+if (entry != null && entry.EntryType == "PUR")
 
-            {
+{
 
+_context.Entries.Remove(entry);
 
+await _context.SaveChangesAsync();
 
-                TempData["ErrorMessage"] = "Access Denied: You do not have permission to delete Purchase entries.";
+}
 
+return RedirectToPage();
 
+}
 
-                return RedirectToPage();
+public async Task<IActionResult> OnPostPostToLedgerAsync(long id)
 
+{
 
+// 1. Check if already posted
 
-            }
+if (await _context.Transactions.AnyAsync(t => t.EntryId == id))
 
+{
 
+TempData["ErrorMessage"] = "This purchase entry is already posted.";
 
+return RedirectToPage();
 
+}
 
+// 2. Get the parent entry
 
+var parentEntry = await _context.Entries.FindAsync(id);
 
-            if (_context.Entries == null) return NotFound();
+if (parentEntry == null || parentEntry.EntryType != "PUR")
 
+{
 
+TempData["ErrorMessage"] = "Purchase entry not found.";
 
+return RedirectToPage();
 
+}
 
+// 3. Get Active Company Profile from Session
 
+long? activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
 
-            // Check if posted
+if (!activeUcpId.HasValue)
 
+{
 
+TempData["ErrorMessage"] = "Cannot post: No company selected. Please select a company first.";
 
-            bool isPosted = await _context.Transactions.AnyAsync(t => t.EntryId == id);
+return RedirectToPage("/SelectCompany");
 
+}
 
+// 4. Get Supplier and GL Accounts from SupplierMaster
 
-            if (isPosted)
+long? supplierAccountId = null;
 
+string supplierName = "Supplier";
 
+SupplierMaster? supplier = null;
 
-            {
+if (long.TryParse(parentEntry.EntryAttribute1, out long supplierId))
 
+{
 
+supplier = await _context.SupplierMasters.FindAsync(supplierId);
 
-                TempData["ErrorMessage"] = "Cannot delete: This purchase entry has already been posted to the ledger.";
+if (supplier != null)
 
+{
 
+supplierName = supplier.SupplierName ?? "Supplier";
 
-                return RedirectToPage();
+if (supplier.AccountId.HasValue && supplier.AccountId.Value > 0)
 
+{
 
+supplierAccountId = supplier.AccountId.Value;
 
-            }
+}
 
+}
 
+}
 
+// Verify supplier account exists in active company
 
+if (supplierAccountId.HasValue && supplierAccountId.Value > 0)
 
+{
 
+var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplierAccountId.Value && a.UcpId == activeUcpId);
 
-            // Delete Children
+if (!exists)
 
+{
 
+supplierAccountId = null;
 
-            var children = await _context.Entries
+}
 
+}
 
+// Fallback 1: Match by Supplier Name in active company
 
-                .Where(e => e.EntryRefId == id && e.EntryType == "PURL")
+if (supplierAccountId == null || supplierAccountId <= 0)
 
+{
 
+var matchedSupplierAcc = await _context.AccountMasters
 
-                .ToListAsync();
+.FirstOrDefaultAsync(a => a.AccountName == supplierName && a.UcpId == activeUcpId);
 
+if (matchedSupplierAcc != null)
 
+{
 
-            _context.Entries.RemoveRange(children);
+supplierAccountId = matchedSupplierAcc.AccountId;
 
+}
 
+}
 
+// Fallback 2: Search for any existing Local Creditors / Trade Creditors account in active company
 
+if (supplierAccountId == null || supplierAccountId <= 0)
 
+{
 
+var tradeCreditorAcc = await _context.AccountMasters
 
-            // Delete Parent
+.Where(a => a.UcpId == activeUcpId && 
 
+(a.AccountName!.Contains("LOCAL CREDITOR") || 
 
+a.AccountName!.Contains("TRADE CREDITOR") || 
 
-            var entry = await _context.Entries.FindAsync(id);
+a.AccountName!.Contains("TRADE CREATOR") || 
 
+a.AccountName!.Contains("CREDITOR")))
 
+.OrderBy(a => a.AccountId)
 
-            if (entry != null && entry.EntryType == "PUR")
+.FirstOrDefaultAsync();
 
+if (tradeCreditorAcc != null)
 
+{
 
-            {
+supplierAccountId = tradeCreditorAcc.AccountId;
 
+}
 
+else
 
-                _context.Entries.Remove(entry);
+{
 
+var newAcc = await GetOrCreateAccountAsync("Trade Creditors (Local)", "Creditor", "Liability", activeUcpId.Value);
 
+supplierAccountId = newAcc.AccountId;
 
-                await _context.SaveChangesAsync();
+}
 
+}
 
+// 5. Get Child Line Items (PURL) to compute Yarn Purchase Price vs Tax Amounts
 
-            }
+var lineItems = await _context.Entries
 
+.Where(e => e.EntryRefId == id && e.EntryType == "PURL")
 
+.ToListAsync();
 
-            return RedirectToPage();
+double yarnExclusiveAmount = lineItems.Any()
 
+? lineItems.Sum(l => l.Amount ?? 0)
 
+: (parentEntry.Amount ?? 0);
 
-        }
+double totalSalesTax = lineItems.Any()
 
+? lineItems.Sum(l => l.TaxAmount ?? 0)
 
+: (parentEntry.TaxAmount ?? 0);
 
+// Grand Total (Supplier Payable)
 
+double grandTotal = yarnExclusiveAmount + totalSalesTax;
 
+if (grandTotal <= 0 && double.TryParse(parentEntry.EntryAttribute3, out double parsedGrandTotal))
 
+{
 
-        public async Task<IActionResult> OnPostPostToLedgerAsync(long id)
+grandTotal = parsedGrandTotal;
 
+if (yarnExclusiveAmount <= 0) yarnExclusiveAmount = grandTotal - totalSalesTax;
 
+}
 
-        {
+if (grandTotal <= 0)
 
+{
 
+TempData["ErrorMessage"] = "Cannot post: Grand total is zero or invalid.";
 
-            // 1. Check if already posted
+return RedirectToPage();
 
+}
 
+// Commission details
 
-            if (await _context.Transactions.AnyAsync(t => t.EntryId == id))
+double commissionAmt = parentEntry.EntryCommAmt ?? 0;
 
+string? agentName = parentEntry.EntryAttribute4?.Trim();
 
+// TransNo from PUR EntryNumber
 
-            {
+var newTransNo = parentEntry.EntryNumber ?? 0;
 
+if (newTransNo == 0)
 
+{
 
-                TempData["ErrorMessage"] = "This purchase entry is already posted.";
+TempData["ErrorMessage"] = "Cannot post: Purchase Entry Number is missing or zero.";
 
+return RedirectToPage();
 
+}
 
-                return RedirectToPage();
+// 6. Get GL accounts (Configured on Supplier with Fallback to Standard Defaults)
 
+// A. Purchase Account
 
+long purchaseAccountId = 0;
 
-            }
+if (supplier?.PurchaseAccountId.HasValue == true && supplier.PurchaseAccountId.Value > 0)
 
+{
 
+var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.PurchaseAccountId.Value && a.UcpId == activeUcpId);
 
+if (exists) purchaseAccountId = supplier.PurchaseAccountId.Value;
 
+}
 
+if (purchaseAccountId == 0)
 
+{
 
-            // 2. Get the parent entry
+var defPurchase = await GetOrCreateAccountAsync("Purchase / Inventory", "Purchase", "Expense", activeUcpId.Value);
 
+purchaseAccountId = defPurchase.AccountId;
 
+}
 
-            var parentEntry = await _context.Entries.FindAsync(id);
+// B. Tax Account
 
+long? inputTaxAccountId = null;
 
+if (totalSalesTax > 0)
 
-            if (parentEntry == null || parentEntry.EntryType != "PUR")
+{
 
+if (supplier?.TaxAccountId.HasValue == true && supplier.TaxAccountId.Value > 0)
 
+{
 
-            {
+var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.TaxAccountId.Value && a.UcpId == activeUcpId);
 
+if (exists) inputTaxAccountId = supplier.TaxAccountId.Value;
 
+}
 
-                TempData["ErrorMessage"] = "Purchase entry not found.";
+if (!inputTaxAccountId.HasValue)
 
+{
 
+var defTax = await GetOrCreateAccountAsync("Input Sales Tax", "Tax", "Asset", activeUcpId.Value);
 
-                return RedirectToPage();
+inputTaxAccountId = defTax.AccountId;
 
+}
 
+}
 
-            }
+// C. Commission Expense Account
 
+long? commExpenseAccountId = null;
 
+if (commissionAmt > 0)
 
+{
 
+if (supplier?.CommExpenseAccountId.HasValue == true && supplier.CommExpenseAccountId.Value > 0)
 
+{
 
+var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.CommExpenseAccountId.Value && a.UcpId == activeUcpId);
 
-            // 3. Get Active Company Profile from Session
+if (exists) commExpenseAccountId = supplier.CommExpenseAccountId.Value;
 
+}
 
+if (!commExpenseAccountId.HasValue)
 
-            long? activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
+{
 
+var defCommExp = await GetOrCreateAccountAsync("Commission Expense", "Commission Expense", "Expense", activeUcpId.Value);
 
+commExpenseAccountId = defCommExp.AccountId;
 
-            if (!activeUcpId.HasValue)
+}
 
+}
 
+// D. Commission Payable Account
 
-            {
+long? commPayableAccountId = null;
 
+if (commissionAmt > 0)
 
+{
 
-                TempData["ErrorMessage"] = "Cannot post: No company selected. Please select a company first.";
+if (supplier?.CommPayableAccountId.HasValue == true && supplier.CommPayableAccountId.Value > 0)
 
+{
 
+var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.CommPayableAccountId.Value && a.UcpId == activeUcpId);
 
-                return RedirectToPage("/SelectCompany");
+if (exists) commPayableAccountId = supplier.CommPayableAccountId.Value;
 
+}
 
+if (!commPayableAccountId.HasValue)
 
-            }
+{
 
+var defCommPay = await GetOrCreateAccountAsync("Commission Payable", "Commission Payable", "Liability", activeUcpId.Value);
 
+commPayableAccountId = defCommPay.AccountId;
 
+}
 
+}
 
+using var transaction = await _context.Database.BeginTransactionAsync();
 
+try
 
-            // 4. Get Supplier and GL Accounts from SupplierMaster
+{
 
+int glLineCount = 0;
 
+// Entry 1: Debit - Purchase / Inventory Account (Yarn Exclusive Price)
 
-            long? supplierAccountId = null;
+if (yarnExclusiveAmount > 0)
 
+{
 
+_context.Transactions.Add(new Trans
 
-            string supplierName = "Supplier";
+{
 
+TransId = 0,
 
+TransNo = newTransNo,
 
-            SupplierMaster? supplier = null;
+TransType = "PUR",
 
+AccountId = purchaseAccountId,
 
+Debit = yarnExclusiveAmount,
 
+Credit = 0,
 
+Remarks = $"Inventory Received against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
+EntryId = id,
 
+UcpId = activeUcpId
 
-            if (long.TryParse(parentEntry.EntryAttribute1, out long supplierId))
+});
 
+glLineCount++;
 
+}
 
-            {
+// Entry 2: Debit - Input Sales Tax Account
 
+if (totalSalesTax > 0 && inputTaxAccountId.HasValue)
 
+{
 
-                supplier = await _context.SupplierMasters.FindAsync(supplierId);
+_context.Transactions.Add(new Trans
 
+{
 
+TransId = 0,
 
-                if (supplier != null)
+TransNo = newTransNo,
 
+TransType = "PUR",
 
+AccountId = inputTaxAccountId.Value,
 
-                {
+Debit = totalSalesTax,
 
+Credit = 0,
 
+Remarks = $"Input Sales Tax against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
-                    supplierName = supplier.SupplierName ?? "Supplier";
+EntryId = id,
 
+UcpId = activeUcpId
 
+});
 
-                    if (supplier.AccountId.HasValue && supplier.AccountId.Value > 0)
+glLineCount++;
 
+}
 
+// Entry 3: Credit - Supplier Payable / Trade Creditors Account
 
-                    {
+_context.Transactions.Add(new Trans
 
+{
 
+TransId = 0,
 
-                        supplierAccountId = supplier.AccountId.Value;
+TransNo = newTransNo,
 
+TransType = "PUR",
 
+AccountId = supplierAccountId.Value,
 
-                    }
+Debit = 0,
 
+Credit = grandTotal,
 
+Remarks = $"Supplier Payable ({supplierName}) against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
-                }
+EntryId = id,
 
+UcpId = activeUcpId
 
+});
 
-            }
+glLineCount++;
 
+// Entry 4: Debit - Commission Expense Account (if applicable)
 
+if (commissionAmt > 0 && commExpenseAccountId.HasValue)
 
+{
 
+_context.Transactions.Add(new Trans
 
+{
 
+TransId = 0,
 
-            // Verify supplier account exists in active company
+TransNo = newTransNo,
 
+TransType = "PUR",
 
+AccountId = commExpenseAccountId.Value,
 
-            if (supplierAccountId.HasValue && supplierAccountId.Value > 0)
+Debit = commissionAmt,
 
+Credit = 0,
 
+Remarks = $"Commission Expense against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
-            {
+EntryId = id,
 
+UcpId = activeUcpId
 
+});
 
-                var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplierAccountId.Value && a.UcpId == activeUcpId);
+glLineCount++;
 
+}
 
+// Entry 5: Credit - Commission Payable to Agent Account (if applicable)
 
-                if (!exists)
+if (commissionAmt > 0 && commPayableAccountId.HasValue)
 
+{
 
+_context.Transactions.Add(new Trans
 
-                {
+{
 
+TransId = 0,
 
+TransNo = newTransNo,
 
-                    supplierAccountId = null;
+TransType = "PUR",
 
+AccountId = commPayableAccountId.Value,
 
+Debit = 0,
 
-                }
+Credit = commissionAmt,
 
+Remarks = $"Commission Payable to {(!string.IsNullOrWhiteSpace(agentName) ? agentName : "Agent")} against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
+EntryId = id,
 
-            }
+UcpId = activeUcpId
 
+});
 
+glLineCount++;
 
+}
 
+await _context.SaveChangesAsync();
 
+await transaction.CommitAsync();
 
+TempData["StatusMessage"] = $"Purchase PUR-{parentEntry.EntryNumber} posted to ledger successfully with {glLineCount} balanced GL entries.";
 
-            // Fallback 1: Match by Supplier Name in active company
+}
 
+catch (Exception ex)
 
+{
 
-            if (supplierAccountId == null || supplierAccountId <= 0)
+await transaction.RollbackAsync();
 
+TempData["ErrorMessage"] = "Error posting to ledger: " + ex.Message;
 
+}
 
-            {
+return RedirectToPage();
 
+}
 
+private async Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
 
-                var matchedSupplierAcc = await _context.AccountMasters
+{
 
+var acc = await _context.AccountMasters
 
+.FirstOrDefaultAsync(a => a.AccountName != null && a.AccountName.Contains(searchKeyword) && a.UcpId == activeUcpId);
 
-                    .FirstOrDefaultAsync(a => a.AccountName == supplierName && a.UcpId == activeUcpId);
+if (acc != null) return acc;
 
+// Search category or pick first available category
 
+var category = await _context.CategoryMasters
 
+.Where(c => c.UcpId == activeUcpId)
 
+.OrderByDescending(c => c.CategoryName != null && c.CategoryName.Contains(preferredCategoryName))
 
+.FirstOrDefaultAsync();
 
+if (category == null)
 
-                if (matchedSupplierAcc != null)
+{
 
+category = await _context.CategoryMasters.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
 
+if (category == null)
 
-                {
+{
 
+category = new CategoryMaster
 
+{
 
-                    supplierAccountId = matchedSupplierAcc.AccountId;
+CategoryName = preferredCategoryName,
 
+UcpId = activeUcpId,
 
+CreationOn = DateTime.Now
 
-                }
+};
 
+_context.CategoryMasters.Add(category);
 
+await _context.SaveChangesAsync();
 
-            }
+}
 
+}
 
+acc = new AccountMaster
 
+{
 
+AccountId = 0,
 
+AccountName = defaultName,
 
+CategoryId = category.CategoryId,
 
-            // Fallback 2: Search for any existing Local Creditors / Trade Creditors account in active company
+UcpId = activeUcpId,
 
+CreationOn = DateTime.Now
 
+};
 
-            if (supplierAccountId == null || supplierAccountId <= 0)
+_context.AccountMasters.Add(acc);
 
+await _context.SaveChangesAsync();
 
+return acc;
 
-            {
+}
 
+public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)
 
+{
 
-                var tradeCreditorAcc = await _context.AccountMasters
+// 1. Permission check
 
+var path = HttpContext.Request.Path.Value ?? "";
 
+if (!AuthHelper.CanUpdate(HttpContext, path))
 
-                    .Where(a => a.UcpId == activeUcpId && 
+{
 
+TempData["ErrorMessage"] = "Access Denied: You do not have permission to unpost ledger entries.";
 
+return RedirectToPage();
 
-                        (a.AccountName!.Contains("LOCAL CREDITOR") || 
+}
 
+// 2. Find the parent PUR entry
 
+var entry = await _context.Entries.FindAsync(id);
 
-                         a.AccountName!.Contains("TRADE CREDITOR") || 
+if (entry == null || entry.EntryType != "PUR")
 
+{
 
+TempData["ErrorMessage"] = "Purchase entry not found.";
 
-                         a.AccountName!.Contains("TRADE CREATOR") || 
+return RedirectToPage();
 
+}
 
+// 3. Get the TRANS rows (Debit + Credit) linked to this entry
 
-                         a.AccountName!.Contains("CREDITOR")))
+var transRows = await _context.Transactions
 
+.Where(t => t.EntryId == id)
 
+.ToListAsync();
 
-                    .OrderBy(a => a.AccountId)
+if (!transRows.Any())
 
+{
 
+TempData["ErrorMessage"] = "This entry is not posted to ledger.";
 
-                    .FirstOrDefaultAsync();
+return RedirectToPage();
 
+}
 
+// 4. Delete TRANS rows inside a DB transaction
 
+using var dbTxn = await _context.Database.BeginTransactionAsync();
 
+try
 
+{
 
+_context.Transactions.RemoveRange(transRows);
 
-                if (tradeCreditorAcc != null)
+await _context.SaveChangesAsync();
 
+await dbTxn.CommitAsync();
 
+TempData["StatusMessage"] = $"PUR-{entry.EntryNumber} has been unposted from the ledger. {transRows.Count} GL entries removed.";
 
-                {
+}
 
+catch (Exception ex)
 
+{
 
-                    supplierAccountId = tradeCreditorAcc.AccountId;
+await dbTxn.RollbackAsync();
 
+TempData["ErrorMessage"] = "Error unposting from ledger: " + ex.Message;
 
+}
 
-                }
+return RedirectToPage();
 
+}
 
-
-                else
-
-
-
-                {
-
-
-
-                    var newAcc = await GetOrCreateAccountAsync("Trade Creditors (Local)", "Creditor", "Liability", activeUcpId.Value);
-
-
-
-                    supplierAccountId = newAcc.AccountId;
-
-
-
-                }
-
-
-
-            }
-
-
-
-
-
-
-
-            // 5. Get Child Line Items (PURL) to compute Yarn Purchase Price vs Tax Amounts
-
-
-
-            var lineItems = await _context.Entries
-
-
-
-                .Where(e => e.EntryRefId == id && e.EntryType == "PURL")
-
-
-
-                .ToListAsync();
-
-
-
-
-
-
-
-            double yarnExclusiveAmount = lineItems.Any()
-
-
-
-                ? lineItems.Sum(l => l.Amount ?? 0)
-
-
-
-                : (parentEntry.Amount ?? 0);
-
-
-
-
-
-
-
-            double totalSalesTax = lineItems.Any()
-
-
-
-                ? lineItems.Sum(l => l.TaxAmount ?? 0)
-
-
-
-                : (parentEntry.TaxAmount ?? 0);
-
-
-
-
-
-
-
-            // Grand Total (Supplier Payable)
-
-
-
-            double grandTotal = yarnExclusiveAmount + totalSalesTax;
-
-
-
-            if (grandTotal <= 0 && double.TryParse(parentEntry.EntryAttribute3, out double parsedGrandTotal))
-
-
-
-            {
-
-
-
-                grandTotal = parsedGrandTotal;
-
-
-
-                if (yarnExclusiveAmount <= 0) yarnExclusiveAmount = grandTotal - totalSalesTax;
-
-
-
-            }
-
-
-
-
-
-
-
-            if (grandTotal <= 0)
-
-
-
-            {
-
-
-
-                TempData["ErrorMessage"] = "Cannot post: Grand total is zero or invalid.";
-
-
-
-                return RedirectToPage();
-
-
-
-            }
-
-
-
-
-
-
-
-            // Commission details
-
-
-
-            double commissionAmt = parentEntry.EntryCommAmt ?? 0;
-
-
-
-            string? agentName = parentEntry.EntryAttribute4?.Trim();
-
-
-
-
-
-
-
-            // TransNo from PUR EntryNumber
-
-
-
-            var newTransNo = parentEntry.EntryNumber ?? 0;
-
-
-
-            if (newTransNo == 0)
-
-
-
-            {
-
-
-
-                TempData["ErrorMessage"] = "Cannot post: Purchase Entry Number is missing or zero.";
-
-
-
-                return RedirectToPage();
-
-
-
-            }
-
-
-
-
-
-
-
-            // 6. Get GL accounts (Configured on Supplier with Fallback to Standard Defaults)
-
-
-
-            // A. Purchase Account
-
-
-
-            long purchaseAccountId = 0;
-
-
-
-            if (supplier?.PurchaseAccountId.HasValue == true && supplier.PurchaseAccountId.Value > 0)
-
-
-
-            {
-
-
-
-                var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.PurchaseAccountId.Value && a.UcpId == activeUcpId);
-
-
-
-                if (exists) purchaseAccountId = supplier.PurchaseAccountId.Value;
-
-
-
-            }
-
-
-
-            if (purchaseAccountId == 0)
-
-
-
-            {
-
-
-
-                var defPurchase = await GetOrCreateAccountAsync("Purchase / Inventory", "Purchase", "Expense", activeUcpId.Value);
-
-
-
-                purchaseAccountId = defPurchase.AccountId;
-
-
-
-            }
-
-
-
-
-
-
-
-            // B. Tax Account
-
-
-
-            long? inputTaxAccountId = null;
-
-
-
-            if (totalSalesTax > 0)
-
-
-
-            {
-
-
-
-                if (supplier?.TaxAccountId.HasValue == true && supplier.TaxAccountId.Value > 0)
-
-
-
-                {
-
-
-
-                    var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.TaxAccountId.Value && a.UcpId == activeUcpId);
-
-
-
-                    if (exists) inputTaxAccountId = supplier.TaxAccountId.Value;
-
-
-
-                }
-
-
-
-                if (!inputTaxAccountId.HasValue)
-
-
-
-                {
-
-
-
-                    var defTax = await GetOrCreateAccountAsync("Input Sales Tax", "Tax", "Asset", activeUcpId.Value);
-
-
-
-                    inputTaxAccountId = defTax.AccountId;
-
-
-
-                }
-
-
-
-            }
-
-
-
-
-
-
-
-            // C. Commission Expense Account
-
-
-
-            long? commExpenseAccountId = null;
-
-
-
-            if (commissionAmt > 0)
-
-
-
-            {
-
-
-
-                if (supplier?.CommExpenseAccountId.HasValue == true && supplier.CommExpenseAccountId.Value > 0)
-
-
-
-                {
-
-
-
-                    var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.CommExpenseAccountId.Value && a.UcpId == activeUcpId);
-
-
-
-                    if (exists) commExpenseAccountId = supplier.CommExpenseAccountId.Value;
-
-
-
-                }
-
-
-
-                if (!commExpenseAccountId.HasValue)
-
-
-
-                {
-
-
-
-                    var defCommExp = await GetOrCreateAccountAsync("Commission Expense", "Commission Expense", "Expense", activeUcpId.Value);
-
-
-
-                    commExpenseAccountId = defCommExp.AccountId;
-
-
-
-                }
-
-
-
-            }
-
-
-
-
-
-
-
-            // D. Commission Payable Account
-
-
-
-            long? commPayableAccountId = null;
-
-
-
-            if (commissionAmt > 0)
-
-
-
-            {
-
-
-
-                if (supplier?.CommPayableAccountId.HasValue == true && supplier.CommPayableAccountId.Value > 0)
-
-
-
-                {
-
-
-
-                    var exists = await _context.AccountMasters.AnyAsync(a => a.AccountId == supplier.CommPayableAccountId.Value && a.UcpId == activeUcpId);
-
-
-
-                    if (exists) commPayableAccountId = supplier.CommPayableAccountId.Value;
-
-
-
-                }
-
-
-
-                if (!commPayableAccountId.HasValue)
-
-
-
-                {
-
-
-
-                    var defCommPay = await GetOrCreateAccountAsync("Commission Payable", "Commission Payable", "Liability", activeUcpId.Value);
-
-
-
-                    commPayableAccountId = defCommPay.AccountId;
-
-
-
-                }
-
-
-
-            }
-
-
-
-
-
-
-
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-
-
-            try
-
-
-
-            {
-
-
-
-                int glLineCount = 0;
-
-
-
-
-
-
-
-                // Entry 1: Debit - Purchase / Inventory Account (Yarn Exclusive Price)
-
-
-
-                if (yarnExclusiveAmount > 0)
-
-
-
-                {
-
-
-
-                    _context.Transactions.Add(new Trans
-
-
-
-                    {
-
-
-
-                        TransId = 0,
-
-
-
-                        TransNo = newTransNo,
-
-
-
-                        TransType = "PUR",
-
-
-
-                        AccountId = purchaseAccountId,
-
-
-
-                        Debit = yarnExclusiveAmount,
-
-
-
-                        Credit = 0,
-
-
-
-                        Remarks = $"Inventory Received against Purchase Invoice PUR-{parentEntry.EntryNumber}",
-
-
-
-                        EntryId = id,
-
-
-
-                        UcpId = activeUcpId
-
-
-
-                    });
-
-
-
-                    glLineCount++;
-
-
-
-                }
-
-
-
-
-
-
-
-                // Entry 2: Debit - Input Sales Tax Account
-
-
-
-                if (totalSalesTax > 0 && inputTaxAccountId.HasValue)
-
-
-
-                {
-
-
-
-                    _context.Transactions.Add(new Trans
-
-
-
-                    {
-
-
-
-                        TransId = 0,
-
-
-
-                        TransNo = newTransNo,
-
-
-
-                        TransType = "PUR",
-
-
-
-                        AccountId = inputTaxAccountId.Value,
-
-
-
-                        Debit = totalSalesTax,
-
-
-
-                        Credit = 0,
-
-
-
-                        Remarks = $"Input Sales Tax against Purchase Invoice PUR-{parentEntry.EntryNumber}",
-
-
-
-                        EntryId = id,
-
-
-
-                        UcpId = activeUcpId
-
-
-
-                    });
-
-
-
-                    glLineCount++;
-
-
-
-                }
-
-
-
-
-
-
-
-                // Entry 3: Credit - Supplier Payable / Trade Creditors Account
-
-
-
-                _context.Transactions.Add(new Trans
-
-
-
-                {
-
-
-
-                    TransId = 0,
-
-
-
-                    TransNo = newTransNo,
-
-
-
-                    TransType = "PUR",
-
-
-
-                    AccountId = supplierAccountId.Value,
-
-
-
-                    Debit = 0,
-
-
-
-                    Credit = grandTotal,
-
-
-
-                    Remarks = $"Supplier Payable ({supplierName}) against Purchase Invoice PUR-{parentEntry.EntryNumber}",
-
-
-
-                    EntryId = id,
-
-
-
-                    UcpId = activeUcpId
-
-
-
-                });
-
-
-
-                glLineCount++;
-
-
-
-
-
-
-
-                // Entry 4: Debit - Commission Expense Account (if applicable)
-
-
-
-                if (commissionAmt > 0 && commExpenseAccountId.HasValue)
-
-
-
-                {
-
-
-
-                    _context.Transactions.Add(new Trans
-
-
-
-                    {
-
-
-
-                        TransId = 0,
-
-
-
-                        TransNo = newTransNo,
-
-
-
-                        TransType = "PUR",
-
-
-
-                        AccountId = commExpenseAccountId.Value,
-
-
-
-                        Debit = commissionAmt,
-
-
-
-                        Credit = 0,
-
-
-
-                        Remarks = $"Commission Expense against Purchase Invoice PUR-{parentEntry.EntryNumber}",
-
-
-
-                        EntryId = id,
-
-
-
-                        UcpId = activeUcpId
-
-
-
-                    });
-
-
-
-                    glLineCount++;
-
-
-
-                }
-
-
-
-
-
-
-
-                // Entry 5: Credit - Commission Payable to Agent Account (if applicable)
-
-
-
-                if (commissionAmt > 0 && commPayableAccountId.HasValue)
-
-
-
-                {
-
-
-
-                    _context.Transactions.Add(new Trans
-
-
-
-                    {
-
-
-
-                        TransId = 0,
-
-
-
-                        TransNo = newTransNo,
-
-
-
-                        TransType = "PUR",
-
-
-
-                        AccountId = commPayableAccountId.Value,
-
-
-
-                        Debit = 0,
-
-
-
-                        Credit = commissionAmt,
-
-
-
-                        Remarks = $"Commission Payable to {(!string.IsNullOrWhiteSpace(agentName) ? agentName : "Agent")} against Purchase Invoice PUR-{parentEntry.EntryNumber}",
-
-
-
-                        EntryId = id,
-
-
-
-                        UcpId = activeUcpId
-
-
-
-                    });
-
-
-
-                    glLineCount++;
-
-
-
-                }
-
-
-
-
-
-
-
-                await _context.SaveChangesAsync();
-
-
-
-                await transaction.CommitAsync();
-
-
-
-
-
-
-
-                TempData["StatusMessage"] = $"Purchase PUR-{parentEntry.EntryNumber} posted to ledger successfully with {glLineCount} balanced GL entries.";
-
-
-
-            }
-
-
-
-            catch (Exception ex)
-
-
-
-            {
-
-
-
-                await transaction.RollbackAsync();
-
-
-
-                TempData["ErrorMessage"] = "Error posting to ledger: " + ex.Message;
-
-
-
-            }
-
-
-
-
-
-
-
-            return RedirectToPage();
-
-
-
-        }
-
-
-
-
-
-
-
-        private async Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
-
-
-
-        {
-
-
-
-            var acc = await _context.AccountMasters
-
-
-
-                .FirstOrDefaultAsync(a => a.AccountName != null && a.AccountName.Contains(searchKeyword) && a.UcpId == activeUcpId);
-
-
-
-
-
-
-
-            if (acc != null) return acc;
-
-
-
-
-
-
-
-            // Search category or pick first available category
-
-
-
-            var category = await _context.CategoryMasters
-
-
-
-                .Where(c => c.UcpId == activeUcpId)
-
-
-
-                .OrderByDescending(c => c.CategoryName != null && c.CategoryName.Contains(preferredCategoryName))
-
-
-
-                .FirstOrDefaultAsync();
-
-
-
-
-
-
-
-            if (category == null)
-
-
-
-            {
-
-
-
-                category = await _context.CategoryMasters.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
-
-
-
-                if (category == null)
-
-
-
-                {
-
-
-
-                    category = new CategoryMaster
-
-
-
-                    {
-
-
-
-                        CategoryName = preferredCategoryName,
-
-
-
-                        UcpId = activeUcpId,
-
-
-
-                        CreationOn = DateTime.Now
-
-
-
-                    };
-
-
-
-                    _context.CategoryMasters.Add(category);
-
-
-
-                    await _context.SaveChangesAsync();
-
-
-
-                }
-
-
-
-            }
-
-
-
-
-
-
-
-            acc = new AccountMaster
-
-
-
-            {
-
-
-
-                AccountId = 0,
-
-
-
-                AccountName = defaultName,
-
-
-
-                CategoryId = category.CategoryId,
-
-
-
-                UcpId = activeUcpId,
-
-
-
-                CreationOn = DateTime.Now
-
-
-
-            };
-
-
-
-            _context.AccountMasters.Add(acc);
-
-
-
-            await _context.SaveChangesAsync();
-
-
-
-            return acc;
-
-
-
-        }
-
-
-
-
-
-
-
-        public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)
-
-
-
-        {
-
-
-
-            // 1. Permission check
-
-
-
-            var path = HttpContext.Request.Path.Value ?? "";
-
-
-
-            if (!AuthHelper.CanUpdate(HttpContext, path))
-
-
-
-            {
-
-
-
-                TempData["ErrorMessage"] = "Access Denied: You do not have permission to unpost ledger entries.";
-
-
-
-                return RedirectToPage();
-
-
-
-            }
-
-
-
-
-
-
-
-            // 2. Find the parent PUR entry
-
-
-
-            var entry = await _context.Entries.FindAsync(id);
-
-
-
-            if (entry == null || entry.EntryType != "PUR")
-
-
-
-            {
-
-
-
-                TempData["ErrorMessage"] = "Purchase entry not found.";
-
-
-
-                return RedirectToPage();
-
-
-
-            }
-
-
-
-
-
-
-
-            // 3. Get the TRANS rows (Debit + Credit) linked to this entry
-
-
-
-            var transRows = await _context.Transactions
-
-
-
-                .Where(t => t.EntryId == id)
-
-
-
-                .ToListAsync();
-
-
-
-
-
-
-
-            if (!transRows.Any())
-
-
-
-            {
-
-
-
-                TempData["ErrorMessage"] = "This entry is not posted to ledger.";
-
-
-
-                return RedirectToPage();
-
-
-
-            }
-
-
-
-
-
-
-
-            // 4. Delete TRANS rows inside a DB transaction
-
-
-
-            using var dbTxn = await _context.Database.BeginTransactionAsync();
-
-
-
-            try
-
-
-
-            {
-
-
-
-                _context.Transactions.RemoveRange(transRows);
-
-
-
-                await _context.SaveChangesAsync();
-
-
-
-                await dbTxn.CommitAsync();
-
-
-
-
-
-
-
-                TempData["StatusMessage"] = $"PUR-{entry.EntryNumber} has been unposted from the ledger. {transRows.Count} GL entries removed.";
-
-
-
-            }
-
-
-
-            catch (Exception ex)
-
-
-
-            {
-
-
-
-                await dbTxn.RollbackAsync();
-
-
-
-                TempData["ErrorMessage"] = "Error unposting from ledger: " + ex.Message;
-
-
-
-            }
-
-
-
-
-
-
-
-            return RedirectToPage();
-
-
-
-        }
-
-
-
-                public async Task<IActionResult> OnGetDownloadExcelAsync()
+public async Task<IActionResult> OnGetDownloadExcelAsync()
         {
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
             if (!activeUcpId.HasValue || _context.Entries == null) return RedirectToPage();
@@ -2485,6 +1228,43 @@ namespace YIS.Pages.Purchase
                     Amount = x.Amount
                 }).ToList());
 
+            // DN returns for Excel
+            var exportPurNumbers = parents.Where(p => p.EntryNumber.HasValue).Select(p => p.EntryNumber!.Value).ToList();
+            var exportPurIds = parents.Select(p => p.EntryId).ToList();
+            var exportDnReturns = await (from dn in _context.Entries
+                                         where dn.EntryType == "DN" && dn.UcpId == activeUcpId &&
+                                               ((dn.EntryRefId.HasValue && exportPurIds.Contains(dn.EntryRefId.Value)) ||
+                                                (dn.EntryRefNo.HasValue && exportPurNumbers.Contains(dn.EntryRefNo.Value)))
+                                         select new
+                                         {
+                                             DnNumber = dn.EntryNumber,
+                                             dn.EntryRefId,
+                                             dn.EntryRefNo,
+                                             Amount = dn.Amount ?? 0
+                                         }).ToListAsync();
+
+            var exportDnMap = new Dictionary<long, (string Ref, double Amount)>();
+            foreach (var dn in exportDnReturns)
+            {
+                long? purId = null;
+                if (dn.EntryRefId.HasValue && exportPurIds.Contains(dn.EntryRefId.Value))
+                {
+                    purId = dn.EntryRefId.Value;
+                }
+                else if (dn.EntryRefNo.HasValue)
+                {
+                    var match = parents.FirstOrDefault(p => p.EntryNumber == dn.EntryRefNo.Value);
+                    if (match != null) purId = match.EntryId;
+                }
+
+                if (purId.HasValue)
+                {
+                    string refNo = $"DN-{dn.DnNumber}";
+                    var cur = exportDnMap.TryGetValue(purId.Value, out var c) ? c : (refNo, 0.0);
+                    exportDnMap[purId.Value] = (cur.Item1, cur.Item2 + dn.Amount);
+                }
+            }
+
             var exportList = parents.Select(e =>
             {
                 long.TryParse(e.EntryAttribute1, out long sId);
@@ -2515,6 +1295,7 @@ namespace YIS.Pages.Purchase
                 }
 
                 long psdDisplayNo = e.EntryRefNo.HasValue ? (exportPsdNumberMap.TryGetValue(e.EntryRefNo.Value, out var pn2) ? pn2 : e.EntryRefNo.Value) : 0;
+                exportDnMap.TryGetValue(e.EntryId, out var dnExport);
 
                 return new
                 {
@@ -2524,6 +1305,7 @@ namespace YIS.Pages.Purchase
                     Supplier = suppName,
                     Narration = narration,
                     Broker = e.EntryAttribute2 ?? "-",
+                    ReturnInfo = dnExport.Item2 > 0 ? $"{dnExport.Item1} ({dnExport.Item2:N2})" : "-",
                     Amount = amt,
                     Remarks = e.EntryRemarks ?? "-"
                 };
@@ -2537,6 +1319,7 @@ namespace YIS.Pages.Purchase
                 new("Supplier Name", x => x.Supplier),
                 new("Narration / Details", x => x.Narration),
                 new("Broker", x => x.Broker),
+                new("Return (DN)", x => x.ReturnInfo, null, XLAlignmentHorizontalValues.Center),
                 new("Total Amount", x => x.Amount, "#,##0.00", XLAlignmentHorizontalValues.Right),
                 new("Remarks", x => x.Remarks)
             };

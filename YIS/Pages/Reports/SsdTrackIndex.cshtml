@@ -1,205 +1,213 @@
-@page
-@model YIS.Pages.Reports.SsdTrackIndexModel
-@{
-    ViewData["Title"] = "Contract Sell Movement";
-}
-
-<style>
-    @@page {
-        size: A4 landscape;
-        margin: 0;
-    }
-    @@media print {
-        .sidebar, .sidebar-overlay, .navbar, nav, header, footer,
-        .breadcrumb-container, .page-title-main, .impersonation-bar,
-        #toast-container, .no-print, .action-bar,
-        .dashboard-wrapper > .sidebar,
-        .main-content > .navbar,
-        .main-content > .content-wrapper > .page-title-main,
-        .main-content > .content-wrapper > .breadcrumb-container {
-            display: none !important;
-            height: 0 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        body, html {
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-        }
-        .container-fluid {
-            padding: 8mm 6mm !important;
-        }
-        a, a:link, a:visited, a:hover, a:active {
-            text-decoration: none !important;
-            color: inherit !important;
-        }
-        a[href]:after, a[href]::after {
-            content: none !important;
-            display: none !important;
-        }
-    }
-</style>
-
-<div class="container-fluid px-4 py-3">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <h4 class="fw-bold mb-0 text-dark">
-                <i class="bi bi-arrow-left-right text-success me-2"></i>Contract Sell Movement
-            </h4>
-            <small class="text-muted">Sales soda contracts, sales deliveries, and realization movement</small>
-        </div>
-    </div>
-
-    <!-- Search / Filter Bar -->
-    <div class="card shadow-sm border-0 mb-3 bg-light no-print d-print-none">
-        <div class="card-body py-2 px-3">
-            <form method="get" class="row g-2 align-items-center">
-                <div class="col-md-6 col-lg-5">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
-                        <input type="text"
-                               name="SearchTerm"
-                               class="form-control border-start-0 ps-0"
-                               placeholder="Search SSD #, Customer, or Linked PSD..."
-                               value="@Model.SearchTerm" />
-                        <button class="btn btn-primary btn-sm px-3" type="submit">Search</button>
-                        @if (!string.IsNullOrEmpty(Model.SearchTerm))
-                        {
-                            <a href="/Reports/SsdTrackIndex" class="btn btn-outline-secondary btn-sm">Clear</a>
-                        }
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-7 text-md-end text-muted small d-flex justify-content-end align-items-center gap-3">
-                    <a asp-page-handler="DownloadExcel" asp-route-SearchTerm="@Model.SearchTerm" class="btn btn-outline-success btn-sm text-nowrap" title="Export to Excel">
-                        <i class="bi bi-file-earmark-excel me-1"></i>Excel
-                    </a>
-                    <span>Total Contracts: <strong class="text-dark">@Model.Entries.Count</strong></span>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Main Data Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle mb-0" style="font-size: 0.9rem;">
-                    <thead class="table-light text-nowrap">
-                        <tr class="text-muted" style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <th class="text-center" style="width: 50px;">#</th>
-                            <th>Contract / SSD #</th>
-                            <th>Date</th>
-                            <th>Customer Name</th>
-                            <th>Source / PSD #</th>
-                            <th class="text-center">Basis</th>
-                            <th class="text-end bg-light">Booked Qty (Bags)</th>
-                            <th class="text-end bg-light">Total Lbs</th>
-                            <th class="text-end bg-light">Total Amount</th>
-                            <th class="text-end text-success">Delivered Qty</th>
-                            <th class="text-end text-danger">Pending Delivery</th>
-                            <th class="text-center" style="width: 90px;">Status</th>
-                            <th class="text-center d-print-none" style="width: 80px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.Entries.Any())
-                        {
-                            int rowIdx = 1;
-                            double sumContractQty = 0, sumContractLbs = 0, sumContractAmt = 0;
-                            double sumDeliveredQty = 0, sumPendingQty = 0;
-
-                            foreach (var item in Model.Entries)
-                            {
-                                sumContractQty += item.ContractQty;
-                                sumContractLbs += item.ContractLbs;
-                                sumContractAmt += item.ContractAmount;
-                                sumDeliveredQty += item.DeliveredQty;
-                                sumPendingQty += item.PendingQty;
-
-                                <tr>
-                                    <td class="text-center text-muted small">@rowIdx</td>
-                                    <td>
-                                        <a href="/Reports/SsdTrackRecord/@item.EntryId" class="fw-bold text-decoration-none text-success d-print-none">
-                                            SSD-@item.EntryNumber
-                                        </a>
-                                        <span class="fw-bold text-dark d-none d-print-inline">SSD-@item.EntryNumber</span>
-                                    </td>
-                                    <td>@item.EntryDate?.ToString("dd-MM-yyyy")</td>
-                                    <td class="fw-semibold text-dark">@item.CustomerName</td>
-                                    <td>
-                                        @if (item.LinkedPsdId.HasValue && item.LinkedPsdId > 0)
-                                        {
-                                            <a href="/Reports/PsdRecordTrack/@item.LinkedPsdId" class="text-decoration-none small fw-semibold text-primary d-print-none">
-                                                @item.LinkedPsdNumber
-                                            </a>
-                                            <span class="small fw-semibold text-dark d-none d-print-inline">@item.LinkedPsdNumber</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted small">-</span>
-                                        }
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge @(item.IsCommissionBased ? "bg-success-subtle text-success border border-success-subtle" : "bg-secondary-subtle text-secondary border border-secondary-subtle") px-2 py-1">
-                                            @item.ContractBasis
-                                        </span>
-                                    </td>
-                                    <td class="text-end fw-bold">@item.ContractQty.ToString("N2")</td>
-                                    <td class="text-end text-muted">@item.ContractLbs.ToString("N2")</td>
-                                    <td class="text-end fw-semibold">@item.ContractAmount.ToString("N2")</td>
-                                    <td class="text-end text-success fw-bold">@item.DeliveredQty.ToString("N2")</td>
-                                    <td class="text-end text-danger fw-bold">@item.PendingQty.ToString("N2")</td>
-                                    <td class="text-center">
-                                        @if (item.Status == "Completed")
-                                        {
-                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Completed</span>
-                                        }
-                                        else if (item.Status == "Partial")
-                                        {
-                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">Partial</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Pending</span>
-                                        }
-                                    </td>
-                                    <td class="text-center d-print-none">
-                                        <a href="/Reports/SsdTrackRecord/@item.EntryId" class="btn btn-sm btn-outline-success py-0 px-2" title="View Movement Ledger">
-                                            <i class="bi bi-journal-text me-1"></i>View
-                                        </a>
-                                    </td>
-                                </tr>
-                                rowIdx++;
-                            }
-                            <tr class="table-light fw-bold border-top border-2">
-                                <td colspan="6" class="text-center text-uppercase">Total</td>
-                                <td class="text-end">@sumContractQty.ToString("N2")</td>
-                                <td class="text-end">@sumContractLbs.ToString("N2")</td>
-                                <td class="text-end">@sumContractAmt.ToString("N2")</td>
-                                <td class="text-end text-success">@sumDeliveredQty.ToString("N2")</td>
-                                <td class="text-end text-danger">@sumPendingQty.ToString("N2")</td>
-                                <td></td>
-                                <td class="d-print-none"></td>
-                            </tr>
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="13" class="text-center py-4 text-muted">
-                                    <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
-                                    No sales contract movement records found.
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+@page
+@model YIS.Pages.Reports.SsdTrackIndexModel
+@{
+    ViewData["Title"] = "Contract Sell Movement";
+}
+
+<style>
+    @@page {
+        size: A4 landscape;
+        margin: 0;
+    }
+    @@media print {
+        .sidebar, .sidebar-overlay, .navbar, nav, header, footer,
+        .breadcrumb-container, .page-title-main, .impersonation-bar,
+        #toast-container, .no-print, .action-bar,
+        .dashboard-wrapper > .sidebar,
+        .main-content > .navbar,
+        .main-content > .content-wrapper > .page-title-main,
+        .main-content > .content-wrapper > .breadcrumb-container {
+            display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        body, html {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+        .container-fluid {
+            padding: 8mm 6mm !important;
+        }
+        a, a:link, a:visited, a:hover, a:active {
+            text-decoration: none !important;
+            color: inherit !important;
+        }
+        a[href]:after, a[href]::after {
+            content: none !important;
+            display: none !important;
+        }
+    }
+</style>
+
+<div class="container-fluid px-4 py-3">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark">
+                <i class="bi bi-arrow-left-right text-success me-2"></i>Contract Sell Movement
+            </h4>
+            <small class="text-muted">Sales soda contracts, sales deliveries, and realization movement</small>
+        </div>
+    </div>
+
+    <!-- Search / Filter Bar -->
+    <div class="card shadow-sm border-0 mb-3 bg-light no-print d-print-none">
+        <div class="card-body py-2 px-3">
+            <form method="get" class="row g-2 align-items-center">
+                <div class="col-md-6 col-lg-5">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text"
+                               name="SearchTerm"
+                               class="form-control border-start-0 ps-0"
+                               placeholder="Search SSD #, Customer, or Linked PSD..."
+                               value="@Model.SearchTerm" />
+                        <button class="btn btn-primary btn-sm px-3" type="submit">Search</button>
+                        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                        {
+                            <a href="/Reports/SsdTrackIndex" class="btn btn-outline-secondary btn-sm">Clear</a>
+                        }
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-7 text-md-end text-muted small d-flex justify-content-end align-items-center gap-3">
+                    <a asp-page-handler="DownloadExcel" asp-route-SearchTerm="@Model.SearchTerm" class="btn btn-outline-success btn-sm text-nowrap" title="Export to Excel">
+                        <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                    </a>
+                    <span>Total Contracts: <strong class="text-dark">@Model.Entries.Count</strong></span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Data Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                    <thead class="table-light text-nowrap">
+                        <tr class="text-muted" style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                            <th class="text-center" style="width: 50px;">#</th>
+                            <th>Contract / SSD #</th>
+                            <th>Date</th>
+                            <th>Customer Name</th>
+                            <th>Source / PSD #</th>
+                            <th class="text-center">Basis</th>
+                            <th class="text-end bg-light">Booked Qty (Bags)</th>
+                            <th class="text-end bg-light">Total Lbs</th>
+                            <th class="text-end bg-light">Total Amount</th>
+                            <th class="text-end text-success">Delivered Qty</th>
+                            <th class="text-end text-danger">Returned (CN)</th>
+                            <th class="text-end text-primary">Net Delivered</th>
+                            <th class="text-end text-danger">Pending Delivery</th>
+                            <th class="text-center" style="width: 90px;">Status</th>
+                            <th class="text-center d-print-none" style="width: 80px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Entries.Any())
+                        {
+                            int rowIdx = 1;
+                            double sumContractQty = 0, sumContractLbs = 0, sumContractAmt = 0;
+                            double sumDeliveredQty = 0, sumReturnedQty = 0, sumNetDeliveredQty = 0, sumPendingQty = 0;
+
+                            foreach (var item in Model.Entries)
+                            {
+                                sumContractQty += item.ContractQty;
+                                sumContractLbs += item.ContractLbs;
+                                sumContractAmt += item.ContractAmount;
+                                sumDeliveredQty += item.DeliveredQty;
+                                sumReturnedQty += item.ReturnedQty;
+                                sumNetDeliveredQty += item.NetDeliveredQty;
+                                sumPendingQty += item.PendingQty;
+
+                                <tr>
+                                    <td class="text-center text-muted small">@rowIdx</td>
+                                    <td>
+                                        <a href="/Reports/SsdTrackRecord/@item.EntryId" class="fw-bold text-decoration-none text-success d-print-none">
+                                            SSD-@item.EntryNumber
+                                        </a>
+                                        <span class="fw-bold text-dark d-none d-print-inline">SSD-@item.EntryNumber</span>
+                                    </td>
+                                    <td>@item.EntryDate?.ToString("dd-MM-yyyy")</td>
+                                    <td class="fw-semibold text-dark">@item.CustomerName</td>
+                                    <td>
+                                        @if (item.LinkedPsdId.HasValue && item.LinkedPsdId > 0)
+                                        {
+                                            <a href="/Reports/PsdRecordTrack/@item.LinkedPsdId" class="text-decoration-none small fw-semibold text-primary d-print-none">
+                                                @item.LinkedPsdNumber
+                                            </a>
+                                            <span class="small fw-semibold text-dark d-none d-print-inline">@item.LinkedPsdNumber</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">-</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge @(item.IsCommissionBased ? "bg-success-subtle text-success border border-success-subtle" : "bg-secondary-subtle text-secondary border border-secondary-subtle") px-2 py-1">
+                                            @item.ContractBasis
+                                        </span>
+                                    </td>
+                                    <td class="text-end fw-bold">@item.ContractQty.ToString("N2")</td>
+                                    <td class="text-end text-muted">@item.ContractLbs.ToString("N2")</td>
+                                    <td class="text-end fw-semibold">@item.ContractAmount.ToString("N2")</td>
+                                    <td class="text-end text-success fw-bold">@item.DeliveredQty.ToString("N2")</td>
+                                    <td class="text-end text-danger fw-semibold">@(item.ReturnedQty > 0 ? "-" + item.ReturnedQty.ToString("N2") : "0.00")</td>
+                                    <td class="text-end text-primary fw-bold">@item.NetDeliveredQty.ToString("N2")</td>
+                                    <td class="text-end text-danger fw-bold">@item.PendingQty.ToString("N2")</td>
+                                    <td class="text-center">
+                                        @if (item.Status == "Completed")
+                                        {
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Completed</span>
+                                        }
+                                        else if (item.Status == "Partial")
+                                        {
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">Partial</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">Pending</span>
+                                        }
+                                    </td>
+                                    <td class="text-center d-print-none">
+                                        <a href="/Reports/SsdTrackRecord/@item.EntryId" class="btn btn-sm btn-outline-success py-0 px-2" title="View Movement Ledger">
+                                            <i class="bi bi-journal-text me-1"></i>View
+                                        </a>
+                                    </td>
+                                </tr>
+                                rowIdx++;
+                            }
+                            <tr class="table-light fw-bold border-top border-2">
+                                <td colspan="6" class="text-center text-uppercase">Total</td>
+                                <td class="text-end">@sumContractQty.ToString("N2")</td>
+                                <td class="text-end">@sumContractLbs.ToString("N2")</td>
+                                <td class="text-end">@sumContractAmt.ToString("N2")</td>
+                                <td class="text-end text-success">@sumDeliveredQty.ToString("N2")</td>
+                                <td class="text-end text-danger">@(sumReturnedQty > 0 ? "-" + sumReturnedQty.ToString("N2") : "0.00")</td>
+                                <td class="text-end text-primary">@sumNetDeliveredQty.ToString("N2")</td>
+                                <td class="text-end text-danger">@sumPendingQty.ToString("N2")</td>
+                                <td></td>
+                                <td class="d-print-none"></td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="15" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+                                    No sales contract movement records found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

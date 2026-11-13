@@ -25,7 +25,12 @@
                 <div class="col-md-6">
                     @if (Model.StockList != null && Model.StockList.Any())
                     {
-                        <div class="row justify-content-end pe-4">
+                        <div class="row justify-content-end align-items-center pe-4">
+                            <div class="col-auto">
+                                <a asp-page-handler="DownloadExcel" class="btn btn-outline-success btn-sm me-2" title="Export to Excel">
+                                    <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                                </a>
+                            </div>
                             <div class="col-auto">
                                 <h6 class="text-muted text-uppercase mb-0 text-center"
                                     style="font-size: 0.75rem; letter-spacing: 0.5px;">
@@ -51,7 +56,11 @@
                         <tr>
                             <th class="border-0 px-4 py-3">Item Name</th>
                             <th class="border-0 px-4 py-3">HS Code</th>
+                            <th class="border-0 px-4 py-3 text-end">Gross Purchase</th>
+                            <th class="border-0 px-4 py-3 text-end text-danger">Return (DN)</th>
                             <th class="border-0 px-4 py-3 text-end">Net Purchase</th>
+                            <th class="border-0 px-4 py-3 text-end">Gross Sale</th>
+                            <th class="border-0 px-4 py-3 text-end text-danger">Return (CN)</th>
                             <th class="border-0 px-4 py-3 text-end">Net Sale</th>
                             <th class="border-0 px-4 py-3 text-end">Stock In Hand</th>
                         </tr>
@@ -59,8 +68,19 @@
                     <tbody>
                         @if (Model.StockList != null && Model.StockList.Any())
                         {
+                            double sumGrossPur = 0, sumDn = 0, sumNetPur = 0;
+                            double sumGrossSal = 0, sumCn = 0, sumNetSal = 0, sumStock = 0;
+
                             foreach (var item in Model.StockList)
                             {
+                                sumGrossPur += item.GrossPurchase;
+                                sumDn += item.PurchaseReturn;
+                                sumNetPur += item.NetPurchase;
+                                sumGrossSal += item.GrossSale;
+                                sumCn += item.SaleReturn;
+                                sumNetSal += item.NetSale;
+                                sumStock += item.Quantity;
+
                                 <tr>
                                     <td class="px-4 py-3">
                                         <div class="d-flex flex-column">
@@ -73,10 +93,22 @@
                                         <span class="text-muted">@item.ItemCode</span>
                                     </td>
                                     <td class="px-4 py-3 text-end">
-                                        <span class="text-dark fw-medium">@item.NetPurchase.ToString("N0")</span>
+                                        <span class="text-dark fw-medium">@item.GrossPurchase.ToString("N0")</span>
                                     </td>
                                     <td class="px-4 py-3 text-end">
-                                        <span class="text-dark fw-medium">@item.NetSale.ToString("N0")</span>
+                                        <span class="text-danger fw-medium">@(item.PurchaseReturn > 0 ? "-" + item.PurchaseReturn.ToString("N0") : "0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-bold">@item.NetPurchase.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-medium">@item.GrossSale.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-danger fw-medium">@(item.SaleReturn > 0 ? "-" + item.SaleReturn.ToString("N0") : "0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-dark fw-bold">@item.NetSale.ToString("N0")</span>
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         @if (item.Quantity <= 0)
@@ -100,11 +132,24 @@
                                     </td>
                                 </tr>
                             }
+
+                            <tfoot class="table-light fw-bold">
+                                <tr>
+                                    <td colspan="2" class="px-4 py-3 text-uppercase">Total</td>
+                                    <td class="px-4 py-3 text-end text-dark">@sumGrossPur.ToString("N0")</td>
+                                    <td class="px-4 py-3 text-end text-danger">@(sumDn > 0 ? "-" + sumDn.ToString("N0") : "0")</td>
+                                    <td class="px-4 py-3 text-end text-dark">@sumNetPur.ToString("N0")</td>
+                                    <td class="px-4 py-3 text-end text-dark">@sumGrossSal.ToString("N0")</td>
+                                    <td class="px-4 py-3 text-end text-danger">@(sumCn > 0 ? "-" + sumCn.ToString("N0") : "0")</td>
+                                    <td class="px-4 py-3 text-end text-dark">@sumNetSal.ToString("N0")</td>
+                                    <td class="px-4 py-3 text-end text-success">@sumStock.ToString("N0")</td>
+                                </tr>
+                            </tfoot>
                         }
                         else
                         {
                             <tr>
-                                <td colspan="5" class="text-center py-5">
+                                <td colspan="9" class="text-center py-5">
                                     <div class="py-4">
                                         <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
                                         <h5 class="mt-3 text-muted">No stock items found</h5>
@@ -130,6 +175,7 @@
             tr = table.getElementsByTagName("tr");
 
             for (i = 0; i < tr.length; i++) {
+                if (tr[i].parentElement && tr[i].parentElement.tagName.toLowerCase() === 'tfoot') continue;
                 td = tr[i].getElementsByTagName("td")[0]; // Item Name column
                 if (td) {
                     txtValue = td.textContent || td.innerText;

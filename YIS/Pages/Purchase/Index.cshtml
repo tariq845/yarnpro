@@ -100,13 +100,14 @@
                 <table class="table table-hover mb-0 align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th class="border-0 px-4 py-3" style="width: 11%;">Purchase #</th>
+                            <th class="border-0 px-4 py-3" style="width: 10%;">Purchase #</th>
                             <th class="border-0 px-4 py-3" style="width: 10%;">Date</th>
-                            <th class="border-0 px-4 py-3" style="width: 15%;">Supplier</th>
+                            <th class="border-0 px-4 py-3" style="width: 14%;">Supplier</th>
                             <th class="border-0 px-4 py-3">Narration / Details</th>
                             <th class="border-0 px-4 py-3" style="width: 10%;">Status</th>
-                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Grand Total</th>
-                            <th class="border-0 px-4 py-3 text-end" style="width: 13%;">Actions</th>
+                            <th class="border-0 px-4 py-3 text-center" style="width: 10%;">Return (DN)</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 11%;">Grand Total</th>
+                            <th class="border-0 px-4 py-3 text-end" style="width: 12%;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -195,6 +196,21 @@
                                             <span class="badge bg-warning bg-opacity-10 text-warning border border-warning fw-semibold" style="font-size: 11px; padding: 5px 10px;">
                                                 <i class="bi bi-pencil-fill me-1"></i> Draft
                                             </span>
+                                        }
+                                    </td>
+                                    <td class="px-4 py-3 text-center">
+                                        @if (item.HasReturn)
+                                        {
+                                            <a href="/Purchase/PurchaseReturnIndex?SearchTerm=@item.ReturnNumber"
+                                               class="badge bg-danger-subtle text-danger border border-danger-subtle text-decoration-none"
+                                               title="View Purchase Return">
+                                                <i class="bi bi-arrow-return-left me-1"></i>@item.ReturnNumber
+                                                <span class="d-block mt-1 fw-bold">@item.ReturnAmount.ToString("N2")</span>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">-</span>
                                         }
                                     </td>
                                     <td class="px-4 py-3 text-end">

@@ -8,6 +8,8 @@
         "jv" => "type-jv",
         "rv" => "type-rv",
         "pv" => "type-pv",
+        "dn" => "type-pv",
+        "cn" => "type-rv",
         _ => "bg-light text-dark"
     };
 
@@ -17,6 +19,8 @@
         "jv" => "bi-journal-text",
         "rv" => "bi-cash-coin",
         "pv" => "bi-credit-card",
+        "dn" => "bi-arrow-return-left",
+        "cn" => "bi-arrow-return-right",
         _ => "bi-file-earmark"
     };
 
@@ -53,6 +57,8 @@
                     "JV" => $"/Vouchers/JournalVoucher?id={entry.EntryId}",
                     "RV" => $"/Vouchers/ReceiptVoucher?id={entry.EntryId}",
                     "PV" => $"/Vouchers/PaymentVoucher?id={entry.EntryId}",
+                    "DN" => $"/Purchase/PurchaseReturn?id={entry.EntryId}",
+                    "CN" => $"/Sales/SaleReturn?id={entry.EntryId}",
                     _ => "#"
                 };
             }
