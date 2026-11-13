@@ -122,6 +122,8 @@
                             <th class="border-0 px-4 py-3">Item Name</th>
                             <th class="border-0 px-4 py-3 text-end">Total Dispatched (SSD)</th>
                             <th class="border-0 px-4 py-3 text-end">Invoiced (SAL)</th>
+                            <th class="border-0 px-4 py-3 text-end text-danger">Returned (CN)</th>
+                            <th class="border-0 px-4 py-3 text-end text-primary">Net Delivered</th>
                             <th class="border-0 px-4 py-3 text-end">Pending Bags</th>
                             <th class="border-0 px-4 py-3 text-center" style="width: 100px;">Action</th>
                         </tr>
@@ -150,6 +152,12 @@
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         <span class="text-dark fw-medium">@item.TotalInvoiced.ToString("N0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-danger fw-medium">@(item.TotalReturned > 0 ? "-" + item.TotalReturned.ToString("N0") : "0")</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-end">
+                                        <span class="text-primary fw-bold">@item.TotalNetDelivered.ToString("N0")</span>
                                     </td>
                                     <td class="px-4 py-3 text-end">
                                         @if (item.Balance <= 0)
@@ -185,7 +193,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="5" class="text-center py-5">
+                                <td colspan="7" class="text-center py-5">
                                     <div class="py-4">
                                         <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
                                         <h5 class="mt-3 text-muted">No Pending Bags Found</h5>
@@ -202,6 +210,8 @@
                                 <td class="px-4 py-3">TOTAL</td>
                                 <td class="px-4 py-3 text-end text-dark">@Model.TotalDispatched.ToString("N0")</td>
                                 <td class="px-4 py-3 text-end text-dark">@Model.TotalInvoiced.ToString("N0")</td>
+                                <td class="px-4 py-3 text-end text-danger">@(Model.TotalReturned > 0 ? "-" + Model.TotalReturned.ToString("N0") : "0")</td>
+                                <td class="px-4 py-3 text-end text-primary">@Model.TotalNetDelivered.ToString("N0")</td>
                                 <td class="px-4 py-3 text-end text-danger">@Model.TotalPending.ToString("N0")</td>
                                 <td></td>
                             </tr>
@@ -240,13 +250,15 @@
                     <table class="table table-striped table-hover mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-0 px-4 py-3" style="width:5%;">#</th>
-                                <th class="border-0 px-4 py-3" style="width:14%;">SSD No</th>
-                                <th class="border-0 px-4 py-3" style="width:14%;">SSD Date</th>
+                                <th class="border-0 px-4 py-3" style="width:4%;">#</th>
+                                <th class="border-0 px-4 py-3" style="width:12%;">SSD No</th>
+                                <th class="border-0 px-4 py-3" style="width:12%;">SSD Date</th>
                                 <th class="border-0 px-4 py-3">Customer</th>
-                                <th class="border-0 px-4 py-3 text-end text-dark" style="width:14%;">Total (From SSD)</th>
-                                <th class="border-0 px-4 py-3 text-end text-success" style="width:14%;">Invoiced (From SAL)</th>
-                                <th class="border-0 px-4 py-3 text-end fw-bold text-danger" style="width:14%;">Balance</th>
+                                <th class="border-0 px-4 py-3 text-end text-dark" style="width:12%;">Total (SSD)</th>
+                                <th class="border-0 px-4 py-3 text-end text-success" style="width:12%;">Invoiced (SAL)</th>
+                                <th class="border-0 px-4 py-3 text-end text-danger" style="width:12%;">Returned (CN)</th>
+                                <th class="border-0 px-4 py-3 text-end text-primary" style="width:12%;">Net Delivered</th>
+                                <th class="border-0 px-4 py-3 text-end fw-bold text-danger" style="width:12%;">Balance</th>
                             </tr>
                         </thead>
                         <tbody id="modal-item-lines"></tbody>
@@ -288,6 +300,8 @@ function openItemModal(index) {
             <td class="px-4 py-3">${l.CustomerName}</td>
             <td class="px-4 py-3 text-end text-dark fw-medium">${Number(l.DispatchedQty).toLocaleString()}</td>
             <td class="px-4 py-3 text-end text-success fw-medium">${Number(l.InvoicedQty).toLocaleString()}</td>
+            <td class="px-4 py-3 text-end text-danger fw-medium">${l.ReturnedQty > 0 ? '-' + Number(l.ReturnedQty).toLocaleString() : '0'}</td>
+            <td class="px-4 py-3 text-end text-primary fw-medium">${Number(l.NetDeliveredQty).toLocaleString()}</td>
             <td class="px-4 py-3 text-end fw-bold text-danger">${Number(l.PendingQty).toLocaleString()}</td>
         </tr>
     `).join('');
@@ -297,6 +311,8 @@ function openItemModal(index) {
             <td colspan="4" class="px-4 py-3 text-end">TOTAL</td>
             <td class="px-4 py-3 text-end text-dark">${Number(item.TotalDispatched).toLocaleString()}</td>
             <td class="px-4 py-3 text-end text-success">${Number(item.TotalInvoiced).toLocaleString()}</td>
+            <td class="px-4 py-3 text-end text-danger">${item.TotalReturned > 0 ? '-' + Number(item.TotalReturned).toLocaleString() : '0'}</td>
+            <td class="px-4 py-3 text-end text-primary">${Number(item.TotalNetDelivered).toLocaleString()}</td>
             <td class="px-4 py-3 text-end text-danger">${Number(item.Balance).toLocaleString()}</td>
         </tr>
     `;

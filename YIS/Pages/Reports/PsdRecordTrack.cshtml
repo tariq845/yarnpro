@@ -441,6 +441,73 @@
             </div>
         }
 
+        <!-- 3. Purchase Returns (Debit Notes) -->
+        @if (Model.PurchaseReturnItems.Any())
+        {
+            <div class="section-heading mt-4">
+                <span>2B. PURCHASE RETURNS (DEBIT NOTES - DN)</span>
+                <span class="fs-6 text-muted">Returns Against Above Purchases</span>
+            </div>
+            <table class="report-table mb-4">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 40px;">#</th>
+                        <th style="width: 100px;">DN #</th>
+                        <th style="width: 95px;">Date</th>
+                        <th style="width: 110px;">Against PUR</th>
+                        <th>Item Description</th>
+                        <th>Remarks</th>
+                        <th class="text-num" style="width: 100px;">Qty (Bags)</th>
+                        <th class="text-num" style="width: 95px;">Weight (Lbs)</th>
+                        <th class="text-num" style="width: 90px;">Rate</th>
+                        <th class="text-num" style="width: 105px;">Amount</th>
+                        <th class="text-num" style="width: 105px;">Net Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int dnIdx = 1;
+                        double sumDnQty = 0, sumDnLbs = 0, sumDnAmt = 0, sumDnNet = 0;
+                    }
+                    @foreach (var dn in Model.PurchaseReturnItems)
+                    {
+                        sumDnQty += dn.Qty;
+                        sumDnLbs += dn.Lbs;
+                        sumDnAmt += dn.Amount;
+                        sumDnNet += dn.NetAmount;
+
+                        <tr>
+                            <td class="text-center text-muted">@dnIdx</td>
+                            <td class="fw-bold">
+                                <a href="/Purchase/PurchaseReturn?id=@dn.DnId" class="text-decoration-none text-danger d-print-none" target="_blank">
+                                    DN-@dn.DnNumber
+                                </a>
+                                <span class="d-none d-print-inline text-dark">DN-@dn.DnNumber</span>
+                            </td>
+                            <td>@dn.DnDate?.ToString("dd-MM-yyyy")</td>
+                            <td class="text-muted">@(dn.AgainstPurNumber.HasValue ? $"PUR-{dn.AgainstPurNumber}" : "-")</td>
+                            <td class="fw-semibold">@dn.ItemName</td>
+                            <td class="text-muted small">@(string.IsNullOrEmpty(dn.Remarks) ? "-" : dn.Remarks)</td>
+                            <td class="text-num fw-bold text-danger">@dn.Qty.ToString("N2")</td>
+                            <td class="text-num text-danger">@dn.Lbs.ToString("N2")</td>
+                            <td class="text-num">@dn.Rate.ToString("F4")</td>
+                            <td class="text-num">@dn.Amount.ToString("N2")</td>
+                            <td class="text-num fw-bold text-danger">@dn.NetAmount.ToString("N2")</td>
+                        </tr>
+                        dnIdx++;
+                    }
+                    <tr class="table-light fw-bold border-top border-2">
+                        <td colspan="6" class="text-uppercase text-center">Total Returns</td>
+                        <td class="text-num text-danger">@sumDnQty.ToString("N2")</td>
+                        <td class="text-num text-danger">@sumDnLbs.ToString("N2")</td>
+                        <td class="text-num">@((sumDnLbs > 0 ? (sumDnAmt / (sumDnLbs / 10.0)) : (sumDnQty > 0 ? sumDnAmt / sumDnQty : 0)).ToString("F4"))</td>
+                        <td class="text-num text-danger">@sumDnAmt.ToString("N2")</td>
+                        <td class="text-num text-danger">@sumDnNet.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+
         <!-- 4. Sales Soda (SSD) Booked against this PSD -->
         <div class="section-heading">
             <span>3. SALES SODA (SSD) BOOKED AGAINST CONTRACT</span>
@@ -627,36 +694,53 @@
                     <td class="text-num">@Model.Summary.PurchasedAvgRate.ToString("F4")</td>
                     <td class="text-num fw-bold text-primary">@Model.Summary.PurchasedAmount.ToString("N2")</td>
                 </tr>
+                @if (Model.Summary.ReturnedQty > 0)
+                {
+                    <tr>
+                        <td class="fw-bold text-danger">C. Returned to Supplier (DN)</td>
+                        <td class="text-num fw-bold text-danger">-@Model.Summary.ReturnedQty.ToString("N2")</td>
+                        <td class="text-num text-danger">-@Model.Summary.ReturnedLbs.ToString("N2")</td>
+                        <td class="text-num">@Model.Summary.ReturnedAvgRate.ToString("F4")</td>
+                        <td class="text-num fw-bold text-danger">-@Model.Summary.ReturnedAmount.ToString("N2")</td>
+                    </tr>
+                    <tr class="table-info">
+                        <td class="fw-bold text-primary">D. Net Purchases Received (B - C)</td>
+                        <td class="text-num fw-bold text-primary">@Model.Summary.NetPurchasedQty.ToString("N2")</td>
+                        <td class="text-num text-primary">@Model.Summary.NetPurchasedLbs.ToString("N2")</td>
+                        <td class="text-num">@Model.Summary.NetPurchasedAvgRate.ToString("F4")</td>
+                        <td class="text-num fw-bold text-primary">@Model.Summary.NetPurchasedAmount.ToString("N2")</td>
+                    </tr>
+                }
                 <tr class="table-warning">
-                    <td class="fw-bold text-danger">C. Contract Pending Balance (A - B)</td>
+                    <td class="fw-bold text-danger">@(Model.Summary.ReturnedQty > 0 ? "E. Contract Pending Balance (A - D)" : "C. Contract Pending Balance (A - B)")</td>
                     <td class="text-num fw-bold text-danger">@Model.Summary.PendingContractQty.ToString("N2")</td>
                     <td class="text-num text-danger">@Model.Summary.PendingContractLbs.ToString("N2")</td>
                     <td class="text-num">-</td>
                     <td class="text-num fw-bold text-danger">@Model.Summary.PendingContractAmount.ToString("N2")</td>
                 </tr>
                 <tr>
-                    <td class="fw-bold text-success">D. Sales Soda Booked (SSD)</td>
+                    <td class="fw-bold text-success">@(Model.Summary.ReturnedQty > 0 ? "F. Sales Soda Booked (SSD)" : "D. Sales Soda Booked (SSD)")</td>
                     <td class="text-num fw-bold text-success">@Model.Summary.SsdQty.ToString("N2")</td>
                     <td class="text-num text-success">@Model.Summary.SsdLbs.ToString("N2")</td>
                     <td class="text-num">@Model.Summary.SsdAvgRate.ToString("F4")</td>
                     <td class="text-num fw-bold text-success">@Model.Summary.SsdAmount.ToString("N2")</td>
                 </tr>
                 <tr>
-                    <td class="fw-bold text-dark">E. Sales Invoices Delivered (SAL)</td>
+                    <td class="fw-bold text-dark">@(Model.Summary.ReturnedQty > 0 ? "G. Sales Invoices Delivered (SAL)" : "E. Sales Invoices Delivered (SAL)")</td>
                     <td class="text-num fw-bold">@Model.Summary.SalQty.ToString("N2")</td>
                     <td class="text-num">@Model.Summary.SalLbs.ToString("N2")</td>
                     <td class="text-num">@Model.Summary.SalAvgRate.ToString("F4")</td>
                     <td class="text-num fw-bold">@Model.Summary.SalAmount.ToString("N2")</td>
                 </tr>
                 <tr class="table-light border-top border-2">
-                    <td class="fw-bold text-dark">F. Physical Stock in Hand (B - E)</td>
+                    <td class="fw-bold text-dark">@(Model.Summary.ReturnedQty > 0 ? "H. Physical Stock in Hand (D - G)" : "F. Physical Stock in Hand (B - E)")</td>
                     <td class="text-num fw-bold text-dark">@Model.Summary.StockQty.ToString("N2")</td>
                     <td class="text-num text-dark">@Model.Summary.StockLbs.ToString("N2")</td>
                     <td class="text-num">-</td>
                     <td class="text-num text-muted">-</td>
                 </tr>
                 <tr class="table-light">
-                    <td class="fw-bold text-dark">G. Uncommitted Contract Balance (A - D)</td>
+                    <td class="fw-bold text-dark">@(Model.Summary.ReturnedQty > 0 ? "I. Uncommitted Contract Balance (A - F)" : "G. Uncommitted Contract Balance (A - D)")</td>
                     <td class="text-num fw-bold text-dark">@Model.Summary.UnsoldContractQty.ToString("N2")</td>
                     <td class="text-num text-dark">@Model.Summary.UnsoldContractLbs.ToString("N2")</td>
                     <td class="text-num">-</td>

@@ -71,28 +71,28 @@ namespace YIS.Pages.Dashboard
             var firstDayofMonth = new DateTime(today.Year, today.Month, 1);
             var firstDayofLastMonth = firstDayofMonth.AddMonths(-1);
 
-            // 1. Sales Calculation (ENTRY_TYPE = 'SAL')
+            // 1. Net Sales Calculation (SAL minus CN)
             var currentMonthSales = await _context.Entries
-                .Where(e => e.EntryType == "SAL" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
+                .Where(e => (e.EntryType == "SAL" || e.EntryType == "CN") && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.EntryType == "SAL" ? (e.Amount ?? 0) : -(e.Amount ?? 0));
 
             var lastMonthSales = await _context.Entries
-                .Where(e => e.EntryType == "SAL" && e.EntryDate >= firstDayofLastMonth && e.EntryDate < firstDayofMonth && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
+                .Where(e => (e.EntryType == "SAL" || e.EntryType == "CN") && e.EntryDate >= firstDayofLastMonth && e.EntryDate < firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.EntryType == "SAL" ? (e.Amount ?? 0) : -(e.Amount ?? 0));
 
-            TotalSalesCurrentMonth = currentMonthSales;
+            TotalSalesCurrentMonth = Math.Max(0, currentMonthSales);
             SalesTrend = lastMonthSales == 0 ? 100 : Math.Round(((currentMonthSales - lastMonthSales) / lastMonthSales) * 100, 1);
 
-            // 1b. Purchase Calculation (ENTRY_TYPE = 'PUR')
+            // 1b. Net Purchase Calculation (PUR minus DN)
             var currentMonthPurchases = await _context.Entries
-                .Where(e => e.EntryType == "PUR" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
+                .Where(e => (e.EntryType == "PUR" || e.EntryType == "DN") && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.EntryType == "PUR" ? (e.Amount ?? 0) : -(e.Amount ?? 0));
 
             var lastMonthPurchases = await _context.Entries
-                .Where(e => e.EntryType == "PUR" && e.EntryDate >= firstDayofLastMonth && e.EntryDate < firstDayofMonth && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
+                .Where(e => (e.EntryType == "PUR" || e.EntryType == "DN") && e.EntryDate >= firstDayofLastMonth && e.EntryDate < firstDayofMonth && e.UcpId == activeUcpId)
+                .SumAsync(e => e.EntryType == "PUR" ? (e.Amount ?? 0) : -(e.Amount ?? 0));
 
-            TotalPurchasesCurrentMonth = currentMonthPurchases;
+            TotalPurchasesCurrentMonth = Math.Max(0, currentMonthPurchases);
             PurchaseTrend = lastMonthPurchases == 0 ? 100 : Math.Round(((currentMonthPurchases - lastMonthPurchases) / lastMonthPurchases) * 100, 1);
 
             // 2. Orders Count (SAL entries)
@@ -135,14 +135,14 @@ namespace YIS.Pages.Dashboard
                 .SumAsync(e => e.Amount ?? 0);
             TotalPayables = Math.Max(0, totalPurAllTime - totalPaymentsAllTime);
 
-            // 3. Stock Levels (Calculated from PURL vs SALL)
+            // 3. Stock Levels (Calculated from Net Purchase [PURL - DNL] vs Net Sale [SALL - CNL])
             var inventoryStats = await _context.Entries
-                .Where(e => (e.EntryType == "PURL" || e.EntryType == "SALL") && e.UcpId == activeUcpId)
+                .Where(e => (e.EntryType == "PURL" || e.EntryType == "SALL" || e.EntryType == "DNL" || e.EntryType == "CNL") && e.UcpId == activeUcpId)
                 .GroupBy(e => e.ItemId)
                 .Select(g => new
                 {
                     ItemId = g.Key,
-                    Qty = g.Sum(e => e.EntryType == "PURL" ? (e.Qty ?? 0) : -(e.Qty ?? 0))
+                    Qty = g.Sum(e => (e.EntryType == "PURL" || e.EntryType == "CNL") ? (e.Qty ?? 0) : -(e.Qty ?? 0))
                 })
                 .ToListAsync();
 
@@ -161,7 +161,7 @@ namespace YIS.Pages.Dashboard
 
             // 5. Recent Transactions
             RecentOrders = await _context.Entries
-                .Where(e => new[] { "SAL", "PUR", "JV", "RV", "PV" }.Contains(e.EntryType) && e.UcpId == activeUcpId)
+                .Where(e => new[] { "SAL", "PUR", "JV", "RV", "PV", "DN", "CN" }.Contains(e.EntryType) && e.UcpId == activeUcpId)
                 .OrderByDescending(e => e.EntryId)
                 .Take(7) // Increased to 7 for better fill
                 .ToListAsync();
@@ -182,31 +182,31 @@ namespace YIS.Pages.Dashboard
                 })
                 .ToList();
 
-            // 7. Chart Data (Last 6 Months Sales & Purchases)
+            // 7. Chart Data (Last 6 Months Net Sales & Net Purchases)
             var last6Months = Enumerable.Range(0, 6)
                 .Select(i => firstDayofMonth.AddMonths(-i))
                 .OrderBy(d => d)
                 .ToList();
 
             var monthlySales = await _context.Entries
-                .Where(e => e.EntryType == "SAL" && e.EntryDate >= last6Months.First() && e.UcpId == activeUcpId)
+                .Where(e => (e.EntryType == "SAL" || e.EntryType == "CN") && e.EntryDate >= last6Months.First() && e.UcpId == activeUcpId)
                 .GroupBy(e => new { e.EntryDate!.Value.Year, e.EntryDate!.Value.Month })
                 .Select(g => new
                 {
                     Key = g.Key.Year + "-" + g.Key.Month.ToString("D2"),
-                    Total = g.Sum(e => e.Amount ?? 0)
+                    Total = g.Sum(e => e.EntryType == "SAL" ? (e.Amount ?? 0) : -(e.Amount ?? 0))
                 })
-                .ToDictionaryAsync(x => x.Key, x => x.Total);
+                .ToDictionaryAsync(x => x.Key, x => Math.Max(0, x.Total));
 
             var monthlyPurchases = await _context.Entries
-                .Where(e => e.EntryType == "PUR" && e.EntryDate >= last6Months.First() && e.UcpId == activeUcpId)
+                .Where(e => (e.EntryType == "PUR" || e.EntryType == "DN") && e.EntryDate >= last6Months.First() && e.UcpId == activeUcpId)
                 .GroupBy(e => new { e.EntryDate!.Value.Year, e.EntryDate!.Value.Month })
                 .Select(g => new
                 {
                     Key = g.Key.Year + "-" + g.Key.Month.ToString("D2"),
-                    Total = g.Sum(e => e.Amount ?? 0)
+                    Total = g.Sum(e => e.EntryType == "PUR" ? (e.Amount ?? 0) : -(e.Amount ?? 0))
                 })
-                .ToDictionaryAsync(x => x.Key, x => x.Total);
+                .ToDictionaryAsync(x => x.Key, x => Math.Max(0, x.Total));
 
             var chartLabels = last6Months.Select(d => d.ToString("MMM yyyy")).ToList();
             var salesData = last6Months.Select(d =>

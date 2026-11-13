@@ -34,6 +34,8 @@ namespace YIS.Pages.Reports
         public List<SupplierMaster> Suppliers { get; set; } = new();
         public double TotalOrdered { get; set; }
         public double TotalReceived { get; set; }
+        public double TotalReturned { get; set; }
+        public double TotalNetReceived { get; set; }
         public double TotalPending { get; set; }
 
         public class ItemSummaryViewModel
@@ -41,6 +43,8 @@ namespace YIS.Pages.Reports
             public string ItemName { get; set; } = "Unknown";
             public double TotalOrdered { get; set; }
             public double TotalReceived { get; set; }
+            public double TotalReturned { get; set; }
+            public double TotalNetReceived { get; set; }
             public double Balance { get; set; }
             public List<PendingRowViewModel> PsdLines { get; set; } = new();
         }
@@ -54,6 +58,8 @@ namespace YIS.Pages.Reports
             public string ItemName { get; set; } = "Unknown";
             public double OrderedQty { get; set; }
             public double ReceivedQty { get; set; }
+            public double ReturnedQty { get; set; }
+            public double NetReceivedQty { get; set; }
             public double PendingQty { get; set; }
         }
 
@@ -92,6 +98,8 @@ namespace YIS.Pages.Reports
                 new ExcelColumn<ItemSummaryViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
                 new ExcelColumn<ItemSummaryViewModel>("Total Ordered (PSD Bags)", x => x.TotalOrdered, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<ItemSummaryViewModel>("Received (PUR Bags)", x => x.TotalReceived, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Returned (DN Bags)", x => x.TotalReturned, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Net Received", x => x.TotalNetReceived, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<ItemSummaryViewModel>("Pending Bags", x => x.Balance, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<ItemSummaryViewModel>("Active PSD Count", x => x.PsdLines.Count, "#,##0", XLAlignmentHorizontalValues.Center)
             };
@@ -105,6 +113,8 @@ namespace YIS.Pages.Reports
                 new ExcelColumn<PendingRowViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
                 new ExcelColumn<PendingRowViewModel>("Ordered Qty", x => x.OrderedQty, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<PendingRowViewModel>("Received Qty", x => x.ReceivedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Returned Qty (DN)", x => x.ReturnedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Net Received Qty", x => x.NetReceivedQty, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<PendingRowViewModel>("Pending Qty", x => x.PendingQty, "#,##0", XLAlignmentHorizontalValues.Right)
             };
 
@@ -186,13 +196,66 @@ namespace YIS.Pages.Reports
                                          && psdIds.Contains(pur.EntryRefNo ?? 0)
                                    select new
                                    {
+                                       PurId = pur.EntryId,
+                                       PurNumber = pur.EntryNumber,
                                        PsdId = pur.EntryRefNo,   // PSD EntryId
                                        purl.ItemId,
                                        purl.Qty
                                    }).ToListAsync();
 
-            // Build received map: PsdId + ItemId → total received
+            // --- Step 3b: DNL line items (returned qty per PSD per item) ---
+            var purIds = purlItems.Select(x => x.PurId).Distinct().ToList();
+            var purNumbers = purlItems.Where(x => x.PurNumber.HasValue).Select(x => x.PurNumber!.Value).Distinct().ToList();
+
+            var dnlItems = await (from dn in _context.Entries
+                                  join dnl in _context.Entries on dn.EntryId equals dnl.EntryRefId
+                                  where dn.EntryType == "DN"
+                                        && dnl.EntryType == "DNL"
+                                        && dn.UcpId == activeUcpId
+                                        && dnl.UcpId == activeUcpId
+                                        && ((dn.EntryRefId.HasValue && purIds.Contains(dn.EntryRefId.Value)) ||
+                                            (dn.EntryRefNo.HasValue && purNumbers.Contains(dn.EntryRefNo.Value)))
+                                  select new
+                                  {
+                                      PurId = dn.EntryRefId,
+                                      PurNumber = dn.EntryRefNo,
+                                      dnl.ItemId,
+                                      dnl.Qty
+                                  }).ToListAsync();
+
+            var purToPsd = purlItems.GroupBy(x => x.PurId).ToDictionary(g => g.Key, g => g.First().PsdId);
+            var purNumToPsd = purlItems.Where(x => x.PurNumber.HasValue).GroupBy(x => x.PurNumber!.Value).ToDictionary(g => g.Key, g => g.First().PsdId);
+
+            var returnedMap = new Dictionary<(long?, long?), double>();
+            foreach (var dnItem in dnlItems)
+            {
+                long? pId = null;
+                if (dnItem.PurId.HasValue && purToPsd.TryGetValue(dnItem.PurId.Value, out long? p1))
+                {
+                    pId = p1;
+                }
+                else if (dnItem.PurNumber.HasValue && purNumToPsd.TryGetValue(dnItem.PurNumber.Value, out long? p2))
+                {
+                    pId = p2;
+                }
+
+                if (pId.HasValue)
+                {
+                    var key = (pId, dnItem.ItemId);
+                    returnedMap[key] = (returnedMap.TryGetValue(key, out double r) ? r : 0) + (dnItem.Qty ?? 0);
+                }
+            }
+
+            // Build received map: PsdId + ItemId → net received (Received - Returned)
             var receivedMap = purlItems
+                .GroupBy(x => (x.PsdId, x.ItemId))
+                .ToDictionary(
+                    g => g.Key, 
+                    g => Math.Max(0, g.Sum(x => x.Qty ?? 0) - (returnedMap.TryGetValue(g.Key, out double ret) ? ret : 0))
+                );
+
+            // Build raw received map: PsdId + ItemId
+            var rawReceivedMap = purlItems
                 .GroupBy(x => (x.PsdId, x.ItemId))
                 .ToDictionary(g => g.Key, g => g.Sum(x => x.Qty ?? 0));
 
@@ -203,9 +266,12 @@ namespace YIS.Pages.Reports
 
             foreach (var line in psdlItems)
             {
+                var key = (line.EntryRefId, line.ItemId);
                 double ordered = line.Qty ?? 0;
-                double received = receivedMap.TryGetValue((line.EntryRefId, line.ItemId), out double r) ? r : 0;
-                double pending = ordered - received;
+                double received = rawReceivedMap.TryGetValue(key, out double r) ? r : 0;
+                double returned = returnedMap.TryGetValue(key, out double ret) ? ret : 0;
+                double netReceived = Math.Max(0, received - returned);
+                double pending = ordered - netReceived;
                 if (pending <= 0) continue; // Only show pending
 
                 var psd = psdMap.TryGetValue(line.EntryRefId ?? 0, out var p) ? p : null;
@@ -222,6 +288,8 @@ namespace YIS.Pages.Reports
                     ItemName = line.ItemName ?? "Unknown",
                     OrderedQty = ordered,
                     ReceivedQty = received,
+                    ReturnedQty = returned,
+                    NetReceivedQty = netReceived,
                     PendingQty = pending
                 });
             }
@@ -237,6 +305,8 @@ namespace YIS.Pages.Reports
                     ItemName = g.Key,
                     TotalOrdered = g.Sum(x => x.OrderedQty),
                     TotalReceived = g.Sum(x => x.ReceivedQty),
+                    TotalReturned = g.Sum(x => x.ReturnedQty),
+                    TotalNetReceived = g.Sum(x => x.NetReceivedQty),
                     Balance = g.Sum(x => x.PendingQty),
                     PsdLines = g.OrderBy(x => x.SupplierName).ThenByDescending(x => x.PsdDate).ToList()
                 })
@@ -246,6 +316,8 @@ namespace YIS.Pages.Reports
             // Totals
             TotalOrdered = Rows.Sum(r => r.OrderedQty);
             TotalReceived = Rows.Sum(r => r.ReceivedQty);
+            TotalReturned = Rows.Sum(r => r.ReturnedQty);
+            TotalNetReceived = Rows.Sum(r => r.NetReceivedQty);
             TotalPending = Rows.Sum(r => r.PendingQty);
         }
 
@@ -287,6 +359,14 @@ namespace YIS.Pages.Reports
                                    }).ToListAsync();
 
             // Received qty per item (via PUR → PURL)
+            var purEntries = await _context.Entries
+                .Where(pur => pur.EntryType == "PUR" && pur.EntryRefNo == psdId && pur.UcpId == activeUcpId)
+                .Select(pur => new { pur.EntryId, pur.EntryNumber })
+                .ToListAsync();
+
+            var purEntryIds = purEntries.Select(x => x.EntryId).ToList();
+            var purEntryNumbers = purEntries.Where(x => x.EntryNumber.HasValue).Select(x => x.EntryNumber!.Value).ToList();
+
             var purlData = await (from pur in _context.Entries
                                    join purl in _context.Entries on pur.EntryId equals purl.EntryRefId
                                    where pur.EntryType == "PUR" && purl.EntryType == "PURL"
@@ -296,36 +376,53 @@ namespace YIS.Pages.Reports
                                    select new { ItemId = g.Key, Received = g.Sum(x => x.Qty ?? 0) })
                                   .ToListAsync();
 
-            var receivedMap = purlData.ToDictionary(x => x.ItemId ?? 0, x => x.Received);
+            var returnedData = await (from dn in _context.Entries
+                                      join dnl in _context.Entries on dn.EntryId equals dnl.EntryRefId
+                                      where dn.EntryType == "DN" && dnl.EntryType == "DNL"
+                                            && dn.UcpId == activeUcpId && dnl.UcpId == activeUcpId
+                                            && ((dn.EntryRefId.HasValue && purEntryIds.Contains(dn.EntryRefId.Value)) ||
+                                                (dn.EntryRefNo.HasValue && purEntryNumbers.Contains(dn.EntryRefNo.Value)))
+                                      group dnl by dnl.ItemId into g
+                                      select new { ItemId = g.Key, Returned = g.Sum(x => x.Qty ?? 0) })
+                                     .ToListAsync();
+
+            var receivedRawMap = purlData.ToDictionary(x => x.ItemId ?? 0, x => x.Received);
+            var returnedModalMap = returnedData.ToDictionary(x => x.ItemId ?? 0, x => x.Returned);
 
             // Build detail lines
             var lines = psdlItems.Select(l =>
             {
                 double ordered = l.Qty ?? 0;
-                double received = receivedMap.TryGetValue(l.ItemId ?? 0, out double r) ? r : 0;
-                double pending = ordered - received;
+                double received = receivedRawMap.TryGetValue(l.ItemId ?? 0, out double r) ? r : 0;
+                double returned = returnedModalMap.TryGetValue(l.ItemId ?? 0, out double ret) ? ret : 0;
+                double netReceived = Math.Max(0, received - returned);
+                double pending = ordered - netReceived;
                 return new
                 {
-                    itemName   = l.ItemName,
-                    orderedQty = ordered,
-                    receivedQty = received,
-                    pendingQty = pending < 0 ? 0 : pending,
-                    rate       = l.Rate ?? 0,
-                    amount     = l.Amount ?? 0
+                    itemName       = l.ItemName,
+                    orderedQty     = ordered,
+                    receivedQty    = received,
+                    returnedQty    = returned,
+                    netReceivedQty = netReceived,
+                    pendingQty     = pending < 0 ? 0 : pending,
+                    rate           = l.Rate ?? 0,
+                    amount         = l.Amount ?? 0
                 };
             }).ToList();
 
             return new JsonResult(new
             {
-                success      = true,
-                psdNumber    = psd.EntryNumber,
-                psdDate      = psd.EntryDate?.ToString("dd-MM-yyyy"),
-                supplierName = supplierName,
-                remarks      = psd.EntryRemarks ?? "-",
-                lines        = lines,
-                totalOrdered  = lines.Sum(l => l.orderedQty),
-                totalReceived = lines.Sum(l => l.receivedQty),
-                totalPending  = lines.Sum(l => l.pendingQty)
+                success          = true,
+                psdNumber        = psd.EntryNumber,
+                psdDate          = psd.EntryDate?.ToString("dd-MM-yyyy"),
+                supplierName     = supplierName,
+                remarks          = psd.EntryRemarks ?? "-",
+                lines            = lines,
+                totalOrdered     = lines.Sum(l => l.orderedQty),
+                totalReceived    = lines.Sum(l => l.receivedQty),
+                totalReturned    = lines.Sum(l => l.returnedQty),
+                totalNetReceived = lines.Sum(l => l.netReceivedQty),
+                totalPending     = lines.Sum(l => l.pendingQty)
             });
         }
     }

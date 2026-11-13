@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using YIS.Data;
 using YIS.Models;
 using YIS.Helpers;
+using YIS.Services;
+using ClosedXML.Excel;
 
 namespace YIS.Pages.Reports
 {
@@ -25,7 +27,11 @@ namespace YIS.Pages.Reports
             public long ItemId { get; set; }
             public string ItemName { get; set; } = "";
             public string ItemCode { get; set; } = ""; // HS Code
+            public double GrossPurchase { get; set; }
+            public double PurchaseReturn { get; set; }
             public double NetPurchase { get; set; }
+            public double GrossSale { get; set; }
+            public double SaleReturn { get; set; }
             public double NetSale { get; set; }
             public double Quantity { get; set; }
             public double LastPurchaseRate { get; set; }
@@ -37,8 +43,12 @@ namespace YIS.Pages.Reports
             var activeUcpId = AuthHelper.GetActiveCompanyId(HttpContext);
 
             // 1. Calculate Stock Levels
-            // Net Purchase = PURL - DNL
-            // Net Sale = SALL - CNL
+            // Gross Purchase = PURL
+            // Purchase Return = DNL
+            // Gross Sale = SALL
+            // Sale Return = CNL
+            // Net Purchase = Gross Purchase - Purchase Return
+            // Net Sale = Gross Sale - Sale Return
             // Stock = Net Purchase - Net Sale
             var inventoryStats = await _context.Entries
                 .Where(e => (e.EntryType == "PURL" || e.EntryType == "SALL" || e.EntryType == "DNL" || e.EntryType == "CNL") && (activeUcpId == null || e.UcpId == activeUcpId))
@@ -46,12 +56,14 @@ namespace YIS.Pages.Reports
                 .Select(g => new
                 {
                     ItemId = g.Key,
-                    NetPurchase = g.Sum(e => e.EntryType == "PURL" ? (e.Qty ?? 0) : (e.EntryType == "DNL" ? -(e.Qty ?? 0) : 0)),
-                    NetSale = g.Sum(e => e.EntryType == "SALL" ? (e.Qty ?? 0) : (e.EntryType == "CNL" ? -(e.Qty ?? 0) : 0))
+                    GrossPurchase = g.Sum(e => e.EntryType == "PURL" ? (e.Qty ?? 0) : 0),
+                    PurchaseReturn = g.Sum(e => e.EntryType == "DNL" ? (e.Qty ?? 0) : 0),
+                    GrossSale = g.Sum(e => e.EntryType == "SALL" ? (e.Qty ?? 0) : 0),
+                    SaleReturn = g.Sum(e => e.EntryType == "CNL" ? (e.Qty ?? 0) : 0)
                 })
                 .ToListAsync();
 
-            TotalStockItems = inventoryStats.Sum(x => x.NetPurchase - x.NetSale);
+            TotalStockItems = inventoryStats.Sum(x => (x.GrossPurchase - x.PurchaseReturn) - (x.GrossSale - x.SaleReturn));
 
             // 2. Fetch Last Purchase Rate for Standard Costing
             var lastPurchases = await _context.Entries
@@ -80,15 +92,21 @@ namespace YIS.Pages.Reports
                 .Where(x => x.ItemId.HasValue && items.ContainsKey(x.ItemId.Value))
                 .Select(x =>
                 {
-                    double qty = x.NetPurchase - x.NetSale;
+                    double netPurchase = x.GrossPurchase - x.PurchaseReturn;
+                    double netSale = x.GrossSale - x.SaleReturn;
+                    double qty = netPurchase - netSale;
                     double rate = lastPurchaseRates.TryGetValue(x.ItemId!.Value, out var r) ? r : 0;
                     return new StockItemViewModel
                     {
                         ItemId = x.ItemId!.Value,
                         ItemName = items[x.ItemId!.Value].ItemName ?? "Unknown",
                         ItemCode = items[x.ItemId!.Value].ItemHsCode ?? "N/A",
-                        NetPurchase = x.NetPurchase,
-                        NetSale = x.NetSale,
+                        GrossPurchase = x.GrossPurchase,
+                        PurchaseReturn = x.PurchaseReturn,
+                        NetPurchase = netPurchase,
+                        GrossSale = x.GrossSale,
+                        SaleReturn = x.SaleReturn,
+                        NetSale = netSale,
                         Quantity = qty,
                         LastPurchaseRate = rate,
                         StockValue = qty * rate
@@ -98,6 +116,26 @@ namespace YIS.Pages.Reports
                 .ToList();
 
             TotalStockValue = StockList.Sum(x => x.StockValue);
+        }
+
+        public async Task<IActionResult> OnGetDownloadExcelAsync()
+        {
+            await OnGetAsync();
+            var columns = new List<ExcelColumn<StockItemViewModel>>
+            {
+                new("Item Name", x => x.ItemName, null, ClosedXML.Excel.XLAlignmentHorizontalValues.Left),
+                new("HS Code", x => x.ItemCode, null, ClosedXML.Excel.XLAlignmentHorizontalValues.Center),
+                new("Gross Purchase", x => x.GrossPurchase, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right),
+                new("Purchase Return (DN)", x => x.PurchaseReturn, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right),
+                new("Net Purchase", x => x.NetPurchase, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right),
+                new("Gross Sale", x => x.GrossSale, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right),
+                new("Sale Return (CN)", x => x.SaleReturn, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right),
+                new("Net Sale", x => x.NetSale, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right),
+                new("Stock in Hand", x => x.Quantity, "#,##0", ClosedXML.Excel.XLAlignmentHorizontalValues.Right)
+            };
+
+            var bytes = ExcelExportHelper.ExportToExcel("Stock in Hand Report", columns, StockList);
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Stock_Report_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
         }
     }
 }

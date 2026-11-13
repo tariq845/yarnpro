@@ -34,6 +34,8 @@ namespace YIS.Pages.Reports
         public List<CustomerMaster> Customers { get; set; } = new();
         public double TotalDispatched { get; set; }
         public double TotalInvoiced { get; set; }
+        public double TotalReturned { get; set; }
+        public double TotalNetDelivered { get; set; }
         public double TotalPending { get; set; }
 
         public class ItemSummaryViewModel
@@ -41,6 +43,8 @@ namespace YIS.Pages.Reports
             public string ItemName { get; set; } = "Unknown";
             public double TotalDispatched { get; set; }
             public double TotalInvoiced { get; set; }
+            public double TotalReturned { get; set; }
+            public double TotalNetDelivered { get; set; }
             public double Balance { get; set; }
             public List<PendingRowViewModel> SsdLines { get; set; } = new();
         }
@@ -54,6 +58,8 @@ namespace YIS.Pages.Reports
             public string ItemName { get; set; } = "Unknown";
             public double DispatchedQty { get; set; }
             public double InvoicedQty { get; set; }
+            public double ReturnedQty { get; set; }
+            public double NetDeliveredQty { get; set; }
             public double PendingQty { get; set; }
         }
 
@@ -91,7 +97,9 @@ namespace YIS.Pages.Reports
             {
                 new ExcelColumn<ItemSummaryViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
                 new ExcelColumn<ItemSummaryViewModel>("Total Dispatched (Bags)", x => x.TotalDispatched, "#,##0", XLAlignmentHorizontalValues.Right),
-                new ExcelColumn<ItemSummaryViewModel>("Total Invoiced (Bags)", x => x.TotalInvoiced, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Invoiced (Bags)", x => x.TotalInvoiced, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Returned (Bags)", x => x.TotalReturned, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<ItemSummaryViewModel>("Net Delivered (Bags)", x => x.TotalNetDelivered, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<ItemSummaryViewModel>("Pending Bags", x => x.Balance, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<ItemSummaryViewModel>("Active SSD Count", x => x.SsdLines.Count, "#,##0", XLAlignmentHorizontalValues.Center)
             };
@@ -105,6 +113,8 @@ namespace YIS.Pages.Reports
                 new ExcelColumn<PendingRowViewModel>("Item Name", x => x.ItemName, null, XLAlignmentHorizontalValues.Left),
                 new ExcelColumn<PendingRowViewModel>("Dispatched Qty", x => x.DispatchedQty, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<PendingRowViewModel>("Invoiced Qty", x => x.InvoicedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Returned Qty", x => x.ReturnedQty, "#,##0", XLAlignmentHorizontalValues.Right),
+                new ExcelColumn<PendingRowViewModel>("Net Delivered Qty", x => x.NetDeliveredQty, "#,##0", XLAlignmentHorizontalValues.Right),
                 new ExcelColumn<PendingRowViewModel>("Pending Qty", x => x.PendingQty, "#,##0", XLAlignmentHorizontalValues.Right)
             };
 
@@ -184,13 +194,42 @@ namespace YIS.Pages.Reports
                                         && ssdIds.Contains(sal.EntryRefId ?? 0)
                                   select new
                                   {
+                                      SalId = sal.EntryId,
                                       SsdId = sal.EntryRefId,  // SSD EntryId
                                       sall.ItemId,
                                       sall.Qty
                                   }).ToListAsync();
 
-            // Build invoiced map: SsdId + ItemId → total invoiced qty
-            var invoicedMap = salItems
+            // --- Step 3b: CN entries linked to these SAL invoices (returned qty per SSD per item) ---
+            var salIds = salItems.Select(x => x.SalId).Distinct().ToList();
+            var cnItems = await (from cn in _context.Entries
+                                 join cnl in _context.Entries on cn.EntryId equals cnl.EntryRefId
+                                 where cn.EntryType == "CN"
+                                       && cnl.EntryType == "CNL"
+                                       && cn.UcpId == activeUcpId
+                                       && cnl.UcpId == activeUcpId
+                                       && cn.EntryRefId.HasValue
+                                       && salIds.Contains(cn.EntryRefId.Value)
+                                 select new
+                                 {
+                                     SalId = cn.EntryRefId.Value,
+                                     cnl.ItemId,
+                                     cnl.Qty
+                                 }).ToListAsync();
+
+            var salToSsd = salItems.GroupBy(x => x.SalId).ToDictionary(g => g.Key, g => g.First().SsdId);
+            var returnedMap = new Dictionary<(long?, long?), double>();
+            foreach (var cnItem in cnItems)
+            {
+                if (salToSsd.TryGetValue(cnItem.SalId, out long? sId))
+                {
+                    var key = (sId, cnItem.ItemId);
+                    returnedMap[key] = (returnedMap.TryGetValue(key, out double r) ? r : 0) + (cnItem.Qty ?? 0);
+                }
+            }
+
+            // Build gross invoiced map: SsdId + ItemId → gross invoiced qty
+            var grossInvoicedMap = salItems
                 .GroupBy(x => (x.SsdId, x.ItemId))
                 .ToDictionary(g => g.Key, g => g.Sum(x => x.Qty ?? 0));
 
@@ -201,8 +240,10 @@ namespace YIS.Pages.Reports
             foreach (var line in ssdlItems)
             {
                 double dispatched = line.Qty ?? 0;
-                double invoiced = invoicedMap.TryGetValue((line.EntryRefId, line.ItemId), out double inv) ? inv : 0;
-                double pending = dispatched - invoiced;
+                double invoiced = grossInvoicedMap.TryGetValue((line.EntryRefId, line.ItemId), out double inv) ? inv : 0;
+                double returned = returnedMap.TryGetValue((line.EntryRefId, line.ItemId), out double ret) ? ret : 0;
+                double netDelivered = Math.Max(0, invoiced - returned);
+                double pending = dispatched - netDelivered;
                 if (pending <= 0) continue; // Only show pending
 
                 var ssd = ssdMap.TryGetValue(line.EntryRefId ?? 0, out var s) ? s : null;
@@ -219,6 +260,8 @@ namespace YIS.Pages.Reports
                     ItemName = line.ItemName ?? "Unknown",
                     DispatchedQty = dispatched,
                     InvoicedQty = invoiced,
+                    ReturnedQty = returned,
+                    NetDeliveredQty = netDelivered,
                     PendingQty = pending
                 });
             }
@@ -234,6 +277,8 @@ namespace YIS.Pages.Reports
                     ItemName = g.Key,
                     TotalDispatched = g.Sum(x => x.DispatchedQty),
                     TotalInvoiced = g.Sum(x => x.InvoicedQty),
+                    TotalReturned = g.Sum(x => x.ReturnedQty),
+                    TotalNetDelivered = g.Sum(x => x.NetDeliveredQty),
                     Balance = g.Sum(x => x.PendingQty),
                     SsdLines = g.OrderBy(x => x.CustomerName).ThenByDescending(x => x.SsdDate).ToList()
                 })
@@ -243,6 +288,8 @@ namespace YIS.Pages.Reports
             // Totals
             TotalDispatched = Rows.Sum(r => r.DispatchedQty);
             TotalInvoiced = Rows.Sum(r => r.InvoicedQty);
+            TotalReturned = Rows.Sum(r => r.ReturnedQty);
+            TotalNetDelivered = Rows.Sum(r => r.NetDeliveredQty);
             TotalPending = Rows.Sum(r => r.PendingQty);
         }
 
@@ -284,6 +331,11 @@ namespace YIS.Pages.Reports
                                    }).ToListAsync();
 
             // Invoiced qty per item (via SAL → SALL)
+            var salEntries = await _context.Entries
+                .Where(sal => sal.EntryType == "SAL" && sal.EntryRefId == ssdId && sal.UcpId == activeUcpId)
+                .Select(sal => sal.EntryId)
+                .ToListAsync();
+
             var sallData = await (from sal in _context.Entries
                                   join sall in _context.Entries on sal.EntryId equals sall.EntryRefId
                                   where sal.EntryType == "SAL" && sall.EntryType == "SALL"
@@ -293,19 +345,37 @@ namespace YIS.Pages.Reports
                                   select new { ItemId = g.Key, Invoiced = g.Sum(x => x.Qty ?? 0) })
                                  .ToListAsync();
 
-            var invoicedMap = sallData.ToDictionary(x => x.ItemId ?? 0, x => x.Invoiced);
+            var returnedData = await (from cn in _context.Entries
+                                      join cnl in _context.Entries on cn.EntryId equals cnl.EntryRefId
+                                      where cn.EntryType == "CN" && cnl.EntryType == "CNL"
+                                            && cn.UcpId == activeUcpId && cnl.UcpId == activeUcpId
+                                            && cn.EntryRefId.HasValue && salEntries.Contains(cn.EntryRefId.Value)
+                                      group cnl by cnl.ItemId into g
+                                      select new { ItemId = g.Key, Returned = g.Sum(x => x.Qty ?? 0) })
+                                     .ToListAsync();
+
+            var invoicedRawMap = sallData.ToDictionary(x => x.ItemId ?? 0, x => x.Invoiced);
+            var returnedModalMap = returnedData.ToDictionary(x => x.ItemId ?? 0, x => x.Returned);
+            var invoicedMap = invoicedRawMap.ToDictionary(
+                k => k.Key, 
+                k => Math.Max(0, k.Value - (returnedModalMap.TryGetValue(k.Key, out double r) ? r : 0))
+            );
 
             // Build detail lines
             var lines = ssdlItems.Select(l =>
             {
                 double dispatched = l.Qty ?? 0;
-                double invoiced   = invoicedMap.TryGetValue(l.ItemId ?? 0, out double inv) ? inv : 0;
-                double pending    = dispatched - invoiced;
+                double invoiced   = invoicedRawMap.TryGetValue(l.ItemId ?? 0, out double inv) ? inv : 0;
+                double returned   = returnedModalMap.TryGetValue(l.ItemId ?? 0, out double ret) ? ret : 0;
+                double netDelivered = Math.Max(0, invoiced - returned);
+                double pending    = dispatched - netDelivered;
                 return new
                 {
                     itemName      = l.ItemName,
                     dispatchedQty = dispatched,
                     invoicedQty   = invoiced,
+                    returnedQty   = returned,
+                    netDeliveredQty = netDelivered,
                     pendingQty    = pending < 0 ? 0 : pending,
                     rate          = l.Rate ?? 0,
                     amount        = l.Amount ?? 0
@@ -322,6 +392,8 @@ namespace YIS.Pages.Reports
                 lines         = lines,
                 totalDispatched = lines.Sum(l => l.dispatchedQty),
                 totalInvoiced   = lines.Sum(l => l.invoicedQty),
+                totalReturned   = lines.Sum(l => l.returnedQty),
+                totalNetDelivered = lines.Sum(l => l.netDeliveredQty),
                 totalPending    = lines.Sum(l => l.pendingQty)
             });
         }

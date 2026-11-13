@@ -43,6 +43,9 @@ namespace YIS.Pages.Reports
         // 2. Sales Invoices Delivered (SAL & SALL)
         public List<SalesDeliveryItemViewModel> DeliveryItems { get; set; } = new();
 
+        // 2b. Sale Returns (CN & CNL)
+        public List<SaleReturnItemViewModel> ReturnItems { get; set; } = new();
+
         // Totals & Movement Summary
         public SsdMovementSummaryViewModel Summary { get; set; } = new();
 
@@ -89,6 +92,23 @@ namespace YIS.Pages.Reports
             public double NetAmount { get; set; }
         }
 
+        public class SaleReturnItemViewModel
+        {
+            public long CnId { get; set; }
+            public long? CnNumber { get; set; }
+            public DateTime? CnDate { get; set; }
+            public long? AgainstSalNumber { get; set; }
+            public string? Remarks { get; set; }
+            public long? ItemId { get; set; }
+            public string ItemName { get; set; } = "Unknown Item";
+            public double Qty { get; set; }
+            public double Lbs { get; set; }
+            public double Rate { get; set; }
+            public double Amount { get; set; }
+            public double TaxAmount { get; set; }
+            public double NetAmount { get; set; }
+        }
+
         public class SsdMovementSummaryViewModel
         {
             // Sales Soda Contract (SSD)
@@ -103,10 +123,22 @@ namespace YIS.Pages.Reports
             public double DeliveredAmount { get; set; }
             public double DeliveredAvgRate => (DeliveredLbs > 0) ? (DeliveredAmount / (DeliveredLbs / 10.0)) : (DeliveredQty > 0 ? (DeliveredAmount / DeliveredQty) : 0);
 
-            // Pending Delivery to Customer (SSD - SAL)
-            public double PendingDeliveryQty => Math.Max(0, ContractQty - DeliveredQty);
-            public double PendingDeliveryLbs => Math.Max(0, ContractLbs - DeliveredLbs);
-            public double PendingDeliveryAmount => Math.Max(0, ContractAmount - DeliveredAmount);
+            // Returns (CN)
+            public double ReturnedQty { get; set; }
+            public double ReturnedLbs { get; set; }
+            public double ReturnedAmount { get; set; }
+            public double ReturnedAvgRate => (ReturnedLbs > 0) ? (ReturnedAmount / (ReturnedLbs / 10.0)) : (ReturnedQty > 0 ? (ReturnedAmount / ReturnedQty) : 0);
+
+            // Net Delivered (SAL - CN)
+            public double NetDeliveredQty => Math.Max(0, DeliveredQty - ReturnedQty);
+            public double NetDeliveredLbs => Math.Max(0, DeliveredLbs - ReturnedLbs);
+            public double NetDeliveredAmount => Math.Max(0, DeliveredAmount - ReturnedAmount);
+            public double NetDeliveredAvgRate => (NetDeliveredLbs > 0) ? (NetDeliveredAmount / (NetDeliveredLbs / 10.0)) : (NetDeliveredQty > 0 ? (NetDeliveredAmount / NetDeliveredQty) : 0);
+
+            // Pending Delivery to Customer (SSD - Net Delivered)
+            public double PendingDeliveryQty => Math.Max(0, ContractQty - NetDeliveredQty);
+            public double PendingDeliveryLbs => Math.Max(0, ContractLbs - NetDeliveredLbs);
+            public double PendingDeliveryAmount => Math.Max(0, ContractAmount - NetDeliveredAmount);
 
             // Linked PSD Info
             public double LinkedPsdQty { get; set; }
@@ -261,6 +293,36 @@ namespace YIS.Pages.Reports
                                        NetAmount = (sall.Amount ?? 0) + (sall.TaxAmount ?? 0)
                                    }).ToListAsync();
 
+            // 2b. Sales Invoices Returned against this SSD (CN & CNL)
+            var salIds = DeliveryItems.Select(d => d.SalId).Distinct().ToList();
+            if (salIds.Any())
+            {
+                ReturnItems = await (from cn in _context.Entries
+                                     join cnl in _context.Entries on cn.EntryId equals cnl.EntryRefId
+                                     join item in _context.ItemMasters.Where(im => im.UcpId == activeUcpId) on cnl.ItemId equals item.ItemId into itemJoin
+                                     from item in itemJoin.DefaultIfEmpty()
+                                     where cn.EntryType == "CN" && cnl.EntryType == "CNL" &&
+                                           cn.UcpId == activeUcpId && cnl.UcpId == activeUcpId &&
+                                           cn.EntryRefId.HasValue && salIds.Contains(cn.EntryRefId.Value)
+                                     orderby cn.EntryDate, cn.EntryNumber, cnl.EntryId
+                                     select new SaleReturnItemViewModel
+                                     {
+                                         CnId = cn.EntryId,
+                                         CnNumber = cn.EntryNumber,
+                                         CnDate = cn.EntryDate,
+                                         AgainstSalNumber = cn.EntryRefNo,
+                                         Remarks = cn.EntryRemarks,
+                                         ItemId = cnl.ItemId,
+                                         ItemName = item != null ? item.ItemName : "Unknown Item",
+                                         Qty = cnl.Qty ?? 0,
+                                         Lbs = cnl.Lbs ?? 0,
+                                         Rate = cnl.Rate ?? 0,
+                                         Amount = cnl.Amount ?? 0,
+                                         TaxAmount = cnl.TaxAmount ?? 0,
+                                         NetAmount = (cnl.Amount ?? 0) + (cnl.TaxAmount ?? 0)
+                                     }).ToListAsync();
+            }
+
             // 3. Populate Movement Summary
             Summary = new SsdMovementSummaryViewModel
             {
@@ -271,6 +333,10 @@ namespace YIS.Pages.Reports
                 DeliveredQty = DeliveryItems.Sum(x => x.Qty),
                 DeliveredLbs = DeliveryItems.Sum(x => x.Lbs),
                 DeliveredAmount = DeliveryItems.Sum(x => x.Amount),
+
+                ReturnedQty = ReturnItems.Sum(x => x.Qty),
+                ReturnedLbs = ReturnItems.Sum(x => x.Lbs),
+                ReturnedAmount = ReturnItems.Sum(x => x.Amount),
 
                 LinkedPsdQty = ParentPsd?.Qty ?? 0,
                 LinkedPsdLbs = ParentPsd?.Lbs ?? 0,

@@ -40,6 +40,9 @@ namespace YIS.Pages.Reports
         // 2. Purchases Realized
         public List<PurchaseMovementItemViewModel> PurchaseItems { get; set; } = new();
 
+        // 2b. Purchase Returns Realized
+        public List<PurchaseReturnMovementItemViewModel> PurchaseReturnItems { get; set; } = new();
+
         // 3. Sales Sodas Booked
         public List<SalesSodaMovementItemViewModel> SalesSodaItems { get; set; } = new();
 
@@ -119,6 +122,23 @@ namespace YIS.Pages.Reports
             public double NetAmount { get; set; }
         }
 
+        public class PurchaseReturnMovementItemViewModel
+        {
+            public long DnId { get; set; }
+            public long? DnNumber { get; set; }
+            public DateTime? DnDate { get; set; }
+            public long? AgainstPurNumber { get; set; }
+            public string? Remarks { get; set; }
+            public long? ItemId { get; set; }
+            public string ItemName { get; set; } = "Unknown Item";
+            public double Qty { get; set; }
+            public double Lbs { get; set; }
+            public double Rate { get; set; }
+            public double Amount { get; set; }
+            public double TaxAmount { get; set; }
+            public double NetAmount { get; set; }
+        }
+
         public class MovementSummaryViewModel
         {
             // Contract (PSD)
@@ -133,10 +153,22 @@ namespace YIS.Pages.Reports
             public double PurchasedAmount { get; set; }
             public double PurchasedAvgRate => (PurchasedLbs > 0) ? (PurchasedAmount / (PurchasedLbs / 10.0)) : (PurchasedQty > 0 ? (PurchasedAmount / PurchasedQty) : 0);
 
-            // Pending Contract Balance (PSD - PUR)
-            public double PendingContractQty => Math.Max(0, ContractQty - PurchasedQty);
-            public double PendingContractLbs => Math.Max(0, ContractLbs - PurchasedLbs);
-            public double PendingContractAmount => Math.Max(0, ContractAmount - PurchasedAmount);
+            // Purchase Returns (DN)
+            public double ReturnedQty { get; set; }
+            public double ReturnedLbs { get; set; }
+            public double ReturnedAmount { get; set; }
+            public double ReturnedAvgRate => (ReturnedLbs > 0) ? (ReturnedAmount / (ReturnedLbs / 10.0)) : (ReturnedQty > 0 ? (ReturnedAmount / ReturnedQty) : 0);
+
+            // Net Purchases (PUR - DN)
+            public double NetPurchasedQty => Math.Max(0, PurchasedQty - ReturnedQty);
+            public double NetPurchasedLbs => Math.Max(0, PurchasedLbs - ReturnedLbs);
+            public double NetPurchasedAmount => Math.Max(0, PurchasedAmount - ReturnedAmount);
+            public double NetPurchasedAvgRate => (NetPurchasedLbs > 0) ? (NetPurchasedAmount / (NetPurchasedLbs / 10.0)) : (NetPurchasedQty > 0 ? (NetPurchasedAmount / NetPurchasedQty) : 0);
+
+            // Pending Contract Balance (PSD - Net Purchases)
+            public double PendingContractQty => Math.Max(0, ContractQty - NetPurchasedQty);
+            public double PendingContractLbs => Math.Max(0, ContractLbs - NetPurchasedLbs);
+            public double PendingContractAmount => Math.Max(0, ContractAmount - NetPurchasedAmount);
 
             // Sales Soda (SSD)
             public double SsdQty { get; set; }
@@ -150,9 +182,9 @@ namespace YIS.Pages.Reports
             public double SalAmount { get; set; }
             public double SalAvgRate => (SalLbs > 0) ? (SalAmount / (SalLbs / 10.0)) : (SalQty > 0 ? (SalAmount / SalQty) : 0);
 
-            // Physical Stock Balance in Hand (PUR Received - SAL Delivered)
-            public double StockQty => Math.Max(0, PurchasedQty - SalQty);
-            public double StockLbs => Math.Max(0, PurchasedLbs - SalLbs);
+            // Physical Stock Balance in Hand (Net PUR Received - SAL Delivered)
+            public double StockQty => Math.Max(0, NetPurchasedQty - SalQty);
+            public double StockLbs => Math.Max(0, NetPurchasedLbs - SalLbs);
 
             // Unsold Contract Balance (PSD Contract - SSD Booked)
             public double UnsoldContractQty => Math.Max(0, ContractQty - SsdQty);
@@ -278,6 +310,39 @@ namespace YIS.Pages.Reports
                                        NetAmount = (purl.Amount ?? 0) + (purl.TaxAmount ?? 0)
                                    }).ToListAsync();
 
+            // 2b. Purchase Returns Realized against these PURs (DN & DNL)
+            var purIds = PurchaseItems.Select(x => x.PurId).Distinct().ToList();
+            var purNumbers = PurchaseItems.Where(x => x.PurNumber.HasValue).Select(x => x.PurNumber!.Value).Distinct().ToList();
+
+            if (purIds.Any() || purNumbers.Any())
+            {
+                PurchaseReturnItems = await (from dn in _context.Entries
+                                             join dnl in _context.Entries on dn.EntryId equals dnl.EntryRefId
+                                             join item in _context.ItemMasters.Where(im => im.UcpId == activeUcpId) on dnl.ItemId equals item.ItemId into itemJoin
+                                             from item in itemJoin.DefaultIfEmpty()
+                                             where dn.EntryType == "DN" && dnl.EntryType == "DNL" &&
+                                                   dn.UcpId == activeUcpId && dnl.UcpId == activeUcpId &&
+                                                   ((dn.EntryRefId.HasValue && purIds.Contains(dn.EntryRefId.Value)) ||
+                                                    (dn.EntryRefNo.HasValue && purNumbers.Contains(dn.EntryRefNo.Value)))
+                                             orderby dn.EntryDate, dn.EntryNumber, dnl.EntryId
+                                             select new PurchaseReturnMovementItemViewModel
+                                             {
+                                                 DnId = dn.EntryId,
+                                                 DnNumber = dn.EntryNumber,
+                                                 DnDate = dn.EntryDate,
+                                                 AgainstPurNumber = dn.EntryRefNo,
+                                                 Remarks = dn.EntryRemarks,
+                                                 ItemId = dnl.ItemId,
+                                                 ItemName = item != null ? item.ItemName : "Unknown Item",
+                                                 Qty = dnl.Qty ?? 0,
+                                                 Lbs = dnl.Lbs ?? 0,
+                                                 Rate = dnl.Rate ?? 0,
+                                                 Amount = dnl.Amount ?? 0,
+                                                 TaxAmount = dnl.TaxAmount ?? 0,
+                                                 NetAmount = (dnl.Amount ?? 0) + (dnl.TaxAmount ?? 0)
+                                             }).ToListAsync();
+            }
+
             // 3. Sales Soda Booked against this PSD (SSD & SSDL)
             var ssdList = await (from ssd in _context.Entries
                                  join ssdl in _context.Entries on ssd.EntryId equals ssdl.EntryRefId
@@ -364,6 +429,10 @@ namespace YIS.Pages.Reports
                 PurchasedQty = PurchaseItems.Sum(x => x.Qty),
                 PurchasedLbs = PurchaseItems.Sum(x => x.Lbs),
                 PurchasedAmount = PurchaseItems.Sum(x => x.Amount),
+
+                ReturnedQty = PurchaseReturnItems.Sum(x => x.Qty),
+                ReturnedLbs = PurchaseReturnItems.Sum(x => x.Lbs),
+                ReturnedAmount = PurchaseReturnItems.Sum(x => x.Amount),
 
                 SsdQty = SalesSodaItems.Sum(x => x.Qty),
                 SsdLbs = SalesSodaItems.Sum(x => x.Lbs),
