@@ -36,10 +36,18 @@ namespace YIS.Pages.Dashboard
         public double TotalReceiptsCurrentMonth { get; set; }
         public double TotalPaymentsCurrentMonth { get; set; }
 
+        // Stock Valuation & Commission
+        public double TotalStockValue { get; set; }
+        public double TotalCommissionBalance { get; set; }
+        public double CurrentMonthCommission { get; set; }
+
         // Chart Data
         public string ChartLabelsJson { get; set; } = "[]";
         public string SalesChartDataJson { get; set; } = "[]";
         public string PurchaseChartDataJson { get; set; } = "[]";
+        public string CommissionChartDataJson { get; set; } = "[]";
+        public string StockValuationLabelsJson { get; set; } = "[]";
+        public string StockValuationDataJson { get; set; } = "[]";
 
         // Sales Highlights
         public double AverageOrderValue { get; set; }
@@ -149,6 +157,84 @@ namespace YIS.Pages.Dashboard
             TotalStockItems = inventoryStats.Sum(x => x.Qty);
             StockTrend = 5.2;
 
+            // 3b. Stock Valuation (Standard Costing using Last Purchase Rate)
+            var lastPurchases = await _context.Entries
+                .AsNoTracking()
+                .Where(e => e.EntryType == "PURL" && e.UcpId == activeUcpId && e.ItemId.HasValue && e.Rate.HasValue && e.Rate.Value > 0)
+                .OrderByDescending(e => e.EntryDate)
+                .ThenByDescending(e => e.EntryId)
+                .Select(e => new { e.ItemId, e.Rate })
+                .ToListAsync();
+
+            var lastPurchaseRates = lastPurchases
+                .GroupBy(e => e.ItemId!.Value)
+                .ToDictionary(g => g.Key, g => g.First().Rate ?? 0);
+
+            TotalStockValue = inventoryStats
+                .Where(x => x.ItemId.HasValue && x.Qty > 0)
+                .Sum(x => x.Qty * (lastPurchaseRates.TryGetValue(x.ItemId!.Value, out var r) ? r : 0));
+
+            // 3c. Commission Balance Calculation
+            // Check GL Commission Payable Accounts
+            var commAccountIds = await _context.AccountMasters
+                .Where(a => a.UcpId == activeUcpId &&
+                           (a.AccountName.ToLower().Contains("commission payable") ||
+                            a.AccountName.ToLower().Contains("comm payable")))
+                .Select(a => a.AccountId)
+                .ToListAsync();
+
+            var custCommAccs = await _context.CustomerMasters
+                .Where(c => c.UcpId == activeUcpId && c.CommPayableAccountId.HasValue)
+                .Select(c => c.CommPayableAccountId!.Value)
+                .ToListAsync();
+
+            var suppCommAccs = await _context.SupplierMasters
+                .Where(s => s.UcpId == activeUcpId && s.CommPayableAccountId.HasValue)
+                .Select(s => s.CommPayableAccountId!.Value)
+                .ToListAsync();
+
+            var allCommPayableAccountIds = commAccountIds.Union(custCommAccs).Union(suppCommAccs).Distinct().ToList();
+
+            double glCommBalance = 0;
+            if (allCommPayableAccountIds.Any())
+            {
+                var glTrans = await _context.Transactions
+                    .Where(t => t.UcpId == activeUcpId && t.AccountId.HasValue && allCommPayableAccountIds.Contains(t.AccountId.Value))
+                    .Select(t => new { t.Debit, t.Credit })
+                    .ToListAsync();
+
+                // Liability Account Balance = Credit - Debit
+                glCommBalance = glTrans.Sum(t => (t.Credit ?? 0) - (t.Debit ?? 0));
+            }
+
+            // Operational Commission from Invoices (SAL/CN/PUR/DN)
+            var salesCommissionAllTime = await _context.Entries
+                .Where(e => e.UcpId == activeUcpId && (e.EntryType == "SAL" || e.EntryType == "CN"))
+                .SumAsync(e => e.EntryType == "SAL" ? (e.EntryCommAmt ?? 0) : -(e.EntryCommAmt ?? 0));
+
+            var purCommissionAllTime = await _context.Entries
+                .Where(e => e.UcpId == activeUcpId && (e.EntryType == "PUR" || e.EntryType == "DN"))
+                .SumAsync(e => e.EntryType == "PUR" ? (e.EntryCommAmt ?? 0) : -(e.EntryCommAmt ?? 0));
+
+            var totalCommissionBooked = Math.Max(0, salesCommissionAllTime + purCommissionAllTime);
+
+            var commPaidViaPv = await _context.Entries
+                .Where(e => e.UcpId == activeUcpId && e.EntryType == "PV" && e.EntryRemarks != null && e.EntryRemarks.ToLower().Contains("commission"))
+                .SumAsync(e => e.Amount ?? 0);
+
+            TotalCommissionBalance = glCommBalance > 0 ? glCommBalance : Math.Max(0, totalCommissionBooked - commPaidViaPv);
+
+            // Current Month Commission
+            var currentMonthSalesComm = await _context.Entries
+                .Where(e => e.UcpId == activeUcpId && (e.EntryType == "SAL" || e.EntryType == "CN") && e.EntryDate >= firstDayofMonth)
+                .SumAsync(e => e.EntryType == "SAL" ? (e.EntryCommAmt ?? 0) : -(e.EntryCommAmt ?? 0));
+
+            var currentMonthPurComm = await _context.Entries
+                .Where(e => e.UcpId == activeUcpId && (e.EntryType == "PUR" || e.EntryType == "DN") && e.EntryDate >= firstDayofMonth)
+                .SumAsync(e => e.EntryType == "PUR" ? (e.EntryCommAmt ?? 0) : -(e.EntryCommAmt ?? 0));
+
+            CurrentMonthCommission = Math.Max(0, currentMonthSalesComm + currentMonthPurComm);
+
             // 4. Active Customers & Suppliers
             ActiveCustomersCount = await _context.CustomerMasters
                 .Where(c => (c.CustomerDeactiveOn == null || c.CustomerDeactiveOn > today) && c.UcpId == activeUcpId)
@@ -224,6 +310,47 @@ namespace YIS.Pages.Dashboard
             ChartLabelsJson = System.Text.Json.JsonSerializer.Serialize(chartLabels);
             SalesChartDataJson = System.Text.Json.JsonSerializer.Serialize(salesData);
             PurchaseChartDataJson = System.Text.Json.JsonSerializer.Serialize(purchaseData);
+
+            // 7b. Commission Monthly Chart Data (Last 6 Months)
+            var monthlyCommRaw = await _context.Entries
+                .Where(e => (e.EntryType == "SAL" || e.EntryType == "CN" || e.EntryType == "PUR" || e.EntryType == "DN") &&
+                            e.EntryDate >= last6Months.First() && e.UcpId == activeUcpId)
+                .GroupBy(e => new { e.EntryDate!.Value.Year, e.EntryDate!.Value.Month, e.EntryType })
+                .Select(g => new
+                {
+                    Key = g.Key.Year + "-" + g.Key.Month.ToString("D2"),
+                    Type = g.Key.EntryType,
+                    TotalComm = g.Sum(e => e.EntryCommAmt ?? 0)
+                })
+                .ToListAsync();
+
+            var commissionChartData = last6Months.Select(d =>
+            {
+                var key = d.Year + "-" + d.Month.ToString("D2");
+                var salComm = monthlyCommRaw.Where(x => x.Key == key && x.Type == "SAL").Sum(x => x.TotalComm);
+                var cnComm = monthlyCommRaw.Where(x => x.Key == key && x.Type == "CN").Sum(x => x.TotalComm);
+                var purComm = monthlyCommRaw.Where(x => x.Key == key && x.Type == "PUR").Sum(x => x.TotalComm);
+                var dnComm = monthlyCommRaw.Where(x => x.Key == key && x.Type == "DN").Sum(x => x.TotalComm);
+                return Math.Max(0, (salComm - cnComm) + (purComm - dnComm));
+            }).ToList();
+
+            CommissionChartDataJson = System.Text.Json.JsonSerializer.Serialize(commissionChartData);
+
+            // 7c. Top 5 Items by Stock Valuation (for Donut / Bar Chart)
+            var topStockValuation = inventoryStats
+                .Where(x => x.ItemId.HasValue && x.Qty > 0)
+                .Select(x => new
+                {
+                    ItemName = itemNames.ContainsKey(x.ItemId!.Value) ? itemNames[x.ItemId.Value] ?? "Unknown" : "Unknown",
+                    Value = Math.Round(x.Qty * (lastPurchaseRates.TryGetValue(x.ItemId!.Value, out var r) ? r : 0), 0)
+                })
+                .Where(x => x.Value > 0)
+                .OrderByDescending(x => x.Value)
+                .Take(5)
+                .ToList();
+
+            StockValuationLabelsJson = System.Text.Json.JsonSerializer.Serialize(topStockValuation.Select(x => x.ItemName).ToList());
+            StockValuationDataJson = System.Text.Json.JsonSerializer.Serialize(topStockValuation.Select(x => x.Value).ToList());
 
             // Best Performing Month
             if (monthlySales.Any())
