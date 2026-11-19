@@ -66,17 +66,28 @@ namespace YIS.Pages.Reports
             TotalStockItems = inventoryStats.Sum(x => (x.GrossPurchase - x.PurchaseReturn) - (x.GrossSale - x.SaleReturn));
 
             // 2. Fetch Last Purchase Rate for Standard Costing
+            // Per-bag cost = Amount / Qty (not Rate per kg, because Amount already = Qty x Lbs x Rate)
             var lastPurchases = await _context.Entries
                 .AsNoTracking()
-                .Where(e => e.EntryType == "PURL" && (activeUcpId == null || e.UcpId == activeUcpId) && e.ItemId.HasValue && e.Rate.HasValue && e.Rate.Value > 0)
+                .Where(e => e.EntryType == "PURL" && (activeUcpId == null || e.UcpId == activeUcpId)
+                         && e.ItemId.HasValue && e.Qty.HasValue && e.Qty.Value > 0
+                         && e.Amount.HasValue && e.Amount.Value > 0)
                 .OrderByDescending(e => e.EntryDate)
                 .ThenByDescending(e => e.EntryId)
-                .Select(e => new { e.ItemId, e.Rate })
+                .Select(e => new { e.ItemId, e.Qty, e.Amount })
                 .ToListAsync();
 
+            // Per-bag cost = Amount / Qty from the last purchase line for each item
             var lastPurchaseRates = lastPurchases
                 .GroupBy(e => e.ItemId!.Value)
-                .ToDictionary(g => g.Key, g => g.First().Rate ?? 0);
+                .ToDictionary(
+                    g => g.Key,
+                    g => {
+                        var last = g.First();
+                        return (last.Qty.HasValue && last.Qty.Value > 0)
+                            ? (last.Amount ?? 0) / last.Qty.Value
+                            : 0;
+                    });
 
             // 3. Fetch Item Details for names and codes
             var itemList = await _context.ItemMasters

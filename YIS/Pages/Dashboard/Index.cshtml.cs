@@ -157,18 +157,30 @@ namespace YIS.Pages.Dashboard
             TotalStockItems = inventoryStats.Sum(x => x.Qty);
             StockTrend = 5.2;
 
-            // 3b. Stock Valuation (Standard Costing using Last Purchase Rate)
-            var lastPurchases = await _context.Entries
+            // 3b. Stock Valuation (Standard Costing: Amount/Qty per bag = per-bag cost)
+            // Qty = bags, Rate = per kg/lbs, Amount = already total (Qty x Lbs x Rate)
+            // So per-bag cost = Amount / Qty from last purchase entry
+            var lastPurchasesForValuation = await _context.Entries
                 .AsNoTracking()
-                .Where(e => e.EntryType == "PURL" && e.UcpId == activeUcpId && e.ItemId.HasValue && e.Rate.HasValue && e.Rate.Value > 0)
+                .Where(e => e.EntryType == "PURL" && e.UcpId == activeUcpId && e.ItemId.HasValue
+                         && e.Qty.HasValue && e.Qty.Value > 0
+                         && e.Amount.HasValue && e.Amount.Value > 0)
                 .OrderByDescending(e => e.EntryDate)
                 .ThenByDescending(e => e.EntryId)
-                .Select(e => new { e.ItemId, e.Rate })
+                .Select(e => new { e.ItemId, e.Qty, e.Amount })
                 .ToListAsync();
 
-            var lastPurchaseRates = lastPurchases
+            // Per-bag cost = Amount / Qty (last purchase entry per item)
+            var lastPurchaseRates = lastPurchasesForValuation
                 .GroupBy(e => e.ItemId!.Value)
-                .ToDictionary(g => g.Key, g => g.First().Rate ?? 0);
+                .ToDictionary(
+                    g => g.Key,
+                    g => {
+                        var last = g.First();
+                        return (last.Qty.HasValue && last.Qty.Value > 0)
+                            ? (last.Amount ?? 0) / last.Qty.Value
+                            : 0;
+                    });
 
             TotalStockValue = inventoryStats
                 .Where(x => x.ItemId.HasValue && x.Qty > 0)
