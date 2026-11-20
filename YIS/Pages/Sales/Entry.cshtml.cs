@@ -1514,6 +1514,7 @@ namespace YIS.Pages.Sales
                 existing.EntryAttribute1 = Entry.EntryAttribute1; // Customer
                 existing.EntryRefId = Entry.EntryRefId; // SSD Ref
                 existing.EntryRefNo = Entry.EntryRefNo; // PUR Ref
+                existing.EntryRefCode = Entry.EntryRefCode; // Customer Pur No
                 existing.EntryRemarks = Entry.EntryRemarks;
                 existing.EntryCommPer = Entry.EntryCommPer;
                 existing.EntryCommAmt = Entry.EntryCommAmt;

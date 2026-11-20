@@ -122,6 +122,8 @@ namespace YIS.Pages.Reports
             public double Slab31_60 { get; set; }
             public double Slab61_90 { get; set; }
             public double Slab90Plus { get; set; }
+            public string? GstNo { get; set; }
+            public string? NtnNo { get; set; }
         }
 
         public class AgingItemRow
@@ -149,6 +151,8 @@ namespace YIS.Pages.Reports
             public double PdcAmount { get; set; }
             public DateTime? PdcDate { get; set; }
             public string? BuyerName { get; set; } // Supplier / Seller
+            public string? GstNo { get; set; }
+            public string? NtnNo { get; set; }
             public string? BrokerName { get; set; }
             public List<VoucherSettlementInfo> AppliedVouchers { get; set; } = new();
         }
@@ -156,6 +160,8 @@ namespace YIS.Pages.Reports
         public class BuyerAgingGroup
         {
             public string BuyerName { get; set; } = "";
+            public string? GstNo { get; set; }
+            public string? NtnNo { get; set; }
             public List<AgingItemRow> Items { get; set; } = new();
             public double SubTotalAmountWithoutGst => Items.Sum(i => i.AmountWithoutGst);
             public double SubTotalGst => Items.Sum(i => i.GstAmount);
@@ -535,6 +541,8 @@ namespace YIS.Pages.Reports
                         TotalDays = totalDays,
                         PdcAmount = 0,
                         BuyerName = suppName,
+                        GstNo = sMaster?.SupplierStrNo,
+                        NtnNo = sMaster?.SupplierNtnNo,
                         BrokerName = broker,
                         AppliedVouchers = appliedList
                     };
@@ -552,6 +560,8 @@ namespace YIS.Pages.Reports
                     r.ContractNumber.Contains(term) ||
                     r.TransactionNumber.Contains(term) ||
                     (!string.IsNullOrEmpty(r.SupplierPurchaseNo) && r.SupplierPurchaseNo.ToLower().Contains(term)) ||
+                    (!string.IsNullOrEmpty(r.GstNo) && r.GstNo.ToLower().Contains(term)) ||
+                    (!string.IsNullOrEmpty(r.NtnNo) && r.NtnNo.ToLower().Contains(term)) ||
                     (r.BuyerName != null && r.BuyerName.ToLower().Contains(term)) ||
                     (r.BrokerName != null && r.BrokerName.ToLower().Contains(term)) ||
                     r.Description.ToLower().Contains(term)
@@ -575,6 +585,8 @@ namespace YIS.Pages.Reports
                         SupplierName = sg.Key,
                         Contact = matchSupp?.SupplierContact,
                         City = matchSupp?.SupplierAddress,
+                        GstNo = matchSupp?.SupplierStrNo,
+                        NtnNo = matchSupp?.SupplierNtnNo,
                         BrokerName = first.BrokerName,
                         InvoicesCount = items.Count,
                         TotalBalance = items.Sum(i => i.Balance),
@@ -597,6 +609,8 @@ namespace YIS.Pages.Reports
                                .Select(ug => new BuyerAgingGroup
                                {
                                    BuyerName = ug.Key,
+                                   GstNo = ug.FirstOrDefault(x => !string.IsNullOrEmpty(x.GstNo))?.GstNo,
+                                   NtnNo = ug.FirstOrDefault(x => !string.IsNullOrEmpty(x.NtnNo))?.NtnNo,
                                    Items = ug.OrderBy(i => i.Date).ThenBy(i => i.EntryId).ToList()
                                }).ToList()
                 })
@@ -699,7 +713,10 @@ namespace YIS.Pages.Reports
 
                 foreach (var buyer in broker.Buyers)
                 {
-                    ws.Cell(rowIdx, 1).Value = buyer.BuyerName;
+                    string buyerTitle = buyer.BuyerName;
+                    if (!string.IsNullOrEmpty(buyer.GstNo)) buyerTitle += $" | GST: {buyer.GstNo}";
+                    if (!string.IsNullOrEmpty(buyer.NtnNo)) buyerTitle += $" | NTN: {buyer.NtnNo}";
+                    ws.Cell(rowIdx, 1).Value = buyerTitle;
                     ws.Cell(rowIdx, 1).Style.Font.Bold = true;
                     ws.Cell(rowIdx, 1).Style.Font.FontColor = XLColor.Red;
                     ws.Range(rowIdx, 1, rowIdx, 17).Merge();
