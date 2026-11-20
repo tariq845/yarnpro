@@ -126,22 +126,99 @@ namespace YIS.Pages.Dashboard
                 .Where(e => e.EntryType == "PV" && e.EntryDate >= firstDayofMonth && e.UcpId == activeUcpId)
                 .SumAsync(e => e.Amount ?? 0);
 
-            // 2c. Outstanding Receivables (AR) & Payables (AP)
-            var totalSalesAllTime = await _context.Entries
-                .Where(e => (e.EntryType == "SAL" || e.EntryType == "DN") && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
-            var totalReceiptsAllTime = await _context.Entries
-                .Where(e => (e.EntryType == "RV" || e.EntryType == "CN") && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
-            TotalReceivables = Math.Max(0, totalSalesAllTime - totalReceiptsAllTime);
+            // 2c. Outstanding Receivables (AR) & Payables (AP) - Matching Aging Reports Exactly
+            var postedEntryIds = (await _context.Transactions
+                .Where(t => t.UcpId == activeUcpId && t.EntryId.HasValue)
+                .Select(t => t.EntryId!.Value)
+                .Distinct()
+                .ToListAsync())
+                .ToHashSet();
 
-            var totalPurAllTime = await _context.Entries
-                .Where(e => (e.EntryType == "PUR" || e.EntryType == "CN") && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
-            var totalPaymentsAllTime = await _context.Entries
-                .Where(e => (e.EntryType == "PV" || e.EntryType == "DN") && e.UcpId == activeUcpId)
-                .SumAsync(e => e.Amount ?? 0);
-            TotalPayables = Math.Max(0, totalPurAllTime - totalPaymentsAllTime);
+            // Customer Receivables (Matching CustomerAging Report FIFO balance by customer)
+            var allSalesInvoices = await _context.Entries
+                .Where(e => e.EntryType == "SAL" && e.UcpId == activeUcpId && e.EntryDate <= today)
+                .Select(e => new { e.EntryId, CustomerId = e.EntryAttribute1, Amount = e.Amount ?? 0 })
+                .ToListAsync();
+
+            var postedSales = allSalesInvoices.Where(e => postedEntryIds.Contains(e.EntryId)).ToList();
+            var custIds = postedSales.Select(s => s.CustomerId).Where(c => !string.IsNullOrEmpty(c)).Distinct().ToHashSet();
+
+            var allRvEntries = await _context.Entries
+                .Where(e => (e.EntryType == "RV" || e.EntryType == "CN") && e.UcpId == activeUcpId && e.EntryDate <= today)
+                .Select(e => new
+                {
+                    e.EntryId,
+                    e.EntryType,
+                    e.EntryAttribute1,
+                    e.EntryAttribute2,
+                    Amount = e.Amount ?? 0
+                })
+                .ToListAsync();
+
+            var postedReceipts = allRvEntries
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .Select(e => new
+                {
+                    CustomerId = e.EntryType == "CN"
+                        ? (!string.IsNullOrEmpty(e.EntryAttribute1) ? e.EntryAttribute1 : e.EntryAttribute2)
+                        : e.EntryAttribute2,
+                    e.Amount
+                })
+                .Where(e => !string.IsNullOrEmpty(e.CustomerId) && custIds.Contains(e.CustomerId))
+                .ToList();
+
+            var salesByCust = postedSales.GroupBy(s => s.CustomerId!).ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
+            var receiptsByCust = postedReceipts.GroupBy(r => r.CustomerId!).ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
+
+            TotalReceivables = salesByCust.Sum(kvp =>
+            {
+                double custSales = kvp.Value;
+                double custPaid = receiptsByCust.TryGetValue(kvp.Key, out double p) ? p : 0;
+                return Math.Max(0, custSales - custPaid);
+            });
+
+            // Supplier Payables (Matching SupplierAging Report FIFO balance by supplier)
+            var allPurInvoices = await _context.Entries
+                .Where(e => e.EntryType == "PUR" && e.UcpId == activeUcpId && e.EntryDate <= today)
+                .Select(e => new { e.EntryId, SupplierId = e.EntryAttribute1, Amount = e.Amount ?? 0 })
+                .ToListAsync();
+
+            var postedPurs = allPurInvoices.Where(e => postedEntryIds.Contains(e.EntryId)).ToList();
+            var suppIds = postedPurs.Select(p => p.SupplierId).Where(s => !string.IsNullOrEmpty(s)).Distinct().ToHashSet();
+
+            var allPvEntries = await _context.Entries
+                .Where(e => (e.EntryType == "PV" || e.EntryType == "DN") && e.UcpId == activeUcpId && e.EntryDate <= today)
+                .Select(e => new
+                {
+                    e.EntryId,
+                    e.EntryType,
+                    e.EntryAttribute1,
+                    e.EntryAttribute2,
+                    Amount = e.Amount ?? 0
+                })
+                .ToListAsync();
+
+            var postedPayments = allPvEntries
+                .Where(e => postedEntryIds.Contains(e.EntryId))
+                .Select(e => new
+                {
+                    SupplierId = e.EntryType == "DN"
+                        ? (!string.IsNullOrEmpty(e.EntryAttribute1) ? e.EntryAttribute1 : e.EntryAttribute2)
+                        : e.EntryAttribute2,
+                    e.Amount
+                })
+                .Where(e => !string.IsNullOrEmpty(e.SupplierId) && suppIds.Contains(e.SupplierId))
+                .ToList();
+
+            var purBySupp = postedPurs.GroupBy(p => p.SupplierId!).ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
+            var payBySupp = postedPayments.GroupBy(p => p.SupplierId!).ToDictionary(g => g.Key, g => g.Sum(x => x.Amount));
+
+            TotalPayables = purBySupp.Sum(kvp =>
+            {
+                double suppPur = kvp.Value;
+                double suppPaid = payBySupp.TryGetValue(kvp.Key, out double p) ? p : 0;
+                return Math.Max(0, suppPur - suppPaid);
+            });
 
             // 3. Stock Levels (Calculated from Net Purchase [PURL - DNL] vs Net Sale [SALL - CNL])
             var inventoryStats = await _context.Entries
