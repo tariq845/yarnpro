@@ -391,44 +391,9 @@ namespace YIS.Pages.Purchase
             return RedirectToPage();
         }
 
-        private async Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
+        private Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
         {
-            var acc = await _context.AccountMasters
-                .FirstOrDefaultAsync(a => a.AccountName != null && a.AccountName.Contains(searchKeyword) && a.UcpId == activeUcpId);
-            if (acc != null) return acc;
-
-            var category = await _context.CategoryMasters
-                .Where(c => c.UcpId == activeUcpId)
-                .OrderByDescending(c => c.CategoryName != null && c.CategoryName.Contains(preferredCategoryName))
-                .FirstOrDefaultAsync();
-
-            if (category == null)
-            {
-                category = await _context.CategoryMasters.FirstOrDefaultAsync(c => c.UcpId == activeUcpId);
-                if (category == null)
-                {
-                    category = new CategoryMaster
-                    {
-                        CategoryName = preferredCategoryName,
-                        UcpId = activeUcpId,
-                        CreationOn = DateTime.Now
-                    };
-                    _context.CategoryMasters.Add(category);
-                    await _context.SaveChangesAsync();
-                }
-            }
-
-            acc = new AccountMaster
-            {
-                AccountId = 0,
-                AccountName = defaultName,
-                CategoryId = category.CategoryId,
-                UcpId = activeUcpId,
-                CreationOn = DateTime.Now
-            };
-            _context.AccountMasters.Add(acc);
-            await _context.SaveChangesAsync();
-            return acc;
+            return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword, "Input", "Tax");
         }
 
         public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)

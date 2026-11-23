@@ -783,7 +783,7 @@ namespace YIS.Pages.Reports
             ws.Cell("Q3").Value = $"Date: {GeneratedOn:dd-MM-yyyy hh:mm tt}";
 
             string[] headers = {
-                "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER", "CUSTOMER PUR NO",
+                "TRANSACTION NUMBER", "DATE", "CONTRACT NUMBER", "INVOICE NUMBER", "SUPPLIER INV NO",
                 "QTY", "DESCRIPTION", "RATE", "AMOUNT (EXCL. GST)", "GST", "NET AMOUNT",
                 "RECEIVED / PAID", "BALANCE", "CONT. DAYS", "TOTAL DAYS",
                 "PDC AMOUNT", "PDC DT"
