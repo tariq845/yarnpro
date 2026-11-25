@@ -917,7 +917,7 @@ Debit = commissionAmt,
 
 Credit = 0,
 
-Remarks = $"Commission Expense against Purchase Invoice PUR-{parentEntry.EntryNumber}",
+Remarks = $"Commission Receivable from {(!string.IsNullOrWhiteSpace(agentName) ? agentName : "Agent")} against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
 EntryId = id,
 
@@ -951,7 +951,7 @@ Debit = 0,
 
 Credit = commissionAmt,
 
-Remarks = $"Commission Payable to {(!string.IsNullOrWhiteSpace(agentName) ? agentName : "Agent")} against Purchase Invoice PUR-{parentEntry.EntryNumber}",
+Remarks = $"Commission Receivable from {(!string.IsNullOrWhiteSpace(agentName) ? agentName : "Agent")} against Purchase Invoice PUR-{parentEntry.EntryNumber}",
 
 EntryId = id,
 
@@ -987,7 +987,7 @@ return RedirectToPage();
 
 private Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
 {
-    return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword, "Input", "Tax");
+    return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword);
 }
 
 public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)

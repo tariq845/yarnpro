@@ -394,7 +394,7 @@ namespace YIS.Pages.Sales
 
         private Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
         {
-            return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword, "Output", "Tax");
+            return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword);
         }
 
         public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)
