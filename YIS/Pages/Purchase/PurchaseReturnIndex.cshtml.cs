@@ -352,7 +352,7 @@ namespace YIS.Pages.Purchase
                         AccountId = commPayableAccountId.Value,
                         Debit = commissionAmt,
                         Credit = 0,
-                        Remarks = $"Commission Payable Reversal against Debit Note DN-{parentEntry.EntryNumber}",
+                        Remarks = $"Commission Receivable Reversal against Debit Note DN-{parentEntry.EntryNumber}",
                         EntryId = id,
                         UcpId = activeUcpId
                     };
@@ -371,7 +371,7 @@ namespace YIS.Pages.Purchase
                         AccountId = commExpenseAccountId.Value,
                         Debit = 0,
                         Credit = commissionAmt,
-                        Remarks = $"Commission Expense Reversal against Debit Note DN-{parentEntry.EntryNumber}",
+                        Remarks = $"Commission Receivable Reversal against Debit Note DN-{parentEntry.EntryNumber}",
                         EntryId = id,
                         UcpId = activeUcpId
                     };
@@ -393,7 +393,7 @@ namespace YIS.Pages.Purchase
 
         private Task<AccountMaster> GetOrCreateAccountAsync(string defaultName, string searchKeyword, string preferredCategoryName, long activeUcpId)
         {
-            return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword, "Input", "Tax");
+            return AccountHelper.GetOrCreateSystemAccountAsync(_context, defaultName, preferredCategoryName, activeUcpId, searchKeyword);
         }
 
         public async Task<IActionResult> OnPostUnpostFromLedgerAsync(long id)

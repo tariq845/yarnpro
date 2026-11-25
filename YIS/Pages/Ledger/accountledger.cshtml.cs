@@ -100,6 +100,7 @@ namespace YIS.Pages.Ledger
                             EntryAttribute1 = entry != null ? entry.EntryAttribute1 : null,
                             EntryAttribute2 = entry != null ? entry.EntryAttribute2 : null,
                             EntryAttribute3 = entry != null ? entry.EntryAttribute3 : null,
+                            EntryAttribute4 = entry != null ? entry.EntryAttribute4 : null,
                             EntryRefId = entry != null ? entry.EntryRefId : null,
                             EntryRefNo = entry != null ? entry.EntryRefNo : null,
                             ItemId = entry != null ? entry.ItemId : null,
@@ -316,63 +317,179 @@ namespace YIS.Pages.Ledger
                     }
                 }
 
-                // Determine party name if applicable
+                // Determine party name accurately based on transaction type
                 string? partyName = null;
-                if (!string.IsNullOrEmpty(t.EntryAttribute1))
+                if (typeCode == "PUR" || typeCode == "DN")
                 {
-                    if (customers.TryGetValue(t.EntryAttribute1, out var cName)) partyName = cName;
-                    else if (suppliers.TryGetValue(t.EntryAttribute1, out var supName)) partyName = supName;
+                    // Purchase / Debit Note: Party is always a Supplier
+                    if (!string.IsNullOrEmpty(t.EntryAttribute1) && suppliers.TryGetValue(t.EntryAttribute1, out var supName))
+                    {
+                        partyName = supName;
+                    }
+                    else if (!string.IsNullOrEmpty(t.EntryAttribute2) && suppliers.TryGetValue(t.EntryAttribute2, out var supName2))
+                    {
+                        partyName = supName2;
+                    }
                 }
-                if (string.IsNullOrEmpty(partyName) && !string.IsNullOrEmpty(t.EntryAttribute2))
+                else if (typeCode == "SAL" || typeCode == "CN")
                 {
-                    if (customers.TryGetValue(t.EntryAttribute2, out var cName2)) partyName = cName2;
-                    else if (suppliers.TryGetValue(t.EntryAttribute2, out var supName2)) partyName = supName2;
+                    // Sales / Credit Note: Party is always a Customer
+                    if (!string.IsNullOrEmpty(t.EntryAttribute1) && customers.TryGetValue(t.EntryAttribute1, out var cName))
+                    {
+                        partyName = cName;
+                    }
+                    else if (!string.IsNullOrEmpty(t.EntryAttribute2) && customers.TryGetValue(t.EntryAttribute2, out var cName2))
+                    {
+                        partyName = cName2;
+                    }
+                }
+                else
+                {
+                    // Vouchers or other entries: check Customer then Supplier
+                    if (!string.IsNullOrEmpty(t.EntryAttribute1))
+                    {
+                        if (customers.TryGetValue(t.EntryAttribute1, out var cName)) partyName = cName;
+                        else if (suppliers.TryGetValue(t.EntryAttribute1, out var supName)) partyName = supName;
+                    }
+                    if (string.IsNullOrEmpty(partyName) && !string.IsNullOrEmpty(t.EntryAttribute2))
+                    {
+                        if (customers.TryGetValue(t.EntryAttribute2, out var cName2)) partyName = cName2;
+                        else if (suppliers.TryGetValue(t.EntryAttribute2, out var supName2)) partyName = supName2;
+                    }
                 }
 
-                // Build detailed compiled narration for Excel and tooltips
-                var itemParts = new List<string>();
-                foreach (var itm in items)
-                {
-                    var sub = new List<string>();
-                    if (itm.Qty.HasValue && itm.Qty > 0) sub.Add($"{itm.Qty:N0} Bags");
-                    if (itm.Lbs.HasValue && itm.Lbs > 0) sub.Add($"{itm.Lbs:N2} Lbs");
-                    if (itm.Rate.HasValue && itm.Rate > 0) sub.Add($"@{itm.Rate:N2}");
-                    string p = itm.ItemName;
-                    if (sub.Any()) p += $" ({string.Join(", ", sub)})";
-                    itemParts.Add(p);
-                }
-
-                itemParts = itemParts.Distinct().ToList();
-                string compiledItems = string.Join("; ", itemParts);
-                string narration = compiledItems;
-
-                if (!string.IsNullOrEmpty(sodaNo))
-                {
-                    narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
-                }
-                if (!string.IsNullOrEmpty(partyName))
-                {
-                    narration = string.IsNullOrEmpty(narration) ? $"Party: {partyName}" : $"{narration} | Party: {partyName}";
-                }
+                string? agentName = !string.IsNullOrWhiteSpace(t.EntryAttribute4) ? t.EntryAttribute4.Trim() : null;
 
                 string displayRemarks = !string.IsNullOrWhiteSpace(t.TransRemarks)
                     ? t.TransRemarks.Trim()
                     : (!string.IsNullOrWhiteSpace(t.EntryRemarks) ? t.EntryRemarks.Trim() : "");
 
-                if (!string.IsNullOrWhiteSpace(displayRemarks) && 
-                    displayRemarks != "Sales Invoice" && 
-                    displayRemarks != "Purchase Invoice" && 
-                    displayRemarks != "Journal Voucher" &&
-                    displayRemarks != "Payment Voucher" &&
-                    displayRemarks != "Receipt Voucher")
+                // Check if this row represents a commission transaction
+                bool isCommission = (!string.IsNullOrEmpty(t.AccountName) && t.AccountName.Contains("COMMISSION", StringComparison.OrdinalIgnoreCase)) ||
+                                    (!string.IsNullOrEmpty(displayRemarks) && displayRemarks.Contains("Commission", StringComparison.OrdinalIgnoreCase));
+
+                // Normalise Purchase commission remarks to "Commission Receivable" if applicable
+                if (isCommission && (typeCode == "PUR" || typeCode == "DN"))
                 {
-                    if (string.IsNullOrEmpty(narration))
+                    displayRemarks = displayRemarks.Replace("Commission Payable to", "Commission Receivable from", StringComparison.OrdinalIgnoreCase);
+                    displayRemarks = displayRemarks.Replace("Commission Payable", "Commission Receivable", StringComparison.OrdinalIgnoreCase);
+                    displayRemarks = displayRemarks.Replace("Commission Expense against Purchase", "Commission Receivable against Purchase", StringComparison.OrdinalIgnoreCase);
+                    displayRemarks = displayRemarks.Replace("Commission Expense", "Commission Receivable", StringComparison.OrdinalIgnoreCase);
+                }
+                else if (isCommission && (typeCode == "SAL" || typeCode == "CN"))
+                {
+                    displayRemarks = displayRemarks.Replace("Commission Receivable from", "Commission Payable to", StringComparison.OrdinalIgnoreCase);
+                    displayRemarks = displayRemarks.Replace("Commission Receivable", "Commission Payable", StringComparison.OrdinalIgnoreCase);
+                }
+
+                string narration;
+                List<LedgerItemDetail> rowItems = items;
+                string? displayPartyName = partyName;
+
+                if (isCommission)
+                {
+                    // For commission entries: clean, intelligent narration
+                    var commQtyParts = new List<string>();
+                    double totalCommQty = items.Where(i => i.Qty.HasValue).Sum(i => i.Qty!.Value);
+                    double totalCommLbs = items.Where(i => i.Lbs.HasValue).Sum(i => i.Lbs!.Value);
+                    if (totalCommQty > 0) commQtyParts.Add($"{totalCommQty:N0} Bags");
+                    if (totalCommLbs > 0) commQtyParts.Add($"{totalCommLbs:N2} Lbs");
+                    string commQtyStr = commQtyParts.Any() ? $"({string.Join(", ", commQtyParts)})" : "";
+
+                    narration = commQtyStr;
+
+                    if (!string.IsNullOrEmpty(sodaNo))
                     {
-                        narration = displayRemarks;
+                        narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
                     }
-                    else if (!narration.Contains(displayRemarks, StringComparison.OrdinalIgnoreCase))
+
+                    if (!string.IsNullOrEmpty(agentName))
                     {
-                        narration = $"{narration} - {displayRemarks}";
+                        string agentPart = !string.IsNullOrEmpty(partyName)
+                            ? $"Agent: {agentName} (Party: {partyName})"
+                            : $"Agent: {agentName}";
+                        narration = string.IsNullOrEmpty(narration) ? agentPart : $"{narration} | {agentPart}";
+                        displayPartyName = !string.IsNullOrEmpty(partyName) ? $"Agent: {agentName} | Party: {partyName}" : $"Agent: {agentName}";
+                    }
+                    else if (!string.IsNullOrEmpty(partyName))
+                    {
+                        narration = string.IsNullOrEmpty(narration) ? $"Party: {partyName}" : $"{narration} | Party: {partyName}";
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(displayRemarks))
+                    {
+                        if (string.IsNullOrEmpty(narration))
+                        {
+                            narration = displayRemarks;
+                        }
+                        else if (!narration.Contains(displayRemarks, StringComparison.OrdinalIgnoreCase))
+                        {
+                            narration = $"{narration} - {displayRemarks}";
+                        }
+                    }
+
+                    // For the items column in commission view, show summary bags/lbs instead of raw yarn lot details
+                    if (totalCommQty > 0 || totalCommLbs > 0)
+                    {
+                        rowItems = new List<LedgerItemDetail>
+                        {
+                            new LedgerItemDetail
+                            {
+                                ItemName = !string.IsNullOrEmpty(agentName) ? $"Commission ({agentName})" : "Commission",
+                                Qty = totalCommQty > 0 ? totalCommQty : null,
+                                Lbs = totalCommLbs > 0 ? totalCommLbs : null,
+                                Rate = null
+                            }
+                        };
+                    }
+                    else
+                    {
+                        rowItems = new List<LedgerItemDetail>();
+                    }
+                }
+                else
+                {
+                    // Build detailed compiled narration for Excel and tooltips (Standard Customer / Supplier view)
+                    var itemParts = new List<string>();
+                    foreach (var itm in items)
+                    {
+                        var sub = new List<string>();
+                        if (itm.Qty.HasValue && itm.Qty > 0) sub.Add($"{itm.Qty:N0} Bags");
+                        if (itm.Lbs.HasValue && itm.Lbs > 0) sub.Add($"{itm.Lbs:N2} Lbs");
+                        if (itm.Rate.HasValue && itm.Rate > 0) sub.Add($"@{itm.Rate:N2}");
+                        string p = itm.ItemName;
+                        if (sub.Any()) p += $" ({string.Join(", ", sub)})";
+                        itemParts.Add(p);
+                    }
+
+                    itemParts = itemParts.Distinct().ToList();
+                    string compiledItems = string.Join("; ", itemParts);
+                    narration = compiledItems;
+
+                    if (!string.IsNullOrEmpty(sodaNo))
+                    {
+                        narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
+                    }
+                    if (!string.IsNullOrEmpty(partyName))
+                    {
+                        narration = string.IsNullOrEmpty(narration) ? $"Party: {partyName}" : $"{narration} | Party: {partyName}";
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(displayRemarks) && 
+                        displayRemarks != "Sales Invoice" && 
+                        displayRemarks != "Purchase Invoice" && 
+                        displayRemarks != "Journal Voucher" &&
+                        displayRemarks != "Payment Voucher" &&
+                        displayRemarks != "Receipt Voucher")
+                    {
+                        if (string.IsNullOrEmpty(narration))
+                        {
+                            narration = displayRemarks;
+                        }
+                        else if (!narration.Contains(displayRemarks, StringComparison.OrdinalIgnoreCase))
+                        {
+                            narration = $"{narration} - {displayRemarks}";
+                        }
                     }
                 }
 
@@ -389,13 +506,14 @@ namespace YIS.Pages.Ledger
                     AccountName = t.AccountName ?? "-",
                     Remarks = narration,
                     OriginalRemarks = displayRemarks,
-                    PartyName = partyName,
+                    PartyName = displayPartyName,
+                    AgentName = agentName,
                     EntryId = t.EntryId,
                     TransactionUrl = transUrl,
                     InvoiceViewUrl = invoiceViewUrl,
                     SodaNo = sodaNo,
                     SodaUrl = sodaUrl,
-                    Items = items,
+                    Items = rowItems,
                     Debit = debit,
                     Credit = credit,
                     Balance = currentBalance
@@ -489,6 +607,7 @@ namespace YIS.Pages.Ledger
             public string Remarks { get; set; } = "";
             public string? OriginalRemarks { get; set; }
             public string? PartyName { get; set; }
+            public string? AgentName { get; set; }
             public string? TransactionUrl { get; set; }
             public string? InvoiceViewUrl { get; set; }
             public string? SodaNo { get; set; }

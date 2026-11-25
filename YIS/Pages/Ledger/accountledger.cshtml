@@ -107,7 +107,7 @@
                                     <span class="fw-medium text-dark">@row.AccountName</span>
                                     @if (!string.IsNullOrEmpty(row.PartyName))
                                     {
-                                        <div class="text-muted small">Party: @row.PartyName</div>
+                                        <div class="text-muted small">@(row.PartyName.StartsWith("Agent:") ? row.PartyName : $"Party: {row.PartyName}")</div>
                                     }
                                 </td>
                                 <td>
