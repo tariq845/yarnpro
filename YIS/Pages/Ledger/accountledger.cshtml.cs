@@ -107,6 +107,7 @@ namespace YIS.Pages.Ledger
                             Qty = entry != null ? entry.Qty : null,
                             Lbs = entry != null ? entry.Lbs : null,
                             Rate = entry != null ? entry.Rate : null,
+                            EntryAmount = entry != null ? entry.Amount : null,
                             t.Debit,
                             t.Credit,
                             AccountName = a.AccountName,
@@ -297,7 +298,8 @@ namespace YIS.Pages.Ledger
                                 ItemName = name,
                                 Qty = l.Qty,
                                 Lbs = l.Lbs,
-                                Rate = l.Rate
+                                Rate = l.Rate,
+                                Amount = l.Amount ?? ((l.Lbs ?? (l.Qty ?? 0)) * (l.Rate ?? 0))
                             });
                         }
                     }
@@ -312,7 +314,8 @@ namespace YIS.Pages.Ledger
                             ItemName = name,
                             Qty = t.Qty,
                             Lbs = t.Lbs,
-                            Rate = t.Rate
+                            Rate = t.Rate,
+                            Amount = t.EntryAmount ?? ((t.Lbs ?? (t.Qty ?? 0)) * (t.Rate ?? 0))
                         });
                     }
                 }
@@ -382,18 +385,39 @@ namespace YIS.Pages.Ledger
                     displayRemarks = displayRemarks.Replace("Commission Receivable", "Commission Payable", StringComparison.OrdinalIgnoreCase);
                 }
 
+                string partyRoleLabel = (typeCode == "PUR" || typeCode == "DN") ? "Supplier" :
+                                         ((typeCode == "SAL" || typeCode == "CN") ? "Customer" : "Party");
+
                 string narration;
                 List<LedgerItemDetail> rowItems = items;
-                string? displayPartyName = partyName;
+                string? displayPartyName = null;
+
+                if (!string.IsNullOrEmpty(agentName))
+                {
+                    displayPartyName = !string.IsNullOrEmpty(partyName)
+                        ? $"Agent: {agentName} | {partyRoleLabel}: {partyName}"
+                        : $"Agent: {agentName}";
+                }
+                else if (!string.IsNullOrEmpty(partyName))
+                {
+                    displayPartyName = $"{partyRoleLabel}: {partyName}";
+                }
 
                 if (isCommission)
                 {
-                    // For commission entries: clean, intelligent narration
+                    // For commission entries: clean, intelligent narration including bags, lbs, rate, and amount
                     var commQtyParts = new List<string>();
                     double totalCommQty = items.Where(i => i.Qty.HasValue).Sum(i => i.Qty!.Value);
                     double totalCommLbs = items.Where(i => i.Lbs.HasValue).Sum(i => i.Lbs!.Value);
+                    double? commRate = items.FirstOrDefault(i => i.Rate.HasValue && i.Rate > 0)?.Rate ?? t.Rate;
+                    double totalCommAmt = items.Where(i => i.Amount.HasValue).Sum(i => i.Amount!.Value);
+                    if (totalCommAmt <= 0 && t.EntryAmount.HasValue && t.EntryAmount > 0) totalCommAmt = t.EntryAmount.Value;
+                    if (totalCommAmt <= 0 && commRate.HasValue && totalCommLbs > 0) totalCommAmt = totalCommLbs * commRate.Value;
+
                     if (totalCommQty > 0) commQtyParts.Add($"{totalCommQty:N0} Bags");
                     if (totalCommLbs > 0) commQtyParts.Add($"{totalCommLbs:N2} Lbs");
+                    if (commRate.HasValue && commRate > 0) commQtyParts.Add($"@{commRate:N2}");
+                    if (totalCommAmt > 0) commQtyParts.Add($"Amt: {totalCommAmt:N2}");
                     string commQtyStr = commQtyParts.Any() ? $"({string.Join(", ", commQtyParts)})" : "";
 
                     narration = commQtyStr;
@@ -403,17 +427,9 @@ namespace YIS.Pages.Ledger
                         narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
                     }
 
-                    if (!string.IsNullOrEmpty(agentName))
+                    if (!string.IsNullOrEmpty(displayPartyName))
                     {
-                        string agentPart = !string.IsNullOrEmpty(partyName)
-                            ? $"Agent: {agentName} (Party: {partyName})"
-                            : $"Agent: {agentName}";
-                        narration = string.IsNullOrEmpty(narration) ? agentPart : $"{narration} | {agentPart}";
-                        displayPartyName = !string.IsNullOrEmpty(partyName) ? $"Agent: {agentName} | Party: {partyName}" : $"Agent: {agentName}";
-                    }
-                    else if (!string.IsNullOrEmpty(partyName))
-                    {
-                        narration = string.IsNullOrEmpty(narration) ? $"Party: {partyName}" : $"{narration} | Party: {partyName}";
+                        narration = string.IsNullOrEmpty(narration) ? displayPartyName : $"{narration} | {displayPartyName}";
                     }
 
                     if (!string.IsNullOrWhiteSpace(displayRemarks))
@@ -428,8 +444,8 @@ namespace YIS.Pages.Ledger
                         }
                     }
 
-                    // For the items column in commission view, show summary bags/lbs instead of raw yarn lot details
-                    if (totalCommQty > 0 || totalCommLbs > 0)
+                    // For the items column in commission view, show summary bags, lbs, rate, and amount
+                    if (totalCommQty > 0 || totalCommLbs > 0 || (commRate.HasValue && commRate > 0) || totalCommAmt > 0)
                     {
                         rowItems = new List<LedgerItemDetail>
                         {
@@ -438,7 +454,8 @@ namespace YIS.Pages.Ledger
                                 ItemName = !string.IsNullOrEmpty(agentName) ? $"Commission ({agentName})" : "Commission",
                                 Qty = totalCommQty > 0 ? totalCommQty : null,
                                 Lbs = totalCommLbs > 0 ? totalCommLbs : null,
-                                Rate = null
+                                Rate = commRate > 0 ? commRate : null,
+                                Amount = totalCommAmt > 0 ? totalCommAmt : null
                             }
                         };
                     }
@@ -457,6 +474,7 @@ namespace YIS.Pages.Ledger
                         if (itm.Qty.HasValue && itm.Qty > 0) sub.Add($"{itm.Qty:N0} Bags");
                         if (itm.Lbs.HasValue && itm.Lbs > 0) sub.Add($"{itm.Lbs:N2} Lbs");
                         if (itm.Rate.HasValue && itm.Rate > 0) sub.Add($"@{itm.Rate:N2}");
+                        if (itm.Amount.HasValue && itm.Amount > 0) sub.Add($"Amt: {itm.Amount:N2}");
                         string p = itm.ItemName;
                         if (sub.Any()) p += $" ({string.Join(", ", sub)})";
                         itemParts.Add(p);
@@ -470,9 +488,9 @@ namespace YIS.Pages.Ledger
                     {
                         narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
                     }
-                    if (!string.IsNullOrEmpty(partyName))
+                    if (!string.IsNullOrEmpty(displayPartyName))
                     {
-                        narration = string.IsNullOrEmpty(narration) ? $"Party: {partyName}" : $"{narration} | Party: {partyName}";
+                        narration = string.IsNullOrEmpty(narration) ? displayPartyName : $"{narration} | {displayPartyName}";
                     }
 
                     if (!string.IsNullOrWhiteSpace(displayRemarks) && 
@@ -595,6 +613,7 @@ namespace YIS.Pages.Ledger
             public double? Qty { get; set; }
             public double? Lbs { get; set; }
             public double? Rate { get; set; }
+            public double? Amount { get; set; }
         }
 
         public class GeneralLedgerRow
