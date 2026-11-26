@@ -107,7 +107,7 @@
                                     <span class="fw-medium text-dark">@row.AccountName</span>
                                     @if (!string.IsNullOrEmpty(row.PartyName))
                                     {
-                                        <div class="text-muted small">@(row.PartyName.StartsWith("Agent:") ? row.PartyName : $"Party: {row.PartyName}")</div>
+                                        <div class="text-muted small">@row.PartyName</div>
                                     }
                                 </td>
                                 <td>
@@ -129,6 +129,10 @@
                                                     @if (item.Rate.HasValue && item.Rate > 0)
                                                     {
                                                         <span class="badge bg-light text-success border">Rate: @item.Rate?.ToString("N2")</span>
+                                                    }
+                                                    @if (item.Amount.HasValue && item.Amount > 0)
+                                                    {
+                                                        <span class="badge bg-light text-primary border">Amt: @item.Amount?.ToString("N2")</span>
                                                     }
                                                 </div>
                                             }
