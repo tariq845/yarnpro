@@ -403,111 +403,67 @@ namespace YIS.Pages.Ledger
                     displayPartyName = $"{partyRoleLabel}: {partyName}";
                 }
 
-                if (isCommission)
+                // If items list is empty, but transaction has quantity, rate, or amount from parent entry
+                if (!rowItems.Any() && ((t.Qty ?? 0) > 0 || (t.Lbs ?? 0) > 0 || (t.Rate ?? 0) > 0 || (t.EntryAmount ?? 0) > 0))
                 {
-                    // For commission entries: clean, intelligent narration including bags, lbs, rate, and amount
-                    var commQtyParts = new List<string>();
-                    double totalCommQty = items.Where(i => i.Qty.HasValue).Sum(i => i.Qty!.Value);
-                    double totalCommLbs = items.Where(i => i.Lbs.HasValue).Sum(i => i.Lbs!.Value);
-                    double? commRate = items.FirstOrDefault(i => i.Rate.HasValue && i.Rate > 0)?.Rate ?? t.Rate;
-                    double totalCommAmt = items.Where(i => i.Amount.HasValue).Sum(i => i.Amount!.Value);
-                    if (totalCommAmt <= 0 && t.EntryAmount.HasValue && t.EntryAmount > 0) totalCommAmt = t.EntryAmount.Value;
-                    if (totalCommAmt <= 0 && commRate.HasValue && totalCommLbs > 0) totalCommAmt = totalCommLbs * commRate.Value;
+                    string fallbackName = t.ItemId.HasValue && itemMap.ContainsKey(t.ItemId.Value)
+                        ? itemMap[t.ItemId.Value]
+                        : (!string.IsNullOrEmpty(agentName) ? $"Commission ({agentName})" : "Yarn Item");
 
-                    if (totalCommQty > 0) commQtyParts.Add($"{totalCommQty:N0} Bags");
-                    if (totalCommLbs > 0) commQtyParts.Add($"{totalCommLbs:N2} Lbs");
-                    if (commRate.HasValue && commRate > 0) commQtyParts.Add($"@{commRate:N2}");
-                    if (totalCommAmt > 0) commQtyParts.Add($"Amt: {totalCommAmt:N2}");
-                    string commQtyStr = commQtyParts.Any() ? $"({string.Join(", ", commQtyParts)})" : "";
-
-                    narration = commQtyStr;
-
-                    if (!string.IsNullOrEmpty(sodaNo))
+                    rowItems = new List<LedgerItemDetail>
                     {
-                        narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
-                    }
-
-                    if (!string.IsNullOrEmpty(displayPartyName))
-                    {
-                        narration = string.IsNullOrEmpty(narration) ? displayPartyName : $"{narration} | {displayPartyName}";
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(displayRemarks))
-                    {
-                        if (string.IsNullOrEmpty(narration))
+                        new LedgerItemDetail
                         {
-                            narration = displayRemarks;
+                            ItemName = fallbackName,
+                            Qty = t.Qty,
+                            Lbs = t.Lbs,
+                            Rate = t.Rate,
+                            Amount = t.EntryAmount ?? ((t.Lbs ?? (t.Qty ?? 0)) * (t.Rate ?? 0))
                         }
-                        else if (!narration.Contains(displayRemarks, StringComparison.OrdinalIgnoreCase))
-                        {
-                            narration = $"{narration} - {displayRemarks}";
-                        }
-                    }
-
-                    // For the items column in commission view, show summary bags, lbs, rate, and amount
-                    if (totalCommQty > 0 || totalCommLbs > 0 || (commRate.HasValue && commRate > 0) || totalCommAmt > 0)
-                    {
-                        rowItems = new List<LedgerItemDetail>
-                        {
-                            new LedgerItemDetail
-                            {
-                                ItemName = !string.IsNullOrEmpty(agentName) ? $"Commission ({agentName})" : "Commission",
-                                Qty = totalCommQty > 0 ? totalCommQty : null,
-                                Lbs = totalCommLbs > 0 ? totalCommLbs : null,
-                                Rate = commRate > 0 ? commRate : null,
-                                Amount = totalCommAmt > 0 ? totalCommAmt : null
-                            }
-                        };
-                    }
-                    else
-                    {
-                        rowItems = new List<LedgerItemDetail>();
-                    }
+                    };
                 }
-                else
+
+                // Build detailed compiled narration (visible for Commission and Standard views alike)
+                var itemParts = new List<string>();
+                foreach (var itm in rowItems)
                 {
-                    // Build detailed compiled narration for Excel and tooltips (Standard Customer / Supplier view)
-                    var itemParts = new List<string>();
-                    foreach (var itm in items)
-                    {
-                        var sub = new List<string>();
-                        if (itm.Qty.HasValue && itm.Qty > 0) sub.Add($"{itm.Qty:N0} Bags");
-                        if (itm.Lbs.HasValue && itm.Lbs > 0) sub.Add($"{itm.Lbs:N2} Lbs");
-                        if (itm.Rate.HasValue && itm.Rate > 0) sub.Add($"@{itm.Rate:N2}");
-                        if (itm.Amount.HasValue && itm.Amount > 0) sub.Add($"Amt: {itm.Amount:N2}");
-                        string p = itm.ItemName;
-                        if (sub.Any()) p += $" ({string.Join(", ", sub)})";
-                        itemParts.Add(p);
-                    }
+                    var sub = new List<string>();
+                    if (itm.Qty.HasValue && itm.Qty > 0) sub.Add($"{itm.Qty:N0} Bags");
+                    if (itm.Lbs.HasValue && itm.Lbs > 0) sub.Add($"{itm.Lbs:N2} Lbs");
+                    if (itm.Rate.HasValue && itm.Rate > 0) sub.Add($"@{itm.Rate:N2}");
+                    if (itm.Amount.HasValue && itm.Amount > 0) sub.Add($"Amt: {itm.Amount:N2}");
+                    string p = itm.ItemName;
+                    if (sub.Any()) p += $" ({string.Join(", ", sub)})";
+                    itemParts.Add(p);
+                }
 
-                    itemParts = itemParts.Distinct().ToList();
-                    string compiledItems = string.Join("; ", itemParts);
-                    narration = compiledItems;
+                itemParts = itemParts.Distinct().ToList();
+                string compiledItems = string.Join("; ", itemParts);
+                narration = compiledItems;
 
-                    if (!string.IsNullOrEmpty(sodaNo))
-                    {
-                        narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
-                    }
-                    if (!string.IsNullOrEmpty(displayPartyName))
-                    {
-                        narration = string.IsNullOrEmpty(narration) ? displayPartyName : $"{narration} | {displayPartyName}";
-                    }
+                if (!string.IsNullOrEmpty(sodaNo))
+                {
+                    narration = string.IsNullOrEmpty(narration) ? $"Soda: {sodaNo}" : $"{narration} | Soda: {sodaNo}";
+                }
+                if (!string.IsNullOrEmpty(displayPartyName))
+                {
+                    narration = string.IsNullOrEmpty(narration) ? displayPartyName : $"{narration} | {displayPartyName}";
+                }
 
-                    if (!string.IsNullOrWhiteSpace(displayRemarks) && 
-                        displayRemarks != "Sales Invoice" && 
-                        displayRemarks != "Purchase Invoice" && 
-                        displayRemarks != "Journal Voucher" &&
-                        displayRemarks != "Payment Voucher" &&
-                        displayRemarks != "Receipt Voucher")
+                if (!string.IsNullOrWhiteSpace(displayRemarks) && 
+                    displayRemarks != "Sales Invoice" && 
+                    displayRemarks != "Purchase Invoice" && 
+                    displayRemarks != "Journal Voucher" &&
+                    displayRemarks != "Payment Voucher" &&
+                    displayRemarks != "Receipt Voucher")
+                {
+                    if (string.IsNullOrEmpty(narration))
                     {
-                        if (string.IsNullOrEmpty(narration))
-                        {
-                            narration = displayRemarks;
-                        }
-                        else if (!narration.Contains(displayRemarks, StringComparison.OrdinalIgnoreCase))
-                        {
-                            narration = $"{narration} - {displayRemarks}";
-                        }
+                        narration = displayRemarks;
+                    }
+                    else if (!narration.Contains(displayRemarks, StringComparison.OrdinalIgnoreCase))
+                    {
+                        narration = $"{narration} - {displayRemarks}";
                     }
                 }
 
